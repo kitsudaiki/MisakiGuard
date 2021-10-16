@@ -24,6 +24,7 @@
 #define CONFIG_H
 
 #include <libKitsunemimiConfig/config_handler.h>
+#include <libKitsunemimiHanamiCommon/config.h>
 
 /**
  * @brief register configs
@@ -31,7 +32,7 @@
 void
 registerConfigs()
 {
- 
+    Kitsunemimi::Hanami::registerConfigs();
 }
 
 #endif // CONFIG_H

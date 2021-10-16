@@ -1,14 +1,14 @@
 QT -= qt core gui
 
 TARGET = MiyuGuard
-CONFIG += console c++14
+CONFIG += console c++17
 CONFIG -= app_bundle
 
 
-LIBS += -L../libKitsunemimiSakuraMessaging/src -lKitsunemimiSakuraMessaging
-LIBS += -L../libKitsunemimiSakuraMessaging/src/debug -lKitsunemimiSakuraMessaging
-LIBS += -L../libKitsunemimiSakuraMessaging/src/release -lKitsunemimiSakuraMessaging
-INCLUDEPATH += ../libKitsunemimiSakuraMessaging/include
+LIBS += -L../libKitsunemimiHanamiCommon/src -lKitsunemimiHanamiCommon
+LIBS += -L../libKitsunemimiHanamiCommon/src/debug -lKitsunemimiHanamiCommon
+LIBS += -L../libKitsunemimiHanamiCommon/src/release -lKitsunemimiHanamiCommon
+INCLUDEPATH += ../libKitsunemimiHanamiCommon/include
 
 LIBS += -L../libKitsunemimiSakuraLang/src -lKitsunemimiSakuraLang
 LIBS += -L../libKitsunemimiSakuraLang/src/debug -lKitsunemimiSakuraLang
@@ -40,11 +40,6 @@ LIBS += -L../libKitsunemimiNetwork/src/debug -lKitsunemimiNetwork
 LIBS += -L../libKitsunemimiNetwork/src/release -lKitsunemimiNetwork
 INCLUDEPATH += ../libKitsunemimiNetwork/include
 
-LIBS += -L../libKitsunemimiPersistence/src -lKitsunemimiPersistence
-LIBS += -L../libKitsunemimiPersistence/src/debug -lKitsunemimiPersistence
-LIBS += -L../libKitsunemimiPersistence/src/release -lKitsunemimiPersistence
-INCLUDEPATH += ../libKitsunemimiPersistence/include
-
 LIBS += -L../libKitsunemimiJinja2/src -lKitsunemimiJinja2
 LIBS += -L../libKitsunemimiJinja2/src/debug -lKitsunemimiJinja2
 LIBS += -L../libKitsunemimiJinja2/src/release -lKitsunemimiJinja2
@@ -66,3 +61,7 @@ INCLUDEPATH += $$PWD \
                src
 
 SOURCES += src/main.cpp
+
+HEADERS += \
+    src/args.h \
+    src/config.h
