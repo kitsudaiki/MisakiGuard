@@ -25,10 +25,20 @@ LIBS += -L../libKitsunemimiConfig/src/debug -lKitsunemimiConfig
 LIBS += -L../libKitsunemimiConfig/src/release -lKitsunemimiConfig
 INCLUDEPATH += ../libKitsunemimiConfig/include
 
+LIBS += -L../libKitsunemimiSqlite/src -lKitsunemimiSqlite
+LIBS += -L../libKitsunemimiSqlite/src/debug -lKitsunemimiSqlite
+LIBS += -L../libKitsunemimiSqlite/src/release -lKitsunemimiSqlite
+INCLUDEPATH += ../libKitsunemimiSqlite/include
+
 LIBS += -L../libKitsunemimiSakuraNetwork/src -lKitsunemimiSakuraNetwork
 LIBS += -L../libKitsunemimiSakuraNetwork/src/debug -lKitsunemimiSakuraNetwork
 LIBS += -L../libKitsunemimiSakuraNetwork/src/release -lKitsunemimiSakuraNetwork
 INCLUDEPATH += ../libKitsunemimiSakuraNetwork/include
+
+LIBS += -L../libKitsunemimiSakuraDatabase/src -lKitsunemimiSakuraDatabase
+LIBS += -L../libKitsunemimiSakuraDatabase/src/debug -lKitsunemimiSakuraDatabase
+LIBS += -L../libKitsunemimiSakuraDatabase/src/release -lKitsunemimiSakuraDatabase
+INCLUDEPATH += ../libKitsunemimiSakuraDatabase/include
 
 LIBS += -L../libKitsunemimiCommon/src -lKitsunemimiCommon
 LIBS += -L../libKitsunemimiCommon/src/debug -lKitsunemimiCommon
@@ -75,13 +85,15 @@ LIBS += -L../libKitsunemimiHanamiPolicies/src/debug -lKitsunemimiHanamiPolicies
 LIBS += -L../libKitsunemimiHanamiPolicies/src/release -lKitsunemimiHanamiPolicies
 INCLUDEPATH += ../libKitsunemimiHanamiPolicies/include
 
-LIBS += -lcrypto -lssl
+LIBS += -lcrypto -lssl -lsqlite3
 
 INCLUDEPATH += $$PWD \
                src
 
-SOURCES += src/main.cpp
+SOURCES += src/main.cpp \
+    src/users/users_database.cpp
 
 HEADERS += \
     src/args.h \
-    src/config.h
+    src/config.h \
+    src/users/users_database.h

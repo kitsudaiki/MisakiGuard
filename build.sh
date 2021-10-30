@@ -83,6 +83,7 @@ echo ""
 echo "###########################################################################################################"
 echo ""
 get_required_kitsune_lib_repo "libKitsunemimiCommon" "master" 4
+get_required_private_repo_github "libKitsunemimiSqlite" "master" 4
 echo ""
 echo "###########################################################################################################"
 echo ""
@@ -123,6 +124,7 @@ echo ""
 echo "###########################################################################################################"
 echo ""
 get_required_kitsune_lib_repo "libKitsunemimiSakuraLang" "master" 1
+get_required_private_repo_github "libKitsunemimiSakuraDatabase" "master" 4
 echo ""
 echo "###########################################################################################################"
 echo ""
