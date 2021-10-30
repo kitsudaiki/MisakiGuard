@@ -82,64 +82,31 @@ function get_required_private_repo_github () {
 echo ""
 echo "###########################################################################################################"
 echo ""
-get_required_kitsune_lib_repo "libKitsunemimiCommon" "master" 4
-get_required_private_repo_github "libKitsunemimiSqlite" "master" 4
+get_required_kitsune_lib_repo "libKitsunemimiCommon" "v0.22.0" 8
+get_required_kitsune_lib_repo "libKitsunemimiJson" "v0.10.8" 1
+get_required_kitsune_lib_repo "libKitsunemimiJinja2" "v0.8.3" 1
+get_required_kitsune_lib_repo "libKitsunemimiIni" "v0.4.9" 1
+get_required_kitsune_lib_repo "libKitsunemimiNetwork" "v0.7.0" 8
+get_required_kitsune_lib_repo "libKitsunemimiArgs" "v0.3.1" 8
+get_required_kitsune_lib_repo "libKitsunemimiConfig" "v0.3.0" 8
 echo ""
 echo "###########################################################################################################"
 echo ""
-get_required_kitsune_lib_repo "libKitsunemimiJson" "master" 1
+get_required_private_repo_github "libKitsunemimiSqlite" "v0.1.0" 8
+get_required_private_repo_github "libKitsunemimiCrypto" "v0.1.1" 8
+get_required_private_repo_github "libKitsunemimiJwt" "v0.1.1" 8
 echo ""
 echo "###########################################################################################################"
 echo ""
-get_required_kitsune_lib_repo "libKitsunemimiJinja2" "v0.8.1" 1
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_kitsune_lib_repo "libKitsunemimiIni" "master" 1
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_kitsune_lib_repo "libKitsunemimiNetwork" "master" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_kitsune_lib_repo "libKitsunemimiSakuraNetwork" "master" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_kitsune_lib_repo "libKitsunemimiArgs" "master" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_kitsune_lib_repo "libKitsunemimiConfig" "master" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_private_repo_github "libKitsunemimiCrypto" "master" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_private_repo_github "libKitsunemimiJwt" "master" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
+get_required_kitsune_lib_repo "libKitsunemimiSakuraNetwork" "v0.7.2" 8
 get_required_kitsune_lib_repo "libKitsunemimiSakuraLang" "master" 1
-get_required_private_repo_github "libKitsunemimiSakuraDatabase" "master" 4
+get_required_private_repo_github "libKitsunemimiSakuraDatabase" "v0.1.0" 8
 echo ""
 echo "###########################################################################################################"
 echo ""
-get_required_private_repo_gitlab "libKitsunemimiHanamiCommon" "master" "2ue6RNxkCDs2A7qp1xtN" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
-get_required_private_repo_gitlab "libKitsunemimiHanamiMessaging" "master" "vkEae-QF8jvt9W2xz3LR" 4
-echo ""
-echo "###########################################################################################################"
-echo ""
+get_required_private_repo_gitlab "libKitsunemimiHanamiCommon" "master" "2ue6RNxkCDs2A7qp1xtN" 8
+get_required_private_repo_gitlab "libKitsunemimiHanamiMessaging" "master" "vkEae-QF8jvt9W2xz3LR" 8
 get_required_private_repo_gitlab "libKitsunemimiHanamiEndpoints" "master" "ysR35grcGsLpFQiXXf1A" 1
-echo ""
-echo "###########################################################################################################"
-echo ""
 get_required_private_repo_gitlab "libKitsunemimiHanamiPolicies" "master" "MbPGESTo6zBzcXZW7_T8" 1
 echo ""
 echo "###########################################################################################################"
@@ -153,7 +120,7 @@ cd $LIB_KITSUNE_SAKURA_TREE_DIR
 
 # build MisakaGuard with qmake
 /usr/lib/x86_64-linux-gnu/qt5/bin/qmake "$PARENT_DIR/MisakaGuard/MisakaGuard.pro" -spec linux-g++ "CONFIG += optimize_full"
-/usr/bin/make -j4
+/usr/bin/make -j8
 
 # copy build-result and include-files into the result-directory
 cp "$LIB_KITSUNE_SAKURA_TREE_DIR/MisakaGuard" "$RESULT_DIR/"
