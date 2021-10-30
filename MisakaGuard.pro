@@ -1,6 +1,6 @@
 QT -= qt core gui
 
-TARGET = MiyuGuard
+TARGET = MisakaGuard
 CONFIG += console c++17
 CONFIG -= app_bundle
 
@@ -55,7 +55,27 @@ LIBS += -L../libKitsunemimiIni/src/debug -lKitsunemimiIni
 LIBS += -L../libKitsunemimiIni/src/release -lKitsunemimiIni
 INCLUDEPATH += ../libKitsunemimiIni/include
 
-LIBS += -lpthread -lboost_filesystem -lboost_system -lcrypto -lssl
+LIBS += -L../libKitsunemimiJwt/src -lKitsunemimiJwt
+LIBS += -L../libKitsunemimiJwt/src/debug -lKitsunemimiJwt
+LIBS += -L../libKitsunemimiJwti/src/release -lKitsunemimiJwt
+INCLUDEPATH += ../libKitsunemimiJwt/include
+
+LIBS += -L../libKitsunemimiCrypto/src -lKitsunemimiCrypto
+LIBS += -L../libKitsunemimiCrypto/src/debug -lKitsunemimiCrypto
+LIBS += -L../libKitsunemimiCrypto/src/release -lKitsunemimiCrypto
+INCLUDEPATH += ../libKitsunemimiCrypto/include
+
+LIBS += -L../libKitsunemimiHanamiEndpoints/src -lKitsunemimiHanamiEndpoints
+LIBS += -L../libKitsunemimiHanamiEndpoints/src/debug -lKitsunemimiHanamiEndpoints
+LIBS += -L../libKitsunemimiHanamiEndpoints/src/release -lKitsunemimiHanamiEndpoints
+INCLUDEPATH += ../libKitsunemimiHanamiEndpoints/include
+
+LIBS += -L../libKitsunemimiHanamiPolicies/src -lKitsunemimiHanamiPolicies
+LIBS += -L../libKitsunemimiHanamiPolicies/src/debug -lKitsunemimiHanamiPolicies
+LIBS += -L../libKitsunemimiHanamiPolicies/src/release -lKitsunemimiHanamiPolicies
+INCLUDEPATH += ../libKitsunemimiHanamiPolicies/include
+
+LIBS += -lcrypto -lssl
 
 INCLUDEPATH += $$PWD \
                src

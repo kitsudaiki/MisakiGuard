@@ -32,7 +32,7 @@
 void
 registerConfigs()
 {
-    Kitsunemimi::Hanami::registerConfigs();
+    Kitsunemimi::Hanami::registerBasicConfigs();
 }
 
 #endif // CONFIG_H

@@ -114,6 +114,14 @@ get_required_kitsune_lib_repo "libKitsunemimiConfig" "master" 4
 echo ""
 echo "###########################################################################################################"
 echo ""
+get_required_private_repo_github "libKitsunemimiCrypto" "master" 4
+echo ""
+echo "###########################################################################################################"
+echo ""
+get_required_private_repo_github "libKitsunemimiJwt" "master" 4
+echo ""
+echo "###########################################################################################################"
+echo ""
 get_required_kitsune_lib_repo "libKitsunemimiSakuraLang" "master" 1
 echo ""
 echo "###########################################################################################################"
@@ -125,20 +133,28 @@ echo ""
 get_required_private_repo_gitlab "libKitsunemimiHanamiMessaging" "master" "vkEae-QF8jvt9W2xz3LR" 4
 echo ""
 echo "###########################################################################################################"
+echo ""
+get_required_private_repo_gitlab "libKitsunemimiHanamiEndpoints" "master" "ysR35grcGsLpFQiXXf1A" 1
+echo ""
+echo "###########################################################################################################"
+echo ""
+get_required_private_repo_gitlab "libKitsunemimiHanamiPolicies" "master" "MbPGESTo6zBzcXZW7_T8" 1
+echo ""
+echo "###########################################################################################################"
 
 #-----------------------------------------------------------------------------------------------------------------
 
 # create build directory for KyoukoMind and go into this directory
-LIB_KITSUNE_SAKURA_TREE_DIR="$BUILD_DIR/MiyuGuard"
+LIB_KITSUNE_SAKURA_TREE_DIR="$BUILD_DIR/MisakaGuard"
 mkdir -p $LIB_KITSUNE_SAKURA_TREE_DIR
 cd $LIB_KITSUNE_SAKURA_TREE_DIR
 
-# build MiyuGuard with qmake
-/usr/lib/x86_64-linux-gnu/qt5/bin/qmake "$PARENT_DIR/MiyuGuard/MiyuGuard.pro" -spec linux-g++ "CONFIG += optimize_full"
+# build MisakaGuard with qmake
+/usr/lib/x86_64-linux-gnu/qt5/bin/qmake "$PARENT_DIR/MisakaGuard/MisakaGuard.pro" -spec linux-g++ "CONFIG += optimize_full"
 /usr/bin/make -j4
 
 # copy build-result and include-files into the result-directory
-cp "$LIB_KITSUNE_SAKURA_TREE_DIR/MiyuGuard" "$RESULT_DIR/"
+cp "$LIB_KITSUNE_SAKURA_TREE_DIR/MisakaGuard" "$RESULT_DIR/"
 
 #-----------------------------------------------------------------------------------------------------------------
 

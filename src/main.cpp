@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     // init config-file
     std::string configPath = argParser.getStringValue("config");
     if(configPath == "") {
-        configPath = "/etc/MiyuGuard/MiyuGuard.conf";
+        configPath = "/etc/MisakaGuard/MisakaGuard.conf";
     }
     if(Kitsunemimi::Config::initConfig(configPath) == false) {
         return 1;
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
     // init logger
     Kitsunemimi::initConsoleLogger(enableDebug);
-    Kitsunemimi::initFileLogger(logPath, "MiyuGuard", enableDebug);
+    Kitsunemimi::initFileLogger(logPath, "MisakaGuard", enableDebug);
 
     // sleep forever
     std::this_thread::sleep_until(std::chrono::time_point<std::chrono::system_clock>::max());
