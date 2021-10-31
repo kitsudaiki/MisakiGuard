@@ -1,5 +1,5 @@
 /**
- * @file        config.h
+ * @file        misaka_root.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,22 +20,19 @@
  *      limitations under the License.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef MISAKAROOT_H
+#define MISAKAROOT_H
 
-#include <libKitsunemimiConfig/config_handler.h>
-#include <libKitsunemimiHanamiCommon/config.h>
+#include <libKitsunemimiJwt/jwt.h>
+#include <users/users_database.h>
 
-/**
- * @brief register configs
- */
-void
-registerConfigs()
+class MisakaRoot
 {
-    Kitsunemimi::Hanami::registerBasicConfigs();
+public:
+    MisakaRoot();
 
-    REGISTER_STRING_CONFIG("Misaka", "token_key", "", true);
+    static Kitsunemimi::Jwt::Jwt* jwt;
+    static UsersDatabase* usersDb;
+};
 
-}
-
-#endif // CONFIG_H
+#endif // MISAKAROOT_H

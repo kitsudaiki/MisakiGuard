@@ -1,5 +1,5 @@
 /**
- * @file        config.h
+ * @file        create_token.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,22 +20,19 @@
  *      limitations under the License.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef GETUSER_H
+#define GETUSER_H
 
-#include <libKitsunemimiConfig/config_handler.h>
-#include <libKitsunemimiHanamiCommon/config.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
-/**
- * @brief register configs
- */
-void
-registerConfigs()
+class GetUser
+        : public Kitsunemimi::Sakura::Blossom
 {
-    Kitsunemimi::Hanami::registerBasicConfigs();
+public:
+    GetUser();
 
-    REGISTER_STRING_CONFIG("Misaka", "token_key", "", true);
+protected:
+    bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf, std::string &errorMessage);
+};
 
-}
-
-#endif // CONFIG_H
+#endif // GETUSER_H

@@ -1,11 +1,28 @@
+/**
+ * @file        users_database.cpp
+ *
+ * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
+ *
+ * @copyright   Apache License Version 2.0
+ *
+ *      Copyright 2021 Tobias Anker
+ *
+ *      Licensed under the Apache License, Version 2.0 (the "License");
+ *      you may not use this file except in compliance with the License.
+ *      You may obtain a copy of the License at
+ *
+ *          http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *      Unless required by applicable law or agreed to in writing, software
+ *      distributed under the License is distributed on an "AS IS" BASIS,
+ *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *      See the License for the specific language governing permissions and
+ *      limitations under the License.
+ */
+
 #include <users/users_database.h>
 
 #include <libKitsunemimiCommon/common_items/table_item.h>
-
-namespace Kitsunemimi
-{
-namespace Hanami
-{
 
 UsersDatabase::UsersDatabase()
     : SqlDatabase()
@@ -17,6 +34,11 @@ UsersDatabase::UsersDatabase()
     userId.maxLength = 256;
     userId.isPrimary = true;
     m_tableHeader.push_back(userId);
+
+    DbHeaderEntry userName;
+    userName.name = "user_id";
+    userName.maxLength = 256;
+    m_tableHeader.push_back(userName);
 
     DbHeaderEntry pwHash;
     pwHash.name = "pw_hash";
@@ -42,19 +64,19 @@ UsersDatabase::~UsersDatabase()
  */
 bool
 UsersDatabase::initDatabase(const std::string &path,
-                    std::string &errorMessag)
+                            Kitsunemimi::ErrorContainer &error)
 {
     std::lock_guard<std::mutex> guard(m_lock);
     if(m_isOpen) {
         return false;
     }
 
-    if(m_db.initDB(path, errorMessag))
+    if(m_db.initDB(path, error))
     {
         m_isOpen = true;
         m_path = path;
 
-        return initUserTable(errorMessag);
+        return initUserTable(error);
     }
 
     return false;
@@ -89,12 +111,13 @@ UsersDatabase::closeDatabase()
  */
 bool
 UsersDatabase::addUser(const UserData &data,
-               std::string &errorMessage)
+                       Kitsunemimi::ErrorContainer &error)
 {
     std::lock_guard<std::mutex> guard(m_lock);
     if(m_isOpen == false)
     {
-        errorMessage = "database not open";
+        error.errorMessage = "database not open";
+        LOG_ERROR(error);
         return false;
     }
 
@@ -102,8 +125,10 @@ UsersDatabase::addUser(const UserData &data,
                                               data.pwHash,
                                               std::to_string(data.isAdmin)};
     Kitsunemimi::TableItem resultItem;
-    const bool ret = m_db.execSqlCommand(&resultItem, createInsertQuery(values), errorMessage);
-    if(ret == false) {
+    const bool ret = m_db.execSqlCommand(&resultItem, createInsertQuery(values), error);
+    if(ret == false)
+    {
+        LOG_ERROR(error);
         return false;
     }
 
@@ -111,41 +136,51 @@ UsersDatabase::addUser(const UserData &data,
 }
 
 /**
- * @brief Users::getUser
- * @param data
+ * @brief UsersDatabase::getUser
  * @param userID
- * @param errorMessage
+ * @param error
  * @return
  */
-bool
-UsersDatabase::getUser(UserData &data,
-               const std::string &userID,
-               std::string &errorMessage)
+Kitsunemimi::DataItem*
+UsersDatabase::getUser(const std::string &userID,
+                       Kitsunemimi::ErrorContainer &error)
 {
     std::lock_guard<std::mutex> guard(m_lock);
+
+    // check db-state
     if(m_isOpen == false)
     {
-        errorMessage = "database not open";
-        return false;
+        error.errorMessage = "database not open";
+        LOG_ERROR(error);
+        return new Kitsunemimi::DataArray();
     }
 
+    // get user from db
     Kitsunemimi::TableItem resultItem;
-    const bool ret = m_db.execSqlCommand(&resultItem, createSelectQuery(userID), errorMessage);
+    const bool ret = m_db.execSqlCommand(&resultItem, createSelectQuery("user_id", userID), error);
     if(ret == false) {
-        return false;
+        return new Kitsunemimi::DataArray();
     }
 
     if(resultItem.getNumberOfRows() == 0)
     {
-        errorMessage = "User with ID '" + userID + "' not found;";
-        return false;
+        error.errorMessage = "User with ID '" + userID + "' not found;";
+        LOG_ERROR(error);
+        return new Kitsunemimi::DataArray();
     }
 
-    data.userId =  resultItem.getCell(0, 0);
-    data.pwHash =  resultItem.getCell(1, 0);
-    data.isAdmin = resultItem.getCell(2, 0) == "1";
+    return resultItem.getBody();
+}
 
-    return true;
+/**
+ * @brief UsersDatabase::getAllUser
+ * @param error
+ * @return
+ */
+Kitsunemimi::DataItem*
+UsersDatabase::getAllUser(Kitsunemimi::ErrorContainer &error)
+{
+    return getUser("", error);
 }
 
 /**
@@ -154,10 +189,7 @@ UsersDatabase::getUser(UserData &data,
  * @return
  */
 bool
-UsersDatabase::initUserTable(std::string &errorMessage)
+UsersDatabase::initUserTable(Kitsunemimi::ErrorContainer &error)
 {
-    return m_db.execSqlCommand(nullptr, createTableCreateQuery(), errorMessage);
-}
-
-}
+    return m_db.execSqlCommand(nullptr, createTableCreateQuery(), error);
 }

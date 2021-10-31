@@ -13,7 +13,7 @@ build:
     - ssh-keyscan -H 10.0.3.120 >> ~/.ssh/known_hosts
 
     - apt-get update
-    - apt-get install -y libssl-dev libcrypto++-dev libsqlite3-dev
+    - apt-get install -y libssl-dev libcrypto++-dev libsqlite3-dev  uuid-dev 
 
     - cd /builds/kitsudaiki/MisakaGuard
     - ./build.sh

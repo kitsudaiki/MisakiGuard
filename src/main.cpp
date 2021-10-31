@@ -52,6 +52,9 @@ int main(int argc, char *argv[])
         return 1;
     }
     registerConfigs();
+    if(Kitsunemimi::Config::isConfigValid() == false) {
+        return 1;
+    }
 
     // get config-parameter for logger
     bool success = false;

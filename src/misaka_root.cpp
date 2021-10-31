@@ -1,5 +1,5 @@
 /**
- * @file        config.h
+ * @file        misaka_root.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,22 +20,19 @@
  *      limitations under the License.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#include "misaka_root.h"
 
 #include <libKitsunemimiConfig/config_handler.h>
-#include <libKitsunemimiHanamiCommon/config.h>
 
-/**
- * @brief register configs
- */
-void
-registerConfigs()
+Kitsunemimi::Jwt::Jwt* MisakaRoot::jwt = nullptr;
+UsersDatabase* MisakaRoot::usersDb = nullptr;
+
+MisakaRoot::MisakaRoot()
 {
-    Kitsunemimi::Hanami::registerBasicConfigs();
+    usersDb = new UsersDatabase();
 
-    REGISTER_STRING_CONFIG("Misaka", "token_key", "", true);
-
+    bool success = false;
+    const std::string tokenKeyString = GET_STRING_CONFIG("Misaka", "token_key", success);
+    CryptoPP::SecByteBlock tokenKey((unsigned char*)tokenKeyString.c_str(), tokenKeyString.size());
+    jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
 }
-
-#endif // CONFIG_H

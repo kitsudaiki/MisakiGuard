@@ -85,15 +85,25 @@ LIBS += -L../libKitsunemimiHanamiPolicies/src/debug -lKitsunemimiHanamiPolicies
 LIBS += -L../libKitsunemimiHanamiPolicies/src/release -lKitsunemimiHanamiPolicies
 INCLUDEPATH += ../libKitsunemimiHanamiPolicies/include
 
-LIBS += -lcrypto -lssl -lsqlite3
+LIBS += -lcryptopp -lssl -lsqlite3 -luuid -lcrypto
 
 INCLUDEPATH += $$PWD \
                src
 
 SOURCES += src/main.cpp \
-    src/users/users_database.cpp
+    src/api/auth/create_token.cpp \
+    src/api/user/create_user.cpp \
+    src/api/user/get_user.cpp \
+    src/misaka_root.cpp \
+    src/users/users_database.cpp \
+    src/api/auth/validate_token.cpp
 
 HEADERS += \
+    src/api/auth/create_token.h \
+    src/api/user/create_user.h \
+    src/api/user/get_user.h \
     src/args.h \
     src/config.h \
-    src/users/users_database.h
+    src/misaka_root.h \
+    src/users/users_database.h \
+    src/api/auth/validate_token.h
