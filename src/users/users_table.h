@@ -20,24 +20,14 @@
  *      limitations under the License.
  */
 
-#ifndef USERS_DATABASE_H
-#define USERS_DATABASE_H
-
-#include <mutex>
+#ifndef USERS_TABLE_H
+#define USERS_TABLE_H
 
 #include <libKitsunemimiCommon/logger.h>
-#include <libKitsunemimiSqlite/sqlite.h>
-#include <libKitsunemimiSakuraDatabase/sql_database.h>
+#include <libKitsunemimiSakuraDatabase/sql_table.h>
 
-namespace Kitsunemimi
-{
-namespace Sqlite {
-class Sqlite;
-}
-}
-
-class UsersDatabase :
-        Kitsunemimi::Sakura::SqlDatabase
+class UsersTable
+        : public Kitsunemimi::Sakura::SqlTable
 {
 public:
     struct UserData
@@ -48,27 +38,25 @@ public:
         bool isAdmin = false;
     };
 
-    UsersDatabase();
-    ~UsersDatabase();
+    UsersTable(Kitsunemimi::Sakura::SqlDatabase* db);
+    ~UsersTable();
 
-    bool initDatabase(const std::string &path,
-                      Kitsunemimi::ErrorContainer &error);
-    bool closeDatabase();
-
-    bool addUser(const UserData &data,
+    const std::string addUser(const UserData &data,
+                              Kitsunemimi::ErrorContainer &error);
+    bool getUserByName(UserData &result,
+                       Kitsunemimi::TableItem &tableContent,
+                       const std::string &userName,
+                       Kitsunemimi::ErrorContainer &error);
+    bool getUser(UserData &result,
+                 Kitsunemimi::TableItem &tableContent,
+                 const std::string &uuid,
                  Kitsunemimi::ErrorContainer &error);
-    Kitsunemimi::DataItem* getUser(const std::string &userID,
-                                   Kitsunemimi::ErrorContainer &error);
+    bool getUser(Kitsunemimi::TableItem &result,
+                 const std::string &uuid,
+                 Kitsunemimi::ErrorContainer &error);
     Kitsunemimi::DataItem* getAllUser(Kitsunemimi::ErrorContainer &error);
-
-private:
-    std::mutex m_lock;
-    bool m_isOpen = false;
-    std::string m_path = "";
-
-    Kitsunemimi::Sqlite::Sqlite m_db;
-
-    bool initUserTable(Kitsunemimi::ErrorContainer &error);
+    bool deleteUser(const std::string &userID,
+                     Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // USERS_DATABASE_H
+#endif // USERS_TABLE_H

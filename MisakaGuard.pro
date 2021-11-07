@@ -4,6 +4,20 @@ TARGET = MisakaGuard
 CONFIG += console c++17
 CONFIG -= app_bundle
 
+LIBS += -L../libKitsunemimiHanamiMessaging/src -lKitsunemimiHanamiMessaging
+LIBS += -L../libKitsunemimiHanamiMessaging/src/debug -lKitsunemimiHanamiMessaging
+LIBS += -L../libKitsunemimiHanamiMessaging/src/release -lKitsunemimiHanamiMessaging
+INCLUDEPATH += ../libKitsunemimiHanamiMessaging/include
+
+LIBS += -L../libKitsunemimiHanamiEndpoints/src -lKitsunemimiHanamiEndpoints
+LIBS += -L../libKitsunemimiHanamiEndpoints/src/debug -lKitsunemimiHanamiEndpoints
+LIBS += -L../libKitsunemimiHanamiEndpoints/src/release -lKitsunemimiHanamiEndpoints
+INCLUDEPATH += ../libKitsunemimiHanamiEndpoints/include
+
+LIBS += -L../libKitsunemimiHanamiPolicies/src -lKitsunemimiHanamiPolicies
+LIBS += -L../libKitsunemimiHanamiPolicies/src/debug -lKitsunemimiHanamiPolicies
+LIBS += -L../libKitsunemimiHanamiPolicies/src/release -lKitsunemimiHanamiPolicies
+INCLUDEPATH += ../libKitsunemimiHanamiPolicies/include
 
 LIBS += -L../libKitsunemimiHanamiCommon/src -lKitsunemimiHanamiCommon
 LIBS += -L../libKitsunemimiHanamiCommon/src/debug -lKitsunemimiHanamiCommon
@@ -14,6 +28,11 @@ LIBS += -L../libKitsunemimiSakuraLang/src -lKitsunemimiSakuraLang
 LIBS += -L../libKitsunemimiSakuraLang/src/debug -lKitsunemimiSakuraLang
 LIBS += -L../libKitsunemimiSakuraLang/src/release -lKitsunemimiSakuraLang
 INCLUDEPATH += ../libKitsunemimiSakuraLang/include
+
+LIBS += -L../libKitsunemimiSakuraDatabase/src -lKitsunemimiSakuraDatabase
+LIBS += -L../libKitsunemimiSakuraDatabase/src/debug -lKitsunemimiSakuraDatabase
+LIBS += -L../libKitsunemimiSakuraDatabase/src/release -lKitsunemimiSakuraDatabase
+INCLUDEPATH += ../libKitsunemimiSakuraDatabase/include
 
 LIBS += -L../libKitsunemimiArgs/src -lKitsunemimiArgs
 LIBS += -L../libKitsunemimiArgs/src/debug -lKitsunemimiArgs
@@ -34,11 +53,6 @@ LIBS += -L../libKitsunemimiSakuraNetwork/src -lKitsunemimiSakuraNetwork
 LIBS += -L../libKitsunemimiSakuraNetwork/src/debug -lKitsunemimiSakuraNetwork
 LIBS += -L../libKitsunemimiSakuraNetwork/src/release -lKitsunemimiSakuraNetwork
 INCLUDEPATH += ../libKitsunemimiSakuraNetwork/include
-
-LIBS += -L../libKitsunemimiSakuraDatabase/src -lKitsunemimiSakuraDatabase
-LIBS += -L../libKitsunemimiSakuraDatabase/src/debug -lKitsunemimiSakuraDatabase
-LIBS += -L../libKitsunemimiSakuraDatabase/src/release -lKitsunemimiSakuraDatabase
-INCLUDEPATH += ../libKitsunemimiSakuraDatabase/include
 
 LIBS += -L../libKitsunemimiCommon/src -lKitsunemimiCommon
 LIBS += -L../libKitsunemimiCommon/src/debug -lKitsunemimiCommon
@@ -75,15 +89,6 @@ LIBS += -L../libKitsunemimiCrypto/src/debug -lKitsunemimiCrypto
 LIBS += -L../libKitsunemimiCrypto/src/release -lKitsunemimiCrypto
 INCLUDEPATH += ../libKitsunemimiCrypto/include
 
-LIBS += -L../libKitsunemimiHanamiEndpoints/src -lKitsunemimiHanamiEndpoints
-LIBS += -L../libKitsunemimiHanamiEndpoints/src/debug -lKitsunemimiHanamiEndpoints
-LIBS += -L../libKitsunemimiHanamiEndpoints/src/release -lKitsunemimiHanamiEndpoints
-INCLUDEPATH += ../libKitsunemimiHanamiEndpoints/include
-
-LIBS += -L../libKitsunemimiHanamiPolicies/src -lKitsunemimiHanamiPolicies
-LIBS += -L../libKitsunemimiHanamiPolicies/src/debug -lKitsunemimiHanamiPolicies
-LIBS += -L../libKitsunemimiHanamiPolicies/src/release -lKitsunemimiHanamiPolicies
-INCLUDEPATH += ../libKitsunemimiHanamiPolicies/include
 
 LIBS += -lcryptopp -lssl -lsqlite3 -luuid -lcrypto
 
@@ -95,15 +100,16 @@ SOURCES += src/main.cpp \
     src/api/user/create_user.cpp \
     src/api/user/get_user.cpp \
     src/misaka_root.cpp \
-    src/users/users_database.cpp \
-    src/api/auth/validate_token.cpp
+    src/api/auth/validate_token.cpp \
+    src/users/users_table.cpp
 
 HEADERS += \
     src/api/auth/create_token.h \
+    src/api/blossom_initializing.h \
     src/api/user/create_user.h \
     src/api/user/get_user.h \
     src/args.h \
     src/config.h \
     src/misaka_root.h \
-    src/users/users_database.h \
-    src/api/auth/validate_token.h
+    src/api/auth/validate_token.h \
+    src/users/users_table.h

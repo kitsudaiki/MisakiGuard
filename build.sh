@@ -93,12 +93,12 @@ echo ""
 echo "###########################################################################################################"
 echo ""
 get_required_private_repo_github "libKitsunemimiSqlite" "master" 8
-get_required_private_repo_github "libKitsunemimiCrypto" "v0.1.1" 8
-get_required_private_repo_github "libKitsunemimiJwt" "v0.1.1" 8
+get_required_private_repo_github "libKitsunemimiCrypto" "master" 8
+get_required_private_repo_github "libKitsunemimiJwt" "master" 8
 echo ""
 echo "###########################################################################################################"
 echo ""
-get_required_kitsune_lib_repo "libKitsunemimiSakuraNetwork" "v0.7.2" 8
+get_required_kitsune_lib_repo "libKitsunemimiSakuraNetwork" "master" 8
 get_required_kitsune_lib_repo "libKitsunemimiSakuraLang" "master" 1
 get_required_private_repo_github "libKitsunemimiSakuraDatabase" "master" 8
 echo ""

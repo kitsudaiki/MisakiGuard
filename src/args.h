@@ -34,9 +34,9 @@
  * @return true if successful, else false
  */
 bool
-registerArguments(Kitsunemimi::Args::ArgParser &argparser)
+registerArguments(Kitsunemimi::Args::ArgParser* argparser)
 {
-    if(Kitsunemimi::Hanami::registerArguments(argparser) == false) {
+    if(Kitsunemimi::Hanami::registerArguments(*argparser) == false) {
         return false;
     }
 

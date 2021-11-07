@@ -24,6 +24,11 @@
 
 #include <misaka_root.h>
 
+#include <libKitsunemimiCrypto/hashes.h>
+#include <libKitsunemimiJwt/jwt.h>
+#include <libKitsunemimiHanamiCommon/enums.h>
+#include <misaka_root.h>
+
 using namespace Kitsunemimi::Sakura;
 
 CreateToken::CreateToken()
@@ -31,12 +36,45 @@ CreateToken::CreateToken()
 {
     registerField("user_name", INPUT_TYPE, true);
     registerField("pw", INPUT_TYPE, true);
-    registerField("token", OUTPUT_TYPE, true);
+
+    registerField("token", OUTPUT_TYPE, false);
 }
 
 bool
 CreateToken::runTask(BlossomLeaf &blossomLeaf,
+                     uint64_t &status,
                      std::string &errorMessage)
 {
-    std::string result = "";
+    Kitsunemimi::ErrorContainer error;
+
+    // get information from request
+    const std::string userName = blossomLeaf.input.getStringByKey("user_name");
+    std::string pwHash = "";
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.getStringByKey("pw"));
+
+    // get data from table
+    UsersTable::UserData userData;
+    Kitsunemimi::TableItem table;
+    if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
+    {
+        errorMessage = "user or password is incorrect";
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
+        return false;
+    }
+
+    // check password
+    if(userData.pwHash != pwHash)
+    {
+        errorMessage = "user or password is incorrect";
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
+        return false;
+    }
+
+    // create new token
+    std::string jwtToken;
+    const std::string payload = table.getRow(0, false)->toString();
+    MisakaRoot::jwt->create_HS256_Token(jwtToken, payload);
+    blossomLeaf.output.insert("token", new Kitsunemimi::DataValue(jwtToken));
+
+    return true;
 }

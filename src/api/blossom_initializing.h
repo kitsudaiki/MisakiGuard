@@ -5,7 +5,7 @@
  *
  * @copyright   Apache License Version 2.0
  *
- *      Copyright 2019 Tobias Anker
+ *      Copyright 2021 Tobias Anker
  *
  *      Licensed under the Apache License, Version 2.0 (the "License");
  *      you may not use this file except in compliance with the License.
@@ -20,81 +20,51 @@
  *      limitations under the License.
  */
 
-#ifndef KYOUKOMIND_BLOSSOM_INITIALIZING_H
-#define KYOUKOMIND_BLOSSOM_INITIALIZING_H
-
-#include <common.h>
+#ifndef MISAKAGUARD_BLOSSOM_INITIALIZING_H
+#define MISAKAGUARD_BLOSSOM_INITIALIZING_H
 
 #include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
-#include <libKitsunemimiConfig/config_handler.h>
-#include <libKitsunemimiCommon/common_methods/file_methods.h>
-#include <libKitsunemimiCommon/files/text_file.h>
 #include <libKitsunemimiCommon/logger.h>
 
-#include <api/special/special_blossoms.h>
-#include <api/special/test_list_blossom.h>
-#include <api/special/test_single_blossom.h>
+#include <api/user/create_user.h>
+#include <api/user/get_user.h>
 
-#include <api/save_load/list_save_files_blossom.h>
-#include <api/save_load/restore_net_blossom.h>
-#include <api/save_load/save_net_blossom.h>
-#include <api/save_load/show_save_file_blossom.h>
-
-#include <api/io/ask_blossom.h>
-#include <api/io/init_blossom.h>
-#include <api/io/learn_blossom.h>
+#include <api/auth/create_token.h>
+#include <api/auth/validate_token.h>
 
 using Kitsunemimi::Sakura::SakuraLangInterface;
 
-void
-initTokenBlossoms()
-{
-    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
-    const std::string group = "io";
-
-    assert(interface->addBlossom(group, "ask", new AskBlossom()));
-    assert(interface->addBlossom(group, "learn", new LearnBlossom()));
-    assert(interface->addBlossom(group, "init", new InitBlossom()));
-}
-
 /**
- * @brief init save_load blossoms
+ * @brief init special blossoms
  */
 void
-initUserBlossomes()
+tokenBlossomes()
 {
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
-    const std::string group = "save_load";
+    const std::string group = "special";
 
-    assert(interface->addBlossom(group, "list", new ListSaveFilesBlossom()));
-    assert(interface->addBlossom(group, "show", new ShowSaveFileBlossom()));
-    assert(interface->addBlossom(group, "save", new SaveNetBlossom()));
-    assert(interface->addBlossom(group, "load", new LoadNetBlossom()));
+    assert(interface->addBlossom(group, "create_token", new CreateToken()));
+    assert(interface->addBlossom(group, "validate_token", new ValidateToken()));
 }
 
 /**
  * @brief init special blossoms
  */
 void
-initSpecialBlossoms()
+userBlossomes()
 {
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
     const std::string group = "special";
 
-    assert(interface->addBlossom(group, "print", new PrintBlossom()));
-    assert(interface->addBlossom(group, "assert", new AssertBlossom()));
-    assert(interface->addBlossom(group, "item_update", new ItemUpdateBlossom()));
-    assert(interface->addBlossom(group, "test_list_blossom", new TestList_Blossom()));
-    assert(interface->addBlossom(group, "test_single_blossom", new TestSingle_Blossom()));
-
+    assert(interface->addBlossom(group, "create_user", new CreateUser()));
+    assert(interface->addBlossom(group, "get_user", new GetUser()));
 }
 
 void
 initBlossoms()
 {
-    initSpecialBlossoms();
-    initTokenBlossoms();
-    initUserBlossomes();
+    userBlossomes();
+    tokenBlossomes();
 }
 
-#endif // KYOUKOMIND_BLOSSOM_INITIALIZING_H
+#endif // MISAKAGUARD_BLOSSOM_INITIALIZING_H

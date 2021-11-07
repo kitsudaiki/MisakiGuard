@@ -25,6 +25,7 @@
 #include <misaka_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiCrypto/hashes.h>
+#include <libKitsunemimiHanamiCommon/enums.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -33,24 +34,55 @@ CreateUser::CreateUser()
 {
     registerField("user_name", INPUT_TYPE, true);
     registerField("pw", INPUT_TYPE, true);
-    registerField("successfull", OUTPUT_TYPE, true);
+    registerField("is_admin", INPUT_TYPE, true);
+    registerField("get_table", INPUT_TYPE, false);
+
+    registerField("uuid", OUTPUT_TYPE, true);
+    registerField("user_name", OUTPUT_TYPE, true);
+    registerField("pw_hash", OUTPUT_TYPE, true);
+    registerField("is_admin", OUTPUT_TYPE, true);
+    registerField("table", OUTPUT_TYPE, false);
 }
 
 bool
 CreateUser::runTask(BlossomLeaf &blossomLeaf,
+                    uint64_t &status,
                     std::string &errorMessage)
 {
     Kitsunemimi::ErrorContainer error;
-    UsersDatabase::UserData userData;
+    UsersTable::UserData userData;
 
-    userData.userId = Kitsunemimi::Hanami::generateUuid().toString();
+    // get input-data
     userData.userName = blossomLeaf.input.getStringByKey("user_name");
     Kitsunemimi::Crypto::generate_SHA_256(userData.pwHash, blossomLeaf.input.getStringByKey("pw"));
+    bool getTable = false;
+    if(blossomLeaf.input.contains("get_table")) {
+        getTable = blossomLeaf.input.get("get_table")->toValue()->getBool();
+    }
 
-    const bool ret = MisakaRoot::usersDb->addUser(userData, error);
-    errorMessage = error.errorMessage;
+    // add new user to table
+    const std::string uuid = MisakaRoot::usersTable->addUser(userData, error);
+    if(uuid.size() == 0)
+    {
+        errorMessage = error.errorMessage;
+        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RESPONE;
+        return false;
+    }
 
-    blossomLeaf.output.insert("successfull", new Kitsunemimi::DataValue(ret));
+    // get data from table
+    Kitsunemimi::TableItem table;
+    if(MisakaRoot::usersTable->getUser(table, uuid, error) == false)
+    {
+        errorMessage = error.errorMessage;
+        status = Kitsunemimi::Hanami::NOT_FOUND_RESPONE;
+        return false;
+    }
 
-    return ret;
+    // create response
+    blossomLeaf.output = *table.getRow(0, false);
+    if(getTable) {
+        blossomLeaf.output.insert("table", table.stealContent());
+    }
+
+    return true;
 }

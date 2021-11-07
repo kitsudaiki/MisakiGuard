@@ -21,51 +21,34 @@
  */
 
 #include <iostream>
-
-#include <config.h>
-#include <args.h>
 #include <thread>
 
-#include <libKitsunemimiArgs/arg_parser.h>
-#include <libKitsunemimiCommon/logger.h>
-#include <libKitsunemimiConfig/config_handler.h>
+#include <misaka_root.h>
+#include <args.h>
+#include <config.h>
+
+#include <libKitsunemimiHanamiCommon/generic_main.h>
+#include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
+
+
+using Kitsunemimi::Hanami::HanamiMessaging;
+using Kitsunemimi::Hanami::initMain;
 
 int main(int argc, char *argv[])
 {
-    Kitsunemimi::initConsoleLogger(true);
-
-    // create and init argument-parser
-    Kitsunemimi::Args::ArgParser argParser;
-    registerArguments(argParser);
-
-    // parse cli-input
-    if(argParser.parse(argc, argv) == false) {
+    if(initMain(argc, argv, "MisakaGuard", &registerArguments, &registerConfigs) == false) {
         return 1;
     }
 
-    // init config-file
-    std::string configPath = argParser.getStringValue("config");
-    if(configPath == "") {
-        configPath = "/etc/MisakaGuard/MisakaGuard.conf";
-    }
-    if(Kitsunemimi::Config::initConfig(configPath) == false) {
-        return 1;
-    }
-    registerConfigs();
-    if(Kitsunemimi::Config::isConfigValid() == false) {
+    // initialize server and connections based on the config-file
+    const std::vector<std::string> groupNames = {};
+    const bool ret = HanamiMessaging::getInstance()->initialize("Misaka", groupNames, true);
+    if(ret == false)
+    {
         return 1;
     }
 
-    // get config-parameter for logger
-    bool success = false;
-    const bool enableDebug = GET_BOOL_CONFIG("DEFAULT", "debug", success);
-    assert(success);
-    const std::string logPath = GET_STRING_CONFIG("DEFAULT", "log_path", success);
-    assert(success);
-
-    // init logger
-    Kitsunemimi::initConsoleLogger(enableDebug);
-    Kitsunemimi::initFileLogger(logPath, "MisakaGuard", enableDebug);
+    MisakaRoot rootObj;
 
     // sleep forever
     std::this_thread::sleep_until(std::chrono::time_point<std::chrono::system_clock>::max());

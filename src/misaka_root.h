@@ -24,7 +24,7 @@
 #define MISAKAROOT_H
 
 #include <libKitsunemimiJwt/jwt.h>
-#include <users/users_database.h>
+#include <users/users_table.h>
 
 class MisakaRoot
 {
@@ -32,7 +32,8 @@ public:
     MisakaRoot();
 
     static Kitsunemimi::Jwt::Jwt* jwt;
-    static UsersDatabase* usersDb;
+    static UsersTable* usersTable;
+    static Kitsunemimi::Sakura::SqlDatabase* database;
 };
 
 #endif // MISAKAROOT_H

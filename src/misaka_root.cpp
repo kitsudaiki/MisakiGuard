@@ -23,13 +23,23 @@
 #include "misaka_root.h"
 
 #include <libKitsunemimiConfig/config_handler.h>
+#include <libKitsunemimiSakuraDatabase/sql_database.h>
+
+#include <api/blossom_initializing.h>
 
 Kitsunemimi::Jwt::Jwt* MisakaRoot::jwt = nullptr;
-UsersDatabase* MisakaRoot::usersDb = nullptr;
+UsersTable* MisakaRoot::usersTable = nullptr;
+Kitsunemimi::Sakura::SqlDatabase* MisakaRoot::database = nullptr;
 
 MisakaRoot::MisakaRoot()
 {
-    usersDb = new UsersDatabase();
+    database = new Kitsunemimi::Sakura::SqlDatabase();
+    Kitsunemimi::ErrorContainer error;
+    assert(database->initDatabase("/tmp/Misaka_DB", error));
+    usersTable = new UsersTable(database);
+    assert(usersTable->initTable(error));
+
+    initBlossoms();
 
     bool success = false;
     const std::string tokenKeyString = GET_STRING_CONFIG("Misaka", "token_key", success);

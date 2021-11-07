@@ -21,6 +21,10 @@
  */
 
 #include "validate_token.h"
+#include <libKitsunemimiCommon/common_items/data_items.h>
+#include <libKitsunemimiJwt/jwt.h>
+#include <libKitsunemimiHanamiCommon/enums.h>
+#include <misaka_root.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -33,7 +37,19 @@ ValidateToken::ValidateToken()
 
 bool
 ValidateToken::runTask(BlossomLeaf &blossomLeaf,
+                       uint64_t &status,
                        std::string &errorMessage)
 {
+    const std::string token = blossomLeaf.input.getStringByKey("token");
+    const bool isValid = MisakaRoot::jwt->validate_HS256_Token(token);
+    blossomLeaf.output.insert("is_valid", new Kitsunemimi::DataValue(isValid));
 
+    if(isValid == false)
+    {
+        errorMessage = "token invalid";
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
+        return false;
+    }
+
+    return true;
 }
