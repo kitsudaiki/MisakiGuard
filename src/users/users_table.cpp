@@ -23,6 +23,7 @@
 #include <users/users_table.h>
 
 #include <libKitsunemimiCommon/common_items/table_item.h>
+#include <libKitsunemimiCommon/common_methods/string_methods.h>
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
 
 UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
@@ -44,6 +45,10 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     isAdmin.name = "is_admin";
     isAdmin.type = BOOL_TYPE;
     m_tableHeader.push_back(isAdmin);
+
+    DbHeaderEntry groups;
+    isAdmin.name = "groups";
+    m_tableHeader.push_back(isAdmin);
 }
 
 UsersTable::~UsersTable() {}
@@ -58,9 +63,19 @@ const std::string
 UsersTable::addUser(const UserData &data,
                     Kitsunemimi::ErrorContainer &error)
 {
+    std::string groupList = "";
+    for(uint64_t i = 0; i < data.groups.size(); i++)
+    {
+        if(i != 0) {
+            groupList.append(",");
+        }
+        groupList.append(data.groups.at(i));
+    }
+
     const std::vector<std::string> values = { data.userName,
                                               data.pwHash,
-                                              std::to_string(data.isAdmin)};
+                                              std::to_string(data.isAdmin),
+                                              groupList};
     return insertToDb(values, error);
 }
 
@@ -98,6 +113,13 @@ UsersTable::getUserByName(UserData &result,
     result.pwHash = firstRow->get("pw_hash")->toValue()->getString();
     result.isAdmin = firstRow->get("is_admin")->toValue()->getBool();
 
+    if(result.groups.size() > 0) {
+        result.groups.clear();
+    }
+    Kitsunemimi::splitStringByDelimiter(result.groups,
+                                        firstRow->get("groups")->toValue()->getString(),
+                                        ',');
+
     return true;
 }
 
@@ -124,6 +146,12 @@ UsersTable::getUser(UserData &result,
     result.pwHash = firstRow->get("pw_hash")->toValue()->getString();
     result.isAdmin = firstRow->get("is_admin")->toValue()->getBool();
 
+    if(result.groups.size() > 0) {
+        result.groups.clear();
+    }
+    Kitsunemimi::splitStringByDelimiter(result.groups,
+                                        firstRow->get("groups")->toValue()->getString(),
+                                        ',');
     return true;
 }
 

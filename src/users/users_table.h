@@ -36,6 +36,7 @@ public:
         std::string userName = "";
         std::string pwHash = "";
         bool isAdmin = false;
+        std::vector<std::string> groups;
     };
 
     UsersTable(Kitsunemimi::Sakura::SqlDatabase* db);

@@ -35,6 +35,7 @@ registerConfigs()
     Kitsunemimi::Hanami::registerBasicConfigs();
 
     REGISTER_STRING_CONFIG("Misaka", "token_key", "", true);
+    REGISTER_STRING_CONFIG("Misaka", "policies", "", true);
 
 }
 

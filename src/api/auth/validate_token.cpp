@@ -21,23 +21,27 @@
  */
 
 #include "validate_token.h"
+
 #include <libKitsunemimiCommon/common_items/data_items.h>
+#include <libKitsunemimiCommon/common_methods/string_methods.h>
 #include <libKitsunemimiJwt/jwt.h>
-#include <libKitsunemimiHanamiCommon/enums.h>
-#include <misaka_root.h>
 #include <libKitsunemimiJson/json_item.h>
 
+#include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiPolicies/policy.h>
+
+#include <misaka_root.h>
+
 using namespace Kitsunemimi::Sakura;
+using Kitsunemimi::Hanami::HttpRequestType;
 
 ValidateToken::ValidateToken()
     : Blossom()
 {
     registerField("token", INPUT_TYPE, true);
-
-    registerField("uuid", OUTPUT_TYPE, false);
-    registerField("user_name", OUTPUT_TYPE, false);
-    registerField("pw_hast", OUTPUT_TYPE, false);
-    registerField("is_admin", OUTPUT_TYPE, false);
+    registerField("component", INPUT_TYPE, true);
+    registerField("endpoint", INPUT_TYPE, true);
+    registerField("http_type", INPUT_TYPE, true);
 }
 
 bool
@@ -46,6 +50,11 @@ ValidateToken::runTask(BlossomLeaf &blossomLeaf,
                        std::string &errorMessage)
 {
     const std::string token = blossomLeaf.input.getStringByKey("token");
+    const std::string component = blossomLeaf.input.getStringByKey("component");
+    const std::string endpoint = blossomLeaf.input.getStringByKey("endpoint");
+    const uint32_t httpTypeValue = blossomLeaf.input.get("http_type")->toValue()->getInt();
+    const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
+
     std::string payload;
     const bool isValid = MisakaRoot::jwt->validate_HS256_Token(payload, token);
     if(isValid == false)
@@ -64,7 +73,19 @@ ValidateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    blossomLeaf.output = *(jsonItem.getItemContent()->toMap());
+    Kitsunemimi::DataMap* payloadContent = jsonItem.getItemContent()->toMap();
+    std::vector<std::string> groups;
+    Kitsunemimi::splitStringByDelimiter(groups,
+                                        payloadContent->get("groups")->toValue()->getString(),
+                                        ',');
 
-    return true;
+    bool foundPolicy = false;
+    for(const std::string &group : groups)
+    {
+        if(MisakaRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, group)) {
+            foundPolicy = true;
+        }
+    }
+
+    return foundPolicy;
 }

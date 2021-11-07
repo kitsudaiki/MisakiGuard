@@ -24,12 +24,14 @@
 
 #include <libKitsunemimiConfig/config_handler.h>
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
+#include <libKitsunemimiCommon/files/text_file.h>
 
 #include <api/blossom_initializing.h>
 
 Kitsunemimi::Jwt::Jwt* MisakaRoot::jwt = nullptr;
 UsersTable* MisakaRoot::usersTable = nullptr;
 Kitsunemimi::Sakura::SqlDatabase* MisakaRoot::database = nullptr;
+Kitsunemimi::Hanami::Policy* MisakaRoot::policies = nullptr;
 
 MisakaRoot::MisakaRoot()
 {
@@ -45,4 +47,10 @@ MisakaRoot::MisakaRoot()
     const std::string tokenKeyString = GET_STRING_CONFIG("Misaka", "token_key", success);
     CryptoPP::SecByteBlock tokenKey((unsigned char*)tokenKeyString.c_str(), tokenKeyString.size());
     jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
+    policies = new Kitsunemimi::Hanami::Policy();
+
+    const std::string policyFilePath = GET_STRING_CONFIG("Misaka", "policies", success);
+    std::string policyFileContent;
+    assert(Kitsunemimi::readFile(policyFileContent, policyFilePath, error.errorMessage));
+    assert(policies->parse(policyFileContent, error.errorMessage));
 }
