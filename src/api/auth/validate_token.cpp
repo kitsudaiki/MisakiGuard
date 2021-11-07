@@ -25,6 +25,7 @@
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
 #include <misaka_root.h>
+#include <libKitsunemimiJson/json_item.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -32,7 +33,11 @@ ValidateToken::ValidateToken()
     : Blossom()
 {
     registerField("token", INPUT_TYPE, true);
-    registerField("is_valid", OUTPUT_TYPE, true);
+
+    registerField("uuid", OUTPUT_TYPE, false);
+    registerField("user_name", OUTPUT_TYPE, false);
+    registerField("pw_hast", OUTPUT_TYPE, false);
+    registerField("is_admin", OUTPUT_TYPE, false);
 }
 
 bool
@@ -41,15 +46,25 @@ ValidateToken::runTask(BlossomLeaf &blossomLeaf,
                        std::string &errorMessage)
 {
     const std::string token = blossomLeaf.input.getStringByKey("token");
-    const bool isValid = MisakaRoot::jwt->validate_HS256_Token(token);
-    blossomLeaf.output.insert("is_valid", new Kitsunemimi::DataValue(isValid));
-
+    std::string payload;
+    const bool isValid = MisakaRoot::jwt->validate_HS256_Token(payload, token);
     if(isValid == false)
     {
         errorMessage = "token invalid";
         status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
         return false;
     }
+
+    Kitsunemimi::Json::JsonItem jsonItem;
+    const bool parseResult = jsonItem.parse(payload, errorMessage);
+    if(parseResult == false)
+    {
+        errorMessage = "token-payload broken";
+        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RESPONE;
+        return false;
+    }
+
+    blossomLeaf.output = *(jsonItem.getItemContent()->toMap());
 
     return true;
 }
