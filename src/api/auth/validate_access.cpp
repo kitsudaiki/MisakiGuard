@@ -1,5 +1,5 @@
 /**
- * @file        validate_token.cpp
+ * @file        validate_access.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include "validate_token.h"
+#include "validate_access.h"
 
 #include <libKitsunemimiCommon/common_items/data_items.h>
 #include <libKitsunemimiCommon/common_methods/string_methods.h>
@@ -35,7 +35,7 @@
 using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
 
-ValidateToken::ValidateToken()
+ValidateAccess::ValidateAccess()
     : Blossom()
 {
     registerField("token", INPUT_TYPE, true);
@@ -45,40 +45,45 @@ ValidateToken::ValidateToken()
 }
 
 bool
-ValidateToken::runTask(BlossomLeaf &blossomLeaf,
-                       uint64_t &status,
-                       std::string &errorMessage)
+ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
+                        uint64_t &status,
+                        std::string &errorMessage)
 {
+    // collect information from the input
     const std::string token = blossomLeaf.input.getStringByKey("token");
     const std::string component = blossomLeaf.input.getStringByKey("component");
     const std::string endpoint = blossomLeaf.input.getStringByKey("endpoint");
     const uint32_t httpTypeValue = blossomLeaf.input.get("http_type")->toValue()->getInt();
     const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
+    // validate token
     std::string payload;
     const bool isValid = MisakaRoot::jwt->validate_HS256_Token(payload, token);
     if(isValid == false)
     {
         errorMessage = "token invalid";
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
+    // try to parse payload
     Kitsunemimi::Json::JsonItem jsonItem;
     const bool parseResult = jsonItem.parse(payload, errorMessage);
     if(parseResult == false)
     {
         errorMessage = "token-payload broken";
-        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RESPONE;
+        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
+    // process payload to get groups of user
     Kitsunemimi::DataMap* payloadContent = jsonItem.getItemContent()->toMap();
     std::vector<std::string> groups;
     Kitsunemimi::splitStringByDelimiter(groups,
                                         payloadContent->get("groups")->toValue()->getString(),
                                         ',');
 
+    // check policy
     bool foundPolicy = false;
     for(const std::string &group : groups)
     {
@@ -87,5 +92,12 @@ ValidateToken::runTask(BlossomLeaf &blossomLeaf,
         }
     }
 
-    return foundPolicy;
+    if(foundPolicy == false)
+    {
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        errorMessage = "access denied by policy";
+        return false;
+    }
+
+    return true;
 }

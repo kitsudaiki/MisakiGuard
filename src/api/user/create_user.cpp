@@ -24,8 +24,9 @@
 
 #include <misaka_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
-#include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiCrypto/hashes.h>
+#include <libKitsunemimiCommon/common_methods/string_methods.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -33,15 +34,17 @@ CreateUser::CreateUser()
     : Blossom()
 {
     registerField("user_name", INPUT_TYPE, true);
-    registerField("pw", INPUT_TYPE, true);
-    registerField("is_admin", INPUT_TYPE, true);
+    registerField("pw",        INPUT_TYPE, true);
+    registerField("is_admin",  INPUT_TYPE, true);
+    registerField("groups",    INPUT_TYPE, true);
     registerField("get_table", INPUT_TYPE, false);
+    registerField("token",     INPUT_TYPE, true);
 
-    registerField("uuid", OUTPUT_TYPE, true);
+    registerField("uuid",      OUTPUT_TYPE, true);
     registerField("user_name", OUTPUT_TYPE, true);
-    registerField("pw_hash", OUTPUT_TYPE, true);
-    registerField("is_admin", OUTPUT_TYPE, true);
-    registerField("table", OUTPUT_TYPE, false);
+    registerField("pw_hash",   OUTPUT_TYPE, true);
+    registerField("is_admin",  OUTPUT_TYPE, true);
+    registerField("table",     OUTPUT_TYPE, false);
 }
 
 bool
@@ -55,6 +58,10 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     // get input-data
     userData.userName = blossomLeaf.input.getStringByKey("user_name");
     Kitsunemimi::Crypto::generate_SHA_256(userData.pwHash, blossomLeaf.input.getStringByKey("pw"));
+    const std::string groups = blossomLeaf.input.getStringByKey("groups");
+    userData.isAdmin = blossomLeaf.input.get("is_admin")->toValue()->getBool();
+    Kitsunemimi::splitStringByDelimiter(userData.groups, groups, ',');
+
     bool getTable = false;
     if(blossomLeaf.input.contains("get_table")) {
         getTable = blossomLeaf.input.get("get_table")->toValue()->getBool();
@@ -65,7 +72,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     if(uuid.size() == 0)
     {
         errorMessage = error.errorMessage;
-        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RESPONE;
+        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
@@ -74,7 +81,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     if(MisakaRoot::usersTable->getUser(table, uuid, error) == false)
     {
         errorMessage = error.errorMessage;
-        status = Kitsunemimi::Hanami::NOT_FOUND_RESPONE;
+        status = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
 

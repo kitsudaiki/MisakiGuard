@@ -30,14 +30,15 @@ using namespace Kitsunemimi::Sakura;
 GetUser::GetUser()
     : Blossom()
 {
-    registerField("user_name", INPUT_TYPE, false);
+    registerField("user_name", INPUT_TYPE, true);
+    registerField("token",     INPUT_TYPE, true);
     registerField("get_table", INPUT_TYPE, false);
 
-    registerField("uuid", OUTPUT_TYPE, true);
+    registerField("uuid",      OUTPUT_TYPE, true);
     registerField("user_name", OUTPUT_TYPE, true);
-    registerField("pw_hash", OUTPUT_TYPE, true);
-    registerField("is_admin", OUTPUT_TYPE, true);
-    registerField("table", OUTPUT_TYPE, false);
+    registerField("pw_hash",   OUTPUT_TYPE, true);
+    registerField("is_admin",  OUTPUT_TYPE, true);
+    registerField("table",     OUTPUT_TYPE, false);
 }
 
 bool
@@ -60,7 +61,7 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
     if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
     {
         errorMessage = error.errorMessage;
-        status = Kitsunemimi::Hanami::NOT_FOUND_RESPONE;
+        status = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
 

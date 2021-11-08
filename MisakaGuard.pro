@@ -97,19 +97,19 @@ INCLUDEPATH += $$PWD \
 
 SOURCES += src/main.cpp \
     src/api/auth/create_token.cpp \
+    src/api/auth/validate_access.cpp \
     src/api/user/create_user.cpp \
     src/api/user/get_user.cpp \
     src/misaka_root.cpp \
-    src/api/auth/validate_token.cpp \
     src/users/users_table.cpp
 
 HEADERS += \
     src/api/auth/create_token.h \
+    src/api/auth/validate_access.h \
     src/api/blossom_initializing.h \
     src/api/user/create_user.h \
     src/api/user/get_user.h \
     src/args.h \
     src/config.h \
     src/misaka_root.h \
-    src/api/auth/validate_token.h \
     src/users/users_table.h

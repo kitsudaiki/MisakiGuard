@@ -58,7 +58,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
     {
         errorMessage = "user or password is incorrect";
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
@@ -66,7 +66,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     if(userData.pwHash != pwHash)
     {
         errorMessage = "user or password is incorrect";
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RESPONE;
+        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 

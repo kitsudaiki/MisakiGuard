@@ -1,5 +1,5 @@
 /**
- * @file        validate_token.h
+ * @file        validate_access.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,16 +20,16 @@
  *      limitations under the License.
  */
 
-#ifndef VALIDATETOKEN_H
-#define VALIDATETOKEN_H
+#ifndef VALIDATE_ACCESS_H
+#define VALIDATE_ACCESS_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
-class ValidateToken
+class ValidateAccess
         : public Kitsunemimi::Sakura::Blossom
 {
 public:
-    ValidateToken();
+    ValidateAccess();
 
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
@@ -37,4 +37,4 @@ protected:
                  std::string &errorMessage);
 };
 
-#endif // VALIDATETOKEN_H
+#endif // VALIDATE_ACCESS_H

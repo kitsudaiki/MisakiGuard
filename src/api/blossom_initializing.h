@@ -30,7 +30,7 @@
 #include <api/user/get_user.h>
 
 #include <api/auth/create_token.h>
-#include <api/auth/validate_token.h>
+#include <api/auth/validate_access.h>
 
 using Kitsunemimi::Sakura::SakuraLangInterface;
 
@@ -44,7 +44,7 @@ tokenBlossomes()
     const std::string group = "special";
 
     assert(interface->addBlossom(group, "create_token", new CreateToken()));
-    assert(interface->addBlossom(group, "validate_token", new ValidateToken()));
+    assert(interface->addBlossom(group, "validate_access", new ValidateAccess()));
 }
 
 /**
