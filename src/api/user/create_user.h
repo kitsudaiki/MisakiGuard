@@ -23,10 +23,10 @@
 #ifndef CREATEUSER_H
 #define CREATEUSER_H
 
-#include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
 
 class CreateUser
-        : public Kitsunemimi::Sakura::Blossom
+        : public Kitsunemimi::Hanami::HanamiBlossom
 {
 public:
     CreateUser();

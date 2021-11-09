@@ -32,12 +32,12 @@
 using namespace Kitsunemimi::Sakura;
 
 CreateToken::CreateToken()
-    : Blossom()
+    : Kitsunemimi::Hanami::HanamiBlossom()
 {
-    registerField("user_name", INPUT_TYPE, true);
-    registerField("pw", INPUT_TYPE, true);
+    registerInputField("user_name", true);
+    registerInputField("pw", true);
 
-    registerField("token", OUTPUT_TYPE, false);
+    registerOutputField("token", false);
 }
 
 bool

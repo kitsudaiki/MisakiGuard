@@ -36,12 +36,11 @@ using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
 
 ValidateAccess::ValidateAccess()
-    : Blossom()
+    : Kitsunemimi::Hanami::HanamiBlossom(true)
 {
-    registerField("token", INPUT_TYPE, true);
-    registerField("component", INPUT_TYPE, true);
-    registerField("endpoint", INPUT_TYPE, true);
-    registerField("http_type", INPUT_TYPE, true);
+    registerInputField("component", true);
+    registerInputField("endpoint", true);
+    registerInputField("http_type", true);
 }
 
 bool
@@ -79,9 +78,8 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     // process payload to get groups of user
     Kitsunemimi::DataMap* payloadContent = jsonItem.getItemContent()->toMap();
     std::vector<std::string> groups;
-    Kitsunemimi::splitStringByDelimiter(groups,
-                                        payloadContent->get("groups")->toValue()->getString(),
-                                        ',');
+    const std::string groupString = payloadContent->get("groups")->toValue()->getString();
+    Kitsunemimi::splitStringByDelimiter(groups, groupString, ',');
 
     // check policy
     bool foundPolicy = false;

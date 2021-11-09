@@ -23,10 +23,10 @@
 #ifndef VALIDATE_ACCESS_H
 #define VALIDATE_ACCESS_H
 
-#include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
 
 class ValidateAccess
-        : public Kitsunemimi::Sakura::Blossom
+        : public Kitsunemimi::Hanami::HanamiBlossom
 {
 public:
     ValidateAccess();

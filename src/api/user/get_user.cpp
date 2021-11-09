@@ -28,17 +28,16 @@
 using namespace Kitsunemimi::Sakura;
 
 GetUser::GetUser()
-    : Blossom()
+    : Kitsunemimi::Hanami::HanamiBlossom()
 {
-    registerField("user_name", INPUT_TYPE, true);
-    registerField("token",     INPUT_TYPE, true);
-    registerField("get_table", INPUT_TYPE, false);
+    registerInputField("user_name", true);
+    registerInputField("get_table", false);
 
-    registerField("uuid",      OUTPUT_TYPE, true);
-    registerField("user_name", OUTPUT_TYPE, true);
-    registerField("pw_hash",   OUTPUT_TYPE, true);
-    registerField("is_admin",  OUTPUT_TYPE, true);
-    registerField("table",     OUTPUT_TYPE, false);
+    registerOutputField("uuid",      true);
+    registerOutputField("user_name", true);
+    registerOutputField("pw_hash",   true);
+    registerOutputField("is_admin",  true);
+    registerOutputField("table",     false);
 }
 
 bool

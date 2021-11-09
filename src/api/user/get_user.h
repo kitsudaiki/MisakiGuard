@@ -23,10 +23,10 @@
 #ifndef GETUSER_H
 #define GETUSER_H
 
-#include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
 
 class GetUser
-        : public Kitsunemimi::Sakura::Blossom
+        : public Kitsunemimi::Hanami::HanamiBlossom
 {
 public:
     GetUser();

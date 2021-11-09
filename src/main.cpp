@@ -43,8 +43,7 @@ int main(int argc, char *argv[])
     // initialize server and connections based on the config-file
     const std::vector<std::string> groupNames = {};
     const bool ret = HanamiMessaging::getInstance()->initialize("Misaka", groupNames, true);
-    if(ret == false)
-    {
+    if(ret == false) {
         return 1;
     }
 
