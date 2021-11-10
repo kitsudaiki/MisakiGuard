@@ -48,7 +48,7 @@ CreateUser::CreateUser()
 
 bool
 CreateUser::runTask(BlossomLeaf &blossomLeaf,
-                    uint64_t &status,
+                    BlossomStatus &status,
                     std::string &errorMessage)
 {
     Kitsunemimi::ErrorContainer error;
@@ -71,7 +71,8 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     if(uuid.size() == 0)
     {
         errorMessage = error.errorMessage;
-        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
@@ -80,7 +81,8 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     if(MisakaRoot::usersTable->getUser(table, uuid, error) == false)
     {
         errorMessage = error.errorMessage;
-        status = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
 

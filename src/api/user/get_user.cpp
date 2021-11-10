@@ -42,7 +42,7 @@ GetUser::GetUser()
 
 bool
 GetUser::runTask(BlossomLeaf &blossomLeaf,
-                 uint64_t &status,
+                 BlossomStatus &status,
                  std::string &errorMessage)
 {
     Kitsunemimi::ErrorContainer error;
@@ -60,7 +60,8 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
     if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
     {
         errorMessage = error.errorMessage;
-        status = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
 

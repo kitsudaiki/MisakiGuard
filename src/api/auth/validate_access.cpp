@@ -45,7 +45,7 @@ ValidateAccess::ValidateAccess()
 
 bool
 ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
-                        uint64_t &status,
+                        BlossomStatus &status,
                         std::string &errorMessage)
 {
     // collect information from the input
@@ -61,7 +61,8 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     if(isValid == false)
     {
         errorMessage = "token invalid";
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
@@ -71,7 +72,8 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     if(parseResult == false)
     {
         errorMessage = "token-payload broken";
-        status = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
@@ -92,7 +94,8 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
 
     if(foundPolicy == false)
     {
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         errorMessage = "access denied by policy";
         return false;
     }

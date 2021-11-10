@@ -42,7 +42,7 @@ CreateToken::CreateToken()
 
 bool
 CreateToken::runTask(BlossomLeaf &blossomLeaf,
-                     uint64_t &status,
+                     BlossomStatus &status,
                      std::string &errorMessage)
 {
     Kitsunemimi::ErrorContainer error;
@@ -58,7 +58,8 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
     {
         errorMessage = "user or password is incorrect";
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
@@ -66,7 +67,8 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     if(userData.pwHash != pwHash)
     {
         errorMessage = "user or password is incorrect";
-        status = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        status.errorMessage = errorMessage;
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
