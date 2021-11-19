@@ -25,17 +25,18 @@
 
 #include <libKitsunemimiConfig/config_handler.h>
 #include <libKitsunemimiHanamiCommon/config.h>
+#include <libKitsunemimiCommon/logger.h>
 
 /**
  * @brief register configs
  */
 void
-registerConfigs()
+registerConfigs(Kitsunemimi::ErrorContainer &error)
 {
-    Kitsunemimi::Hanami::registerBasicConfigs();
+    Kitsunemimi::Hanami::registerBasicConfigs(error);
 
-    REGISTER_STRING_CONFIG("Misaka", "token_key", "", true);
-    REGISTER_STRING_CONFIG("Misaka", "policies", "", true);
+    REGISTER_STRING_CONFIG("Misaka", "token_key", error, "", true);
+    REGISTER_STRING_CONFIG("Misaka", "policies", error, "", true);
 
 }
 

@@ -36,14 +36,18 @@ using Kitsunemimi::Hanami::initMain;
 
 int main(int argc, char *argv[])
 {
-    if(initMain(argc, argv, "MisakaGuard", &registerArguments, &registerConfigs) == false) {
+    Kitsunemimi::ErrorContainer error;
+    if(initMain(argc, argv, "MisakaGuard", &registerArguments, &registerConfigs, error) == false)
+    {
+        LOG_ERROR(error);
         return 1;
     }
 
     // initialize server and connections based on the config-file
     const std::vector<std::string> groupNames = {};
-    const bool ret = HanamiMessaging::getInstance()->initialize("Misaka", groupNames, true);
-    if(ret == false) {
+    if(HanamiMessaging::getInstance()->initialize("Misaka", groupNames, error, true) == false)
+    {
+        LOG_ERROR(error);
         return 1;
     }
 

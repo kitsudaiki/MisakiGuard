@@ -34,7 +34,7 @@ public:
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
                  Kitsunemimi::Sakura::BlossomStatus &status,
-                 std::string &errorMessage);
+                 Kitsunemimi::ErrorContainer &error);
 };
 
 #endif // VALIDATE_ACCESS_H

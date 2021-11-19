@@ -51,6 +51,6 @@ MisakaRoot::MisakaRoot()
 
     const std::string policyFilePath = GET_STRING_CONFIG("Misaka", "policies", success);
     std::string policyFileContent;
-    assert(Kitsunemimi::readFile(policyFileContent, policyFilePath, error.errorMessage));
-    assert(policies->parse(policyFileContent, error.errorMessage));
+    assert(Kitsunemimi::readFile(policyFileContent, policyFilePath, error));
+    assert(policies->parse(policyFileContent, error));
 }

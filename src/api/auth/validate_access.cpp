@@ -46,7 +46,7 @@ ValidateAccess::ValidateAccess()
 bool
 ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
                         BlossomStatus &status,
-                        std::string &errorMessage)
+                        Kitsunemimi::ErrorContainer &error)
 {
     // collect information from the input
     const std::string token = blossomLeaf.input.getStringByKey("token");
@@ -56,31 +56,18 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
     // validate token
-    std::string payload;
-    const bool isValid = MisakaRoot::jwt->validate_HS256_Token(payload, token);
-    if(isValid == false)
+    Kitsunemimi::Json::JsonItem payload;
+    if(MisakaRoot::jwt->validateToken(payload, token, error) == false)
     {
-        errorMessage = "token invalid";
-        status.errorMessage = errorMessage;
+        error.addMeesage("Misaka failed to validate JWT-Token");
+        status.errorMessage = "JWT-Token invalid or broken!";
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
-    // try to parse payload
-    Kitsunemimi::Json::JsonItem jsonItem;
-    const bool parseResult = jsonItem.parse(payload, errorMessage);
-    if(parseResult == false)
-    {
-        errorMessage = "token-payload broken";
-        status.errorMessage = errorMessage;
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        return false;
-    }
-
     // process payload to get groups of user
-    Kitsunemimi::DataMap* payloadContent = jsonItem.getItemContent()->toMap();
     std::vector<std::string> groups;
-    const std::string groupString = payloadContent->get("groups")->toValue()->getString();
+    const std::string groupString = payload.get("groups").getString();
     Kitsunemimi::splitStringByDelimiter(groups, groupString, ',');
 
     // check policy
@@ -94,9 +81,9 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
 
     if(foundPolicy == false)
     {
-        status.errorMessage = errorMessage;
+        status.errorMessage = "Access denied by policy";
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
-        errorMessage = "access denied by policy";
+        error.addMeesage(status.errorMessage);
         return false;
     }
 

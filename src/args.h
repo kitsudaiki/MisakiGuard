@@ -25,6 +25,7 @@
 
 #include <libKitsunemimiArgs/arg_parser.h>
 #include <libKitsunemimiHanamiCommon/args.h>
+#include <libKitsunemimiCommon/logger.h>
 
 /**
  * @brief register cli-arguments
@@ -34,9 +35,10 @@
  * @return true if successful, else false
  */
 bool
-registerArguments(Kitsunemimi::Args::ArgParser* argparser)
+registerArguments(Kitsunemimi::Args::ArgParser* argparser,
+                  Kitsunemimi::ErrorContainer &error)
 {
-    if(Kitsunemimi::Hanami::registerArguments(*argparser) == false) {
+    if(Kitsunemimi::Hanami::registerArguments(*argparser, error) == false) {
         return false;
     }
 

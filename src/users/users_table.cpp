@@ -101,7 +101,7 @@ UsersTable::getUserByName(UserData &result,
     // check response
     if(tableContent.getNumberOfRows() == 0)
     {
-        error.errorMessage = "User with name '" + userName + "' not found;";
+        error.addMeesage("User with name '" + userName + "' not found;");
         LOG_ERROR(error);
         return false;
     }
@@ -173,7 +173,7 @@ UsersTable::getUser(Kitsunemimi::TableItem &result,
 
     if(result.getNumberOfRows() == 0)
     {
-        error.errorMessage = "User with ID '" + uuid + "' not found;";
+        error.addMeesage("User with ID '" + uuid + "' not found;");
         LOG_ERROR(error);
         return false;
     }
@@ -194,6 +194,7 @@ UsersTable::getAllUser(Kitsunemimi::ErrorContainer &error)
         return new Kitsunemimi::DataArray();
     }
 
+    return nullptr;
 }
 
 /**
