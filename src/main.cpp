@@ -26,6 +26,7 @@
 #include <misaka_root.h>
 #include <args.h>
 #include <config.h>
+#include <callbacks.h>
 
 #include <libKitsunemimiHanamiCommon/generic_main.h>
 #include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
@@ -45,7 +46,12 @@ int main(int argc, char *argv[])
 
     // initialize server and connections based on the config-file
     const std::vector<std::string> groupNames = {};
-    if(HanamiMessaging::getInstance()->initialize("Misaka", groupNames, error, true) == false)
+    if(HanamiMessaging::getInstance()->initialize("Misaka",
+                                                  groupNames,
+                                                  nullptr,
+                                                  streamDataCallback,
+                                                  error,
+                                                  true) == false)
     {
         LOG_ERROR(error);
         return 1;

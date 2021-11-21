@@ -110,6 +110,7 @@ HEADERS += \
     src/api/user/create_user.h \
     src/api/user/get_user.h \
     src/args.h \
+    src/callbacks.h \
     src/config.h \
     src/misaka_root.h \
     src/users/users_table.h
