@@ -58,6 +58,9 @@ int main(int argc, char *argv[])
     }
 
     MisakaRoot rootObj;
+    if(rootObj.init() == false) {
+        return 1;
+    }
 
     // sleep forever
     std::this_thread::sleep_until(std::chrono::time_point<std::chrono::system_clock>::max());

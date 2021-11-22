@@ -38,11 +38,16 @@ using Kitsunemimi::Hanami::HttpRequestType;
 ValidateAccess::ValidateAccess()
     : Kitsunemimi::Hanami::HanamiBlossom(true)
 {
-    registerInputField("component", true);
-    registerInputField("endpoint", true);
-    registerInputField("http_type", true);
+    registerInputField("component", false);
+    registerInputField("endpoint", false);
+    registerInputField("http_type", false);
+
+    registerOutputField("token_content", true);
 }
 
+/**
+ * @brief runTask
+ */
 bool
 ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
                         BlossomStatus &status,
@@ -52,8 +57,6 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     const std::string token = blossomLeaf.input.getStringByKey("token");
     const std::string component = blossomLeaf.input.getStringByKey("component");
     const std::string endpoint = blossomLeaf.input.getStringByKey("endpoint");
-    const uint32_t httpTypeValue = blossomLeaf.input.get("http_type")->toValue()->getInt();
-    const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
     // validate token
     Kitsunemimi::Json::JsonItem payload;
@@ -65,27 +68,46 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    // process payload to get groups of user
-    std::vector<std::string> groups;
-    const std::string groupString = payload.get("groups").getString();
-    Kitsunemimi::splitStringByDelimiter(groups, groupString, ',');
-
-    // check policy
-    bool foundPolicy = false;
-    for(const std::string &group : groups)
+    // allow skipping policy-check
+    // TODO: find better solution to make a difference, if policy should be checked or not
+    if(component != "")
     {
-        if(MisakaRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, group)) {
-            foundPolicy = true;
+        if(blossomLeaf.input.contains("http_type") == false)
+        {
+            error.addMeesage("http_type is missing in token-request");
+            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+            return false;
+        }
+
+        const uint32_t httpTypeValue = blossomLeaf.input.get("http_type")->toValue()->getInt();
+        const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
+
+        // process payload to get groups of user
+        std::vector<std::string> groups;
+        const std::string groupString = payload.get("groups").getString();
+        Kitsunemimi::splitStringByDelimiter(groups, groupString, ',');
+
+        // check policy
+        bool foundPolicy = false;
+        for(const std::string &group : groups)
+        {
+            if(MisakaRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, group)) {
+                foundPolicy = true;
+            }
+        }
+
+        // if no matching policy was found, then deny access
+        if(foundPolicy == false)
+        {
+            status.errorMessage = "Access denied by policy";
+            status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+            error.addMeesage(status.errorMessage);
+            return false;
         }
     }
 
-    if(foundPolicy == false)
-    {
-        status.errorMessage = "Access denied by policy";
-        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
-        error.addMeesage(status.errorMessage);
-        return false;
-    }
+    // create output
+    blossomLeaf.output.insert("token_content", payload.stealItemContent());
 
     return true;
 }

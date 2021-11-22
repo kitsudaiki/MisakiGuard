@@ -32,8 +32,8 @@ class UsersTable
 public:
     struct UserData
     {
-        std::string userId = "";
-        std::string userName = "";
+        std::string uuid = "";
+        std::string name = "";
         std::string pwHash = "";
         bool isAdmin = false;
         std::vector<std::string> groups;
@@ -55,9 +55,14 @@ public:
     bool getUser(Kitsunemimi::TableItem &result,
                  const std::string &uuid,
                  Kitsunemimi::ErrorContainer &error);
-    Kitsunemimi::DataItem* getAllUser(Kitsunemimi::ErrorContainer &error);
+    bool getAllUser(Kitsunemimi::TableItem &result,
+                    Kitsunemimi::ErrorContainer &error);
     bool deleteUser(const std::string &userID,
                      Kitsunemimi::ErrorContainer &error);
+
+private:
+    void processGetResult(UserData &result,
+                          Kitsunemimi::TableItem &tableContent);
 };
 
 #endif // USERS_TABLE_H

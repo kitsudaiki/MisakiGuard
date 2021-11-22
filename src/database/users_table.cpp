@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include <users/users_table.h>
+#include <database/users_table.h>
 
 #include <libKitsunemimiCommon/common_items/table_item.h>
 #include <libKitsunemimiCommon/common_methods/string_methods.h>
@@ -32,7 +32,7 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     m_tableName = "users";
 
     DbHeaderEntry userName;
-    userName.name = "user_name";
+    userName.name = "name";
     userName.maxLength = 256;
     m_tableHeader.push_back(userName);
 
@@ -47,8 +47,8 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     m_tableHeader.push_back(isAdmin);
 
     DbHeaderEntry groups;
-    isAdmin.name = "groups";
-    m_tableHeader.push_back(isAdmin);
+    groups.name = "groups";
+    m_tableHeader.push_back(groups);
 }
 
 UsersTable::~UsersTable() {}
@@ -72,7 +72,7 @@ UsersTable::addUser(const UserData &data,
         groupList.append(data.groups.at(i));
     }
 
-    const std::vector<std::string> values = { data.userName,
+    const std::vector<std::string> values = { data.name,
                                               data.pwHash,
                                               std::to_string(data.isAdmin),
                                               groupList};
@@ -94,7 +94,7 @@ UsersTable::getUserByName(UserData &result,
                           Kitsunemimi::ErrorContainer &error)
 {
     // get user from db
-    if(getFromDb(&tableContent, "user_name", userName, error) == false) {
+    if(getFromDb(&tableContent, "name", userName, error) == false) {
         return false;
     }
 
@@ -107,18 +107,7 @@ UsersTable::getUserByName(UserData &result,
     }
 
     // prepare result
-    const Kitsunemimi::DataItem* firstRow = tableContent.getBody()->get(0);
-    result.userId = firstRow->get("uuid")->toValue()->getString();
-    result.userName = firstRow->get("user_name")->toValue()->getString();
-    result.pwHash = firstRow->get("pw_hash")->toValue()->getString();
-    result.isAdmin = firstRow->get("is_admin")->toValue()->getBool();
-
-    if(result.groups.size() > 0) {
-        result.groups.clear();
-    }
-    Kitsunemimi::splitStringByDelimiter(result.groups,
-                                        firstRow->get("groups")->toValue()->getString(),
-                                        ',');
+    processGetResult(result, tableContent);
 
     return true;
 }
@@ -140,18 +129,8 @@ UsersTable::getUser(UserData &result,
         return false;
     }
 
-    const Kitsunemimi::DataItem* firstRow = tableContent.getBody()->get(0);
-    result.userId = firstRow->get("uuid")->toValue()->getString();
-    result.userName = firstRow->get("user_name")->toValue()->getString();
-    result.pwHash = firstRow->get("pw_hash")->toValue()->getString();
-    result.isAdmin = firstRow->get("is_admin")->toValue()->getBool();
+    processGetResult(result, tableContent);
 
-    if(result.groups.size() > 0) {
-        result.groups.clear();
-    }
-    Kitsunemimi::splitStringByDelimiter(result.groups,
-                                        firstRow->get("groups")->toValue()->getString(),
-                                        ',');
     return true;
 }
 
@@ -167,7 +146,9 @@ UsersTable::getUser(Kitsunemimi::TableItem &result,
                     Kitsunemimi::ErrorContainer &error)
 {
     // get user from db
-    if(getFromDb(&result, uuid, error) == false) {
+    if(getFromDb(&result, uuid, error) == false)
+    {
+        LOG_ERROR(error);
         return false;
     }
 
@@ -186,15 +167,11 @@ UsersTable::getUser(Kitsunemimi::TableItem &result,
  * @param error
  * @return
  */
-Kitsunemimi::DataItem*
-UsersTable::getAllUser(Kitsunemimi::ErrorContainer &error)
+bool
+UsersTable::getAllUser(Kitsunemimi::TableItem &result,
+                       Kitsunemimi::ErrorContainer &error)
 {
-    Kitsunemimi::TableItem resultItem;
-    if(getAllFromDb(&resultItem, error) == false) {
-        return new Kitsunemimi::DataArray();
-    }
-
-    return nullptr;
+    return getAllFromDb(&result, error);
 }
 
 /**
@@ -208,4 +185,29 @@ UsersTable::deleteUser(const std::string &userID,
                        Kitsunemimi::ErrorContainer &error)
 {
     return deleteFromDb(userID, error);
+}
+
+/**
+ * @brief UsersTable::processGetResult
+ * @param result
+ * @param tableContent
+ */
+void
+UsersTable::processGetResult(UserData &result,
+                             Kitsunemimi::TableItem &tableContent)
+{
+    // prepare result
+    const Kitsunemimi::DataItem* firstRow = tableContent.getBody()->get(0);
+    result.uuid = firstRow->get("uuid")->toValue()->getString();
+    result.name = firstRow->get("name")->toValue()->getString();
+    result.pwHash = firstRow->get("pw_hash")->toValue()->getString();
+    result.isAdmin = firstRow->get("is_admin")->toValue()->getBool();
+
+    if(result.groups.size() > 0) {
+        result.groups.clear();
+    }
+    Kitsunemimi::splitStringByDelimiter(result.groups,
+                                        firstRow->get("groups")->toValue()->getString(),
+                                        ',');
+
 }

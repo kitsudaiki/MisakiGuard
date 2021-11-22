@@ -25,12 +25,14 @@
 
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiHanamiPolicies/policy.h>
-#include <users/users_table.h>
+#include <database/users_table.h>
 
 class MisakaRoot
 {
 public:
     MisakaRoot();
+
+    bool init();
 
     static Kitsunemimi::Jwt::Jwt* jwt;
     static UsersTable* usersTable;

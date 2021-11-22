@@ -41,6 +41,9 @@ CreateToken::CreateToken()
     registerOutputField("token", false);
 }
 
+/**
+ * @brief runTask
+ */
 bool
 CreateToken::runTask(BlossomLeaf &blossomLeaf,
                      BlossomStatus &status,
@@ -56,8 +59,8 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     Kitsunemimi::TableItem table;
     if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
     {
-        error.addMeesage("ACCESS DENIED!\nUser or password is incorrect.");
-        status.errorMessage = error.toString();
+        status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
+        error.addMeesage(status.errorMessage);
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
@@ -65,8 +68,8 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     // check password
     if(userData.pwHash != pwHash)
     {
-        error.addMeesage("ACCESS DENIED!\nUser or password is incorrect.");
-        status.errorMessage = error.toString();
+        status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
+        error.addMeesage(status.errorMessage);
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
@@ -75,13 +78,15 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     std::string jwtToken;
     const std::string payload = table.getRow(0, false)->toString();
     Kitsunemimi::Json::JsonItem parsedPayload;
-    if(parsedPayload.parse(payload, error))
+    if(parsedPayload.parse(payload, error) == false)
     {
-        // TODO: make validation-time configurable
-        MisakaRoot::jwt->create_HS256_Token(jwtToken, parsedPayload, 3600);
-        blossomLeaf.output.insert("token", new Kitsunemimi::DataValue(jwtToken));
-        return true;
+        error.addMeesage("Failed to parse json with user-data.");
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        return false;
     }
 
-    return false;
+    // TODO: make validation-time configurable
+    MisakaRoot::jwt->create_HS256_Token(jwtToken, parsedPayload, 3600);
+    blossomLeaf.output.insert("token", new Kitsunemimi::DataValue(jwtToken));
+    return true;
 }

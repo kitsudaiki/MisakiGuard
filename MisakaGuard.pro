@@ -101,7 +101,7 @@ SOURCES += src/main.cpp \
     src/api/user/create_user.cpp \
     src/api/user/get_user.cpp \
     src/misaka_root.cpp \
-    src/users/users_table.cpp
+    src/database/users_table.cpp
 
 HEADERS += \
     src/api/auth/create_token.h \
@@ -113,4 +113,4 @@ HEADERS += \
     src/callbacks.h \
     src/config.h \
     src/misaka_root.h \
-    src/users/users_table.h
+    src/database/users_table.h

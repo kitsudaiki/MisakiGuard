@@ -37,15 +37,16 @@ CreateUser::CreateUser()
     registerInputField("pw",        true);
     registerInputField("is_admin",  true);
     registerInputField("groups",    true);
-    registerInputField("get_table", false);
 
     registerOutputField("uuid",      true);
     registerOutputField("user_name", true);
     registerOutputField("pw_hash",   true);
     registerOutputField("is_admin",  true);
-    registerOutputField("table",     false);
 }
 
+/**
+ * @brief runTask
+ */
 bool
 CreateUser::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
@@ -54,16 +55,11 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     UsersTable::UserData userData;
 
     // get input-data
-    userData.userName = blossomLeaf.input.getStringByKey("user_name");
+    userData.name = blossomLeaf.input.getStringByKey("user_name");
     Kitsunemimi::Crypto::generate_SHA_256(userData.pwHash, blossomLeaf.input.getStringByKey("pw"));
     const std::string groups = blossomLeaf.input.getStringByKey("groups");
     userData.isAdmin = blossomLeaf.input.get("is_admin")->toValue()->getBool();
     Kitsunemimi::splitStringByDelimiter(userData.groups, groups, ',');
-
-    bool getTable = false;
-    if(blossomLeaf.input.contains("get_table")) {
-        getTable = blossomLeaf.input.get("get_table")->toValue()->getBool();
-    }
 
     // add new user to table
     const std::string uuid = MisakaRoot::usersTable->addUser(userData, error);
@@ -84,10 +80,9 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // create response
+    // the * is important here, because it runs the copy-constructor.
+    // Because of this we MUST NOT copy within the get-function
     blossomLeaf.output = *table.getRow(0, false);
-    if(getTable) {
-        blossomLeaf.output.insert("table", table.stealContent());
-    }
 
     return true;
 }

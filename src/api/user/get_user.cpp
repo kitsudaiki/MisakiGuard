@@ -31,15 +31,16 @@ GetUser::GetUser()
     : Kitsunemimi::Hanami::HanamiBlossom()
 {
     registerInputField("user_name", true);
-    registerInputField("get_table", false);
 
     registerOutputField("uuid",      true);
     registerOutputField("user_name", true);
     registerOutputField("pw_hash",   true);
     registerOutputField("is_admin",  true);
-    registerOutputField("table",     false);
 }
 
+/**
+ * @brief runTask
+ */
 bool
 GetUser::runTask(BlossomLeaf &blossomLeaf,
                  BlossomStatus &status,
@@ -47,10 +48,6 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
 {
     // get information from request
     const std::string userName = blossomLeaf.input.getStringByKey("user_name");
-    bool getTable = false;
-    if(blossomLeaf.input.contains("get_table")) {
-        getTable = blossomLeaf.input.get("get_table")->toValue()->getBool();
-    }
 
     // get data from table
     UsersTable::UserData userData;
@@ -60,12 +57,6 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
         status.errorMessage = error.toString();
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
-    }
-
-    // create response
-    blossomLeaf.output = *table.getRow(0, false);
-    if(getTable) {
-        blossomLeaf.output.insert("table", table.stealContent());
     }
 
     return true;

@@ -33,24 +33,86 @@ UsersTable* MisakaRoot::usersTable = nullptr;
 Kitsunemimi::Sakura::SqlDatabase* MisakaRoot::database = nullptr;
 Kitsunemimi::Hanami::Policy* MisakaRoot::policies = nullptr;
 
-MisakaRoot::MisakaRoot()
+MisakaRoot::MisakaRoot() {}
+
+/**
+ * @brief MisakaRoot::init
+ * @return
+ */
+bool
+MisakaRoot::init()
 {
-    database = new Kitsunemimi::Sakura::SqlDatabase();
     Kitsunemimi::ErrorContainer error;
-    assert(database->initDatabase("/tmp/Misaka_DB", error));
+    bool success = false;
+
+    // read database-path from config
+    database = new Kitsunemimi::Sakura::SqlDatabase();
+    const std::string databasePath = GET_STRING_CONFIG("DEFAULT", "database", success);
+    if(success == false)
+    {
+        error.addMeesage("No database-path defined in config.");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // initalize database
+    if(database->initDatabase(databasePath, error) == false)
+    {
+        error.addMeesage("Failed to initialize sql-database.");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // initialize users-table
     usersTable = new UsersTable(database);
-    assert(usersTable->initTable(error));
+    if(usersTable->initTable(error) == false)
+    {
+        error.addMeesage("Failed to initialize user-table in database.");
+        LOG_ERROR(error);
+        return false;
+    }
 
     initBlossoms();
 
-    bool success = false;
+    // read jwt-token-key from config
     const std::string tokenKeyString = GET_STRING_CONFIG("Misaka", "token_key", success);
+    if(success == false)
+    {
+        error.addMeesage("No token-key defined in config.");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // init jwt for token create and sign
     CryptoPP::SecByteBlock tokenKey((unsigned char*)tokenKeyString.c_str(), tokenKeyString.size());
     jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
-    policies = new Kitsunemimi::Hanami::Policy();
 
+    // read policy-file-path from config
     const std::string policyFilePath = GET_STRING_CONFIG("Misaka", "policies", success);
+    if(success == false)
+    {
+        error.addMeesage("No policy-file defined in config.");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // read policy-file
     std::string policyFileContent;
-    assert(Kitsunemimi::readFile(policyFileContent, policyFilePath, error));
-    assert(policies->parse(policyFileContent, error));
+    if(Kitsunemimi::readFile(policyFileContent, policyFilePath, error) == false)
+    {
+        error.addMeesage("Failed to read policy-file");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // parse policy-file
+    policies = new Kitsunemimi::Hanami::Policy();
+    if(policies->parse(policyFileContent, error) == false)
+    {
+        error.addMeesage("Failed to parser policy-file");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    return true;
 }
