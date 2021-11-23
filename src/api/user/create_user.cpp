@@ -31,17 +31,17 @@
 using namespace Kitsunemimi::Sakura;
 
 CreateUser::CreateUser()
-    : Kitsunemimi::Hanami::HanamiBlossom()
+    : Kitsunemimi::Sakura::Blossom()
 {
     registerInputField("user_name", true);
     registerInputField("pw",        true);
     registerInputField("is_admin",  true);
     registerInputField("groups",    true);
 
-    registerOutputField("uuid",      true);
-    registerOutputField("user_name", true);
-    registerOutputField("pw_hash",   true);
-    registerOutputField("is_admin",  true);
+    registerOutputField("uuid");
+    registerOutputField("user_name");
+    registerOutputField("pw_hash");
+    registerOutputField("is_admin");
 }
 
 /**
@@ -49,6 +49,7 @@ CreateUser::CreateUser()
  */
 bool
 CreateUser::runTask(BlossomLeaf &blossomLeaf,
+                    const Kitsunemimi::DataMap &,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {

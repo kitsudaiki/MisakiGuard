@@ -23,16 +23,17 @@
 #ifndef VALIDATE_ACCESS_H
 #define VALIDATE_ACCESS_H
 
-#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
 class ValidateAccess
-        : public Kitsunemimi::Hanami::HanamiBlossom
+        : public Kitsunemimi::Sakura::Blossom
 {
 public:
     ValidateAccess();
 
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };

@@ -33,12 +33,12 @@
 using namespace Kitsunemimi::Sakura;
 
 CreateToken::CreateToken()
-    : Kitsunemimi::Hanami::HanamiBlossom()
+    : Kitsunemimi::Sakura::Blossom()
 {
     registerInputField("user_name", true);
     registerInputField("pw", true);
 
-    registerOutputField("token", false);
+    registerOutputField("token");
 }
 
 /**
@@ -46,6 +46,7 @@ CreateToken::CreateToken()
  */
 bool
 CreateToken::runTask(BlossomLeaf &blossomLeaf,
+                     const Kitsunemimi::DataMap &,
                      BlossomStatus &status,
                      Kitsunemimi::ErrorContainer &error)
 {

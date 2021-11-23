@@ -23,16 +23,17 @@
 #ifndef CREATEUSER_H
 #define CREATEUSER_H
 
-#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
 class CreateUser
-        : public Kitsunemimi::Hanami::HanamiBlossom
+        : public Kitsunemimi::Sakura::Blossom
 {
 public:
     CreateUser();
 
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };

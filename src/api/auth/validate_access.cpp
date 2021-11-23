@@ -36,13 +36,13 @@ using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
 
 ValidateAccess::ValidateAccess()
-    : Kitsunemimi::Hanami::HanamiBlossom(true)
+    : Kitsunemimi::Sakura::Blossom()
 {
     registerInputField("component", false);
     registerInputField("endpoint", false);
     registerInputField("http_type", false);
 
-    registerOutputField("token_content", true);
+    registerOutputField("token_content");
 }
 
 /**
@@ -50,6 +50,7 @@ ValidateAccess::ValidateAccess()
  */
 bool
 ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
+                        const Kitsunemimi::DataMap &,
                         BlossomStatus &status,
                         Kitsunemimi::ErrorContainer &error)
 {

@@ -23,16 +23,17 @@
 #ifndef CREATETOKEN_H
 #define CREATETOKEN_H
 
-#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
 class CreateToken
-        : public Kitsunemimi::Hanami::HanamiBlossom
+        : public Kitsunemimi::Sakura::Blossom
 {
 public:
     CreateToken();
 
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };

@@ -23,16 +23,17 @@
 #ifndef GETUSER_H
 #define GETUSER_H
 
-#include <libKitsunemimiHanamiMessaging/hanami_blossom.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
 class GetUser
-        : public Kitsunemimi::Hanami::HanamiBlossom
+        : public Kitsunemimi::Sakura::Blossom
 {
 public:
     GetUser();
 
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };
