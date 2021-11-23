@@ -38,11 +38,15 @@ using Kitsunemimi::Hanami::HttpRequestType;
 ValidateAccess::ValidateAccess()
     : Kitsunemimi::Sakura::Blossom()
 {
+    registerInputField("token", true);
     registerInputField("component", false);
     registerInputField("endpoint", false);
     registerInputField("http_type", false);
 
-    registerOutputField("token_content");
+    registerOutputField("uuid");
+    registerOutputField("name");
+    registerOutputField("is_admin");
+    registerOutputField("groups");
 }
 
 /**
@@ -108,7 +112,10 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // create output
-    blossomLeaf.output.insert("token_content", payload.stealItemContent());
+    blossomLeaf.output.insert("groups", payload.get("groups").getItemContent()->copy());
+    blossomLeaf.output.insert("is_admin", payload.get("is_admin").getItemContent()->copy());
+    blossomLeaf.output.insert("name", payload.get("name").getItemContent()->copy());
+    blossomLeaf.output.insert("uuid", payload.get("uuid").getItemContent()->copy());
 
     return true;
 }
