@@ -28,7 +28,6 @@
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiJson/json_item.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
-#include <misaka_root.h>
 
 using namespace Kitsunemimi::Sakura;
 

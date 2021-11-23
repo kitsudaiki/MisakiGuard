@@ -93,8 +93,11 @@ UsersTable::getUserByName(UserData &result,
                           const std::string &userName,
                           Kitsunemimi::ErrorContainer &error)
 {
+    std::vector<RequestCondition> conditions;
+    conditions.emplace_back("name", userName);
+
     // get user from db
-    if(getFromDb(&tableContent, "name", userName, error) == false) {
+    if(getFromDb(&tableContent, conditions, error) == false) {
         return false;
     }
 
@@ -145,8 +148,11 @@ UsersTable::getUser(Kitsunemimi::TableItem &result,
                     const std::string &uuid,
                     Kitsunemimi::ErrorContainer &error)
 {
+    std::vector<RequestCondition> conditions;
+    conditions.emplace_back("uuid", uuid);
+
     // get user from db
-    if(getFromDb(&result, uuid, error) == false)
+    if(getFromDb(&result, conditions, error) == false)
     {
         LOG_ERROR(error);
         return false;
@@ -184,7 +190,10 @@ bool
 UsersTable::deleteUser(const std::string &userID,
                        Kitsunemimi::ErrorContainer &error)
 {
-    return deleteFromDb(userID, error);
+    std::vector<RequestCondition> conditions;
+    conditions.emplace_back("uuid", userID);
+
+    return deleteFromDb(conditions, error);
 }
 
 /**

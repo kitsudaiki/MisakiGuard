@@ -20,10 +20,9 @@
  *      limitations under the License.
  */
 
+#include <misaka_root.h>
 #include <iostream>
 #include <thread>
-
-#include <misaka_root.h>
 #include <args.h>
 #include <config.h>
 #include <callbacks.h>
