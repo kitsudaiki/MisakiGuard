@@ -65,10 +65,11 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
 
     // validate token
     Kitsunemimi::Json::JsonItem payload;
-    if(MisakaRoot::jwt->validateToken(payload, token, error) == false)
+    std::string publicError;
+    if(MisakaRoot::jwt->validateToken(payload, token, publicError, error) == false)
     {
         error.addMeesage("Misaka failed to validate JWT-Token");
-        status.errorMessage = "JWT-Token invalid or broken!";
+        status.errorMessage = publicError;
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
