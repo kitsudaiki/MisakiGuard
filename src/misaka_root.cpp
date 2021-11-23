@@ -75,7 +75,7 @@ MisakaRoot::init()
     initBlossoms();
 
     // read jwt-token-key from config
-    const std::string tokenKeyString = GET_STRING_CONFIG("Misaka", "token_key", success);
+    const std::string tokenKeyString = GET_STRING_CONFIG("misaka", "token_key", success);
     if(success == false)
     {
         error.addMeesage("No token-key defined in config.");
@@ -88,7 +88,7 @@ MisakaRoot::init()
     jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
 
     // read policy-file-path from config
-    const std::string policyFilePath = GET_STRING_CONFIG("Misaka", "policies", success);
+    const std::string policyFilePath = GET_STRING_CONFIG("misaka", "policies", success);
     if(success == false)
     {
         error.addMeesage("No policy-file defined in config.");
