@@ -100,6 +100,7 @@ SOURCES += src/main.cpp \
     src/api/auth/validate_access.cpp \
     src/api/user/create_user.cpp \
     src/api/user/get_user.cpp \
+    src/api/user/list_users.cpp \
     src/misaka_root.cpp \
     src/database/users_table.cpp
 
@@ -109,6 +110,7 @@ HEADERS += \
     src/api/blossom_initializing.h \
     src/api/user/create_user.h \
     src/api/user/get_user.h \
+    src/api/user/list_users.h \
     src/args.h \
     src/callbacks.h \
     src/config.h \

@@ -55,9 +55,8 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.getStringByKey("pw"));
 
     // get data from table
-    UsersTable::UserData userData;
-    Kitsunemimi::TableItem table;
-    if(MisakaRoot::usersTable->getUserByName(userData, table, userName, error) == false)
+    Kitsunemimi::Json::JsonItem userData;
+    if(MisakaRoot::usersTable->getUserByName(userData, userName, error) == false)
     {
         status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
         error.addMeesage(status.errorMessage);
@@ -66,7 +65,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // check password
-    if(userData.pwHash != pwHash)
+    if(userData.get("pw_hash").getString() != pwHash)
     {
         status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
         error.addMeesage(status.errorMessage);
@@ -74,19 +73,10 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    // create new token
-    std::string jwtToken;
-    const std::string payload = table.getRow(0, false)->toString();
-    Kitsunemimi::Json::JsonItem parsedPayload;
-    if(parsedPayload.parse(payload, error) == false)
-    {
-        error.addMeesage("Failed to parse json with user-data.");
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        return false;
-    }
-
     // TODO: make validation-time configurable
-    MisakaRoot::jwt->create_HS256_Token(jwtToken, parsedPayload, 3600);
+    std::string jwtToken;
+    userData.remove("pw_hash");
+    MisakaRoot::jwt->create_HS256_Token(jwtToken, userData, 3600);
     blossomLeaf.output.insert("token", new Kitsunemimi::DataValue(jwtToken));
     return true;
 }

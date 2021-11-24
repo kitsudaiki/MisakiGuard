@@ -71,19 +71,11 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    // get data from table
-    Kitsunemimi::TableItem table;
-    if(MisakaRoot::usersTable->getUser(table, uuid, error) == false)
-    {
-        status.errorMessage = error.toString();
-        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
-        return false;
-    }
-
     // create response
-    // the * is important here, because it runs the copy-constructor.
-    // Because of this we MUST NOT copy within the get-function
-    blossomLeaf.output = *table.getRow(0, false);
+    blossomLeaf.output.insert("uuid", new Kitsunemimi::DataValue(userData.uuid));
+    blossomLeaf.output.insert("user_name", new Kitsunemimi::DataValue(userData.name));
+    blossomLeaf.output.insert("is_admin", new Kitsunemimi::DataValue(userData.isAdmin));
+    blossomLeaf.output.insert("groups", new Kitsunemimi::DataValue(groups));
 
     return true;
 }

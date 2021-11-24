@@ -20,50 +20,41 @@
  *      limitations under the License.
  */
 
-#include "get_user.h"
+#include "list_users.h"
 
 #include <misaka_root.h>
-
-#include <libKitsunemimiJson/json_item.h>
-
 #include <libKitsunemimiHanamiCommon/enums.h>
 
 using namespace Kitsunemimi::Sakura;
 
-GetUser::GetUser()
+ListUsers::ListUsers()
     : Kitsunemimi::Sakura::Blossom()
 {
-    registerInputField("user_name", true);
-
-    registerOutputField("uuid");
-    registerOutputField("user_name");
-    registerOutputField("is_admin");
-    registerOutputField("groups");
+    registerOutputField("header");
+    registerOutputField("body");
 }
 
 /**
  * @brief runTask
  */
 bool
-GetUser::runTask(BlossomLeaf &blossomLeaf,
-                 const Kitsunemimi::DataMap &,
-                 BlossomStatus &status,
-                 Kitsunemimi::ErrorContainer &error)
+ListUsers::runTask(BlossomLeaf &blossomLeaf,
+                   const Kitsunemimi::DataMap &,
+                   BlossomStatus &status,
+                   Kitsunemimi::ErrorContainer &error)
 {
-    // get information from request
-    const std::string userName = blossomLeaf.input.getStringByKey("user_name");
-
     // get data from table
-    Kitsunemimi::Json::JsonItem userData;
-    if(MisakaRoot::usersTable->getUserByName(userData, userName, error) == false)
+    UsersTable::UserData userData;
+    Kitsunemimi::TableItem table;
+    if(MisakaRoot::usersTable->getAllUser(table, error) == false)
     {
-        status.errorMessage = "User with name '" + userName + "' not found.";
-        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
-    userData.remove("pw_hash");
-    blossomLeaf.output = *userData.getItemContent()->toMap();
+    table.deleteColumn("pw_hash");
+    blossomLeaf.output.insert("header", table.getInnerHeader());
+    blossomLeaf.output.insert("body", table.getBody());
 
     return true;
 }

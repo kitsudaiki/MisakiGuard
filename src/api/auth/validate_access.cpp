@@ -113,10 +113,8 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // create output
-    blossomLeaf.output.insert("groups", payload.get("groups").getItemContent()->copy());
-    blossomLeaf.output.insert("is_admin", payload.get("is_admin").getItemContent()->copy());
-    blossomLeaf.output.insert("name", payload.get("name").getItemContent()->copy());
-    blossomLeaf.output.insert("uuid", payload.get("uuid").getItemContent()->copy());
+    payload.remove("pw_hash");
+    blossomLeaf.output = *payload.getItemContent()->toMap();
 
     return true;
 }

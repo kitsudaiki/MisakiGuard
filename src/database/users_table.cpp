@@ -24,6 +24,8 @@
 
 #include <libKitsunemimiCommon/common_items/table_item.h>
 #include <libKitsunemimiCommon/common_methods/string_methods.h>
+#include <libKitsunemimiJson/json_item.h>
+
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
 
 UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
@@ -88,8 +90,7 @@ UsersTable::addUser(const UserData &data,
  * @return
  */
 bool
-UsersTable::getUserByName(UserData &result,
-                          Kitsunemimi::TableItem &tableContent,
+UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
                           const std::string &userName,
                           Kitsunemimi::ErrorContainer &error)
 {
@@ -97,6 +98,7 @@ UsersTable::getUserByName(UserData &result,
     conditions.emplace_back("name", userName);
 
     // get user from db
+    Kitsunemimi::TableItem tableContent;
     if(getFromDb(&tableContent, conditions, error) == false) {
         return false;
     }
@@ -116,35 +118,13 @@ UsersTable::getUserByName(UserData &result,
 }
 
 /**
- * @brief UsersTable::getUser
- * @param result
- * @param uuid
- * @param error
- * @return
- */
-bool
-UsersTable::getUser(UserData &result,
-                    Kitsunemimi::TableItem &tableContent,
-                    const std::string &uuid,
-                    Kitsunemimi::ErrorContainer &error)
-{
-    if(getUser(tableContent, uuid, error) == false) {
-        return false;
-    }
-
-    processGetResult(result, tableContent);
-
-    return true;
-}
-
-/**
  * @brief UsersDatabase::getUser
  * @param userID
  * @param error
  * @return
  */
 bool
-UsersTable::getUser(Kitsunemimi::TableItem &result,
+UsersTable::getUser(Kitsunemimi::Json::JsonItem &result,
                     const std::string &uuid,
                     Kitsunemimi::ErrorContainer &error)
 {
@@ -152,18 +132,21 @@ UsersTable::getUser(Kitsunemimi::TableItem &result,
     conditions.emplace_back("uuid", uuid);
 
     // get user from db
-    if(getFromDb(&result, conditions, error) == false)
+    Kitsunemimi::TableItem tableContent;
+    if(getFromDb(&tableContent, conditions, error) == false)
     {
         LOG_ERROR(error);
         return false;
     }
 
-    if(result.getNumberOfRows() == 0)
+    if(tableContent.getNumberOfRows() == 0)
     {
         error.addMeesage("User with ID '" + uuid + "' not found;");
         LOG_ERROR(error);
         return false;
     }
+
+    processGetResult(result, tableContent);
 
     return true;
 }
@@ -197,26 +180,18 @@ UsersTable::deleteUser(const std::string &userID,
 }
 
 /**
- * @brief UsersTable::processGetResult
+ * @brief UsersTable::convertDataToMap
  * @param result
- * @param tableContent
+ * @param data
  */
 void
-UsersTable::processGetResult(UserData &result,
-                             Kitsunemimi::TableItem &tableContent)
+UsersTable::processGetResult(Kitsunemimi::Json::JsonItem &result,
+                             const Kitsunemimi::TableItem &tableContent)
 {
     // prepare result
     const Kitsunemimi::DataItem* firstRow = tableContent.getBody()->get(0);
-    result.uuid = firstRow->get("uuid")->toValue()->getString();
-    result.name = firstRow->get("name")->toValue()->getString();
-    result.pwHash = firstRow->get("pw_hash")->toValue()->getString();
-    result.isAdmin = firstRow->get("is_admin")->toValue()->getBool();
 
-    if(result.groups.size() > 0) {
-        result.groups.clear();
+    for(uint32_t i = 0; i < m_tableHeader.size(); i++) {
+        result.insert(m_tableHeader.at(i).name, firstRow->get(i));
     }
-    Kitsunemimi::splitStringByDelimiter(result.groups,
-                                        firstRow->get("groups")->toValue()->getString(),
-                                        ',');
-
 }

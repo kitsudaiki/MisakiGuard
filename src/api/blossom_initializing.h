@@ -28,6 +28,7 @@
 
 #include <api/user/create_user.h>
 #include <api/user/get_user.h>
+#include <api/user/list_users.h>
 
 #include <api/auth/create_token.h>
 #include <api/auth/validate_access.h>
@@ -58,6 +59,7 @@ userBlossomes()
 
     assert(interface->addBlossom(group, "create_user", new CreateUser()));
     assert(interface->addBlossom(group, "get_user", new GetUser()));
+    assert(interface->addBlossom(group, "list_users", new ListUsers()));
 }
 
 void

@@ -26,6 +26,11 @@
 #include <libKitsunemimiCommon/logger.h>
 #include <libKitsunemimiSakuraDatabase/sql_table.h>
 
+namespace Kitsunemimi {
+namespace Json {
+class JsonItem;
+}
+}
 class UsersTable
         : public Kitsunemimi::Sakura::SqlTable
 {
@@ -44,15 +49,10 @@ public:
 
     const std::string addUser(const UserData &data,
                               Kitsunemimi::ErrorContainer &error);
-    bool getUserByName(UserData &result,
-                       Kitsunemimi::TableItem &tableContent,
+    bool getUserByName(Kitsunemimi::Json::JsonItem &result,
                        const std::string &userName,
                        Kitsunemimi::ErrorContainer &error);
-    bool getUser(UserData &result,
-                 Kitsunemimi::TableItem &tableContent,
-                 const std::string &uuid,
-                 Kitsunemimi::ErrorContainer &error);
-    bool getUser(Kitsunemimi::TableItem &result,
+    bool getUser(Kitsunemimi::Json::JsonItem &result,
                  const std::string &uuid,
                  Kitsunemimi::ErrorContainer &error);
     bool getAllUser(Kitsunemimi::TableItem &result,
@@ -61,8 +61,8 @@ public:
                      Kitsunemimi::ErrorContainer &error);
 
 private:
-    void processGetResult(UserData &result,
-                          Kitsunemimi::TableItem &tableContent);
+    void processGetResult(Kitsunemimi::Json::JsonItem &result,
+                          const Kitsunemimi::TableItem &tableContent);
 };
 
 #endif // USERS_TABLE_H
