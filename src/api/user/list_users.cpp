@@ -44,7 +44,6 @@ ListUsers::runTask(BlossomLeaf &blossomLeaf,
                    Kitsunemimi::ErrorContainer &error)
 {
     // get data from table
-    UsersTable::UserData userData;
     Kitsunemimi::TableItem table;
     if(MisakaRoot::usersTable->getAllUser(table, error) == false)
     {

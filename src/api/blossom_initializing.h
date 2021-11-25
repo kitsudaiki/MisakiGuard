@@ -42,10 +42,10 @@ void
 tokenBlossomes()
 {
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
-    const std::string group = "-";
+    const std::string group = "token";
 
-    assert(interface->addBlossom(group, "create_token", new CreateToken()));
-    assert(interface->addBlossom(group, "validate_access", new ValidateAccess()));
+    assert(interface->addBlossom(group, "create", new CreateToken()));
+    assert(interface->addBlossom(group, "validate", new ValidateAccess()));
 }
 
 /**
@@ -55,11 +55,11 @@ void
 userBlossomes()
 {
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
-    const std::string group = "-";
+    const std::string group = "user";
 
-    assert(interface->addBlossom(group, "create_user", new CreateUser()));
-    assert(interface->addBlossom(group, "get_user", new GetUser()));
-    assert(interface->addBlossom(group, "list_users", new ListUsers()));
+    assert(interface->addBlossom(group, "create", new CreateUser()));
+    assert(interface->addBlossom(group, "get", new GetUser()));
+    assert(interface->addBlossom(group, "list", new ListUsers()));
 }
 
 void
