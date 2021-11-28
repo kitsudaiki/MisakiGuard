@@ -25,23 +25,26 @@
 #include <misaka_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
+
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiCommon/common_methods/string_methods.h>
+#include <libKitsunemimiJson/json_item.h>
 
 using namespace Kitsunemimi::Sakura;
 
 CreateUser::CreateUser()
     : Kitsunemimi::Sakura::Blossom()
 {
-    registerInputField("user_name", true);
-    registerInputField("pw",        true);
-    registerInputField("is_admin",  true);
-    registerInputField("groups",    true);
+    registerInputField("user_name",     true);
+    registerInputField("user_projects", true);
+    registerInputField("user_roles",    true);
+    registerInputField("pw",            true);
+    registerInputField("is_admin",      true);
 
     registerOutputField("uuid");
     registerOutputField("user_name");
-    registerOutputField("pw_hash");
     registerOutputField("is_admin");
+    registerOutputField("roles");
 }
 
 /**
@@ -53,29 +56,43 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
-    UsersTable::UserData userData;
+    Kitsunemimi::Json::JsonItem userData;
 
-    // get input-data
-    userData.name = blossomLeaf.input.getStringByKey("user_name");
-    Kitsunemimi::Crypto::generate_SHA_256(userData.pwHash, blossomLeaf.input.getStringByKey("pw"));
-    const std::string groups = blossomLeaf.input.getStringByKey("groups");
-    userData.isAdmin = blossomLeaf.input.get("is_admin")->toValue()->getBool();
-    Kitsunemimi::splitStringByDelimiter(userData.groups, groups, ',');
+    // genreate hash from password
+    std::string pwHash;
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.getStringByKey("pw"));
+
+    // convert values
+    const std::string userName = blossomLeaf.input.getStringByKey("user_name");
+    userData.insert("user_name", userName);
+    userData.insert("user_roles", blossomLeaf.input.getStringByKey("user_roles"));
+    userData.insert("user_projects", blossomLeaf.input.getStringByKey("user_projects"));
+    userData.insert("pw_hash", pwHash);
+    userData.insert("is_admin", blossomLeaf.input.get("is_admin")->toValue()->getBool());
+    userData.insert("project_uuid", "-");
+    userData.insert("owner_uuid", "-");
+    userData.insert("visibility", 0);
+
+    std::cout<<userData.toString(true)<<std::endl;
 
     // add new user to table
-    const std::string uuid = MisakaRoot::usersTable->addUser(userData, error);
-    if(uuid.size() == 0)
+    if(MisakaRoot::usersTable->addUser(userData, error) == false)
     {
         status.errorMessage = error.toString();
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
+    // get new created user from database
+    Kitsunemimi::Json::JsonItem outputData;
+    if(MisakaRoot::usersTable->getUserByName(outputData, userName, error) == false)
+    {
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        return false;
+    }
+
     // create response
-    blossomLeaf.output.insert("uuid", new Kitsunemimi::DataValue(userData.uuid));
-    blossomLeaf.output.insert("user_name", new Kitsunemimi::DataValue(userData.name));
-    blossomLeaf.output.insert("is_admin", new Kitsunemimi::DataValue(userData.isAdmin));
-    blossomLeaf.output.insert("groups", new Kitsunemimi::DataValue(groups));
+    blossomLeaf.output = *outputData.getItemContent()->toMap();
 
     return true;
 }

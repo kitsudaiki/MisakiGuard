@@ -62,7 +62,6 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    userData.remove("pw_hash");
     blossomLeaf.output = *userData.getItemContent()->toMap();
 
     return true;

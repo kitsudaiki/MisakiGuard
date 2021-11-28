@@ -14,6 +14,11 @@ LIBS += -L../libKitsunemimiHanamiEndpoints/src/debug -lKitsunemimiHanamiEndpoint
 LIBS += -L../libKitsunemimiHanamiEndpoints/src/release -lKitsunemimiHanamiEndpoints
 INCLUDEPATH += ../libKitsunemimiHanamiEndpoints/include
 
+LIBS += -L../libKitsunemimiHanamiDatabase/src -lKitsunemimiHanamiDatabase
+LIBS += -L../libKitsunemimiHanamiDatabase/src/debug -lKitsunemimiHanamiDatabase
+LIBS += -L../libKitsunemimiHanamiDatabase/src/release -lKitsunemimiHanamiDatabase
+INCLUDEPATH += ../libKitsunemimiHanamiDatabase/include
+
 LIBS += -L../libKitsunemimiHanamiPolicies/src -lKitsunemimiHanamiPolicies
 LIBS += -L../libKitsunemimiHanamiPolicies/src/debug -lKitsunemimiHanamiPolicies
 LIBS += -L../libKitsunemimiHanamiPolicies/src/release -lKitsunemimiHanamiPolicies

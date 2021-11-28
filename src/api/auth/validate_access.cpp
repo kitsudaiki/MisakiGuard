@@ -46,7 +46,7 @@ ValidateAccess::ValidateAccess()
     registerOutputField("uuid");
     registerOutputField("name");
     registerOutputField("is_admin");
-    registerOutputField("groups");
+    registerOutputField("roles");
 }
 
 /**
@@ -88,16 +88,16 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
         const uint32_t httpTypeValue = blossomLeaf.input.get("http_type")->toValue()->getInt();
         const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
-        // process payload to get groups of user
-        std::vector<std::string> groups;
-        const std::string groupString = payload.get("groups").getString();
-        Kitsunemimi::splitStringByDelimiter(groups, groupString, ',');
+        // process payload to get roles of user
+        std::vector<std::string> roles;
+        const std::string rolestring = payload.get("user_roles").getString();
+        Kitsunemimi::splitStringByDelimiter(roles, rolestring, ',');
 
         // check policy
         bool foundPolicy = false;
-        for(const std::string &group : groups)
+        for(const std::string &role : roles)
         {
-            if(MisakaRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, group)) {
+            if(MisakaRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, role)) {
                 foundPolicy = true;
             }
         }

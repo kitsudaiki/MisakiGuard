@@ -51,7 +51,6 @@ ListUsers::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    table.deleteColumn("pw_hash");
     blossomLeaf.output.insert("header", table.getInnerHeader());
     blossomLeaf.output.insert("body", table.getBody());
 

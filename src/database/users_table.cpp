@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file        users_database.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
@@ -29,28 +29,33 @@
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
 
 UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
-    : SqlTable(db)
+    : HanamiSqlTable(db)
 {
     m_tableName = "users";
 
     DbHeaderEntry userName;
-    userName.name = "name";
+    userName.name = "user_name";
     userName.maxLength = 256;
     m_tableHeader.push_back(userName);
+
+    DbHeaderEntry roles;
+    roles.name = "user_roles";
+    m_tableHeader.push_back(roles);
+
+    DbHeaderEntry projects;
+    projects.name = "user_projects";
+    m_tableHeader.push_back(projects);
 
     DbHeaderEntry pwHash;
     pwHash.name = "pw_hash";
     pwHash.maxLength = 64;
+    pwHash.hide = true;
     m_tableHeader.push_back(pwHash);
 
     DbHeaderEntry isAdmin;
     isAdmin.name = "is_admin";
     isAdmin.type = BOOL_TYPE;
     m_tableHeader.push_back(isAdmin);
-
-    DbHeaderEntry groups;
-    groups.name = "groups";
-    m_tableHeader.push_back(groups);
 }
 
 UsersTable::~UsersTable() {}
@@ -61,24 +66,11 @@ UsersTable::~UsersTable() {}
  * @param errorMessage
  * @return
  */
-const std::string
-UsersTable::addUser(const UserData &data,
+bool
+UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
                     Kitsunemimi::ErrorContainer &error)
 {
-    std::string groupList = "";
-    for(uint64_t i = 0; i < data.groups.size(); i++)
-    {
-        if(i != 0) {
-            groupList.append(",");
-        }
-        groupList.append(data.groups.at(i));
-    }
-
-    const std::vector<std::string> values = { data.name,
-                                              data.pwHash,
-                                              std::to_string(data.isAdmin),
-                                              groupList};
-    return insertToDb(values, error);
+    return add(userData, error);
 }
 
 /**
@@ -92,61 +84,18 @@ UsersTable::addUser(const UserData &data,
 bool
 UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
                           const std::string &userName,
-                          Kitsunemimi::ErrorContainer &error)
+                          Kitsunemimi::ErrorContainer &error,
+                          const bool showHiddenValues)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("name", userName);
+    conditions.emplace_back("user_name", userName);
 
     // get user from db
-    Kitsunemimi::TableItem tableContent;
-    if(getFromDb(&tableContent, conditions, error) == false) {
-        return false;
-    }
-
-    // check response
-    if(tableContent.getNumberOfRows() == 0)
-    {
-        error.addMeesage("User with name '" + userName + "' not found;");
-        LOG_ERROR(error);
-        return false;
-    }
-
-    // prepare result
-    processGetResult(result, tableContent);
-
-    return true;
-}
-
-/**
- * @brief UsersDatabase::getUser
- * @param userID
- * @param error
- * @return
- */
-bool
-UsersTable::getUser(Kitsunemimi::Json::JsonItem &result,
-                    const std::string &uuid,
-                    Kitsunemimi::ErrorContainer &error)
-{
-    std::vector<RequestCondition> conditions;
-    conditions.emplace_back("uuid", uuid);
-
-    // get user from db
-    Kitsunemimi::TableItem tableContent;
-    if(getFromDb(&tableContent, conditions, error) == false)
+    if(get(result, conditions, error, showHiddenValues) == false)
     {
         LOG_ERROR(error);
         return false;
     }
-
-    if(tableContent.getNumberOfRows() == 0)
-    {
-        error.addMeesage("User with ID '" + uuid + "' not found;");
-        LOG_ERROR(error);
-        return false;
-    }
-
-    processGetResult(result, tableContent);
 
     return true;
 }
@@ -160,7 +109,7 @@ bool
 UsersTable::getAllUser(Kitsunemimi::TableItem &result,
                        Kitsunemimi::ErrorContainer &error)
 {
-    return getAllFromDb(&result, error);
+    return getAll(result, error);
 }
 
 /**
@@ -170,28 +119,11 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
  * @return
  */
 bool
-UsersTable::deleteUser(const std::string &userID,
+UsersTable::deleteUser(const std::string &userName,
                        Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("uuid", userID);
+    conditions.emplace_back("user_name", userName);
 
     return deleteFromDb(conditions, error);
-}
-
-/**
- * @brief UsersTable::convertDataToMap
- * @param result
- * @param data
- */
-void
-UsersTable::processGetResult(Kitsunemimi::Json::JsonItem &result,
-                             const Kitsunemimi::TableItem &tableContent)
-{
-    // prepare result
-    const Kitsunemimi::DataItem* firstRow = tableContent.getBody()->get(0);
-
-    for(uint32_t i = 0; i < m_tableHeader.size(); i++) {
-        result.insert(m_tableHeader.at(i).name, firstRow->get(i));
-    }
 }

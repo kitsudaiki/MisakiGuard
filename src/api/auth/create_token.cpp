@@ -56,7 +56,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
-    if(MisakaRoot::usersTable->getUserByName(userData, userName, error) == false)
+    if(MisakaRoot::usersTable->getUserByName(userData, userName, error, true) == false)
     {
         status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
         error.addMeesage(status.errorMessage);

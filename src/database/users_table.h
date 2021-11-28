@@ -24,7 +24,7 @@
 #define USERS_TABLE_H
 
 #include <libKitsunemimiCommon/logger.h>
-#include <libKitsunemimiSakuraDatabase/sql_table.h>
+#include <libKitsunemimiHanamiDatabase/hanami_sql_table.h>
 
 namespace Kitsunemimi {
 namespace Json {
@@ -32,37 +32,22 @@ class JsonItem;
 }
 }
 class UsersTable
-        : public Kitsunemimi::Sakura::SqlTable
+        : public Kitsunemimi::Hanami::HanamiSqlTable
 {
 public:
-    struct UserData
-    {
-        std::string uuid = "";
-        std::string name = "";
-        std::string pwHash = "";
-        bool isAdmin = false;
-        std::vector<std::string> groups;
-    };
-
     UsersTable(Kitsunemimi::Sakura::SqlDatabase* db);
     ~UsersTable();
 
-    const std::string addUser(const UserData &data,
-                              Kitsunemimi::ErrorContainer &error);
+    bool addUser(Kitsunemimi::Json::JsonItem &userData,
+                 Kitsunemimi::ErrorContainer &error);
     bool getUserByName(Kitsunemimi::Json::JsonItem &result,
                        const std::string &userName,
-                       Kitsunemimi::ErrorContainer &error);
-    bool getUser(Kitsunemimi::Json::JsonItem &result,
-                 const std::string &uuid,
-                 Kitsunemimi::ErrorContainer &error);
+                       Kitsunemimi::ErrorContainer &error,
+                       const bool showHiddenValues = false);
     bool getAllUser(Kitsunemimi::TableItem &result,
                     Kitsunemimi::ErrorContainer &error);
     bool deleteUser(const std::string &userID,
                      Kitsunemimi::ErrorContainer &error);
-
-private:
-    void processGetResult(Kitsunemimi::Json::JsonItem &result,
-                          const Kitsunemimi::TableItem &tableContent);
 };
 
 #endif // USERS_TABLE_H
