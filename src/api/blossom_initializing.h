@@ -30,6 +30,8 @@
 #include <api/user/get_user.h>
 #include <api/user/list_users.h>
 
+#include  <api/documentation/generate_rest_api_docu.h>
+
 #include <api/auth/create_token.h>
 #include <api/auth/validate_access.h>
 
@@ -46,6 +48,18 @@ tokenBlossomes()
 
     assert(interface->addBlossom(group, "create", new CreateToken()));
     assert(interface->addBlossom(group, "validate", new ValidateAccess()));
+}
+
+/**
+ * @brief documentationBlossomes
+ */
+void
+documentationBlossomes()
+{
+    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    const std::string group = "documentation";
+
+    assert(interface->addBlossom(group, "generate_rest_api", new GenerateRestApiDocu()));
 }
 
 /**
@@ -66,6 +80,7 @@ void
 initBlossoms()
 {
     userBlossomes();
+    documentationBlossomes();
     tokenBlossomes();
 }
 

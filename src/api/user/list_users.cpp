@@ -28,10 +28,15 @@
 using namespace Kitsunemimi::Sakura;
 
 ListUsers::ListUsers()
-    : Kitsunemimi::Sakura::Blossom()
+    : Kitsunemimi::Sakura::Blossom("Get information of all registered user as table.")
 {
-    registerOutputField("header");
-    registerOutputField("body");
+    registerOutputField("header",
+                        SAKURA_ARRAY_TYPE,
+                        "Array with the namings all columns of the table.");
+
+    registerOutputField("body",
+                        SAKURA_ARRAY_TYPE,
+                        "Array with all rows of the table, which array arrays too.");
 }
 
 /**

@@ -31,14 +31,28 @@
 using namespace Kitsunemimi::Sakura;
 
 GetUser::GetUser()
-    : Kitsunemimi::Sakura::Blossom()
+    : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
 {
-    registerInputField("user_name", true);
+    registerInputField("user_name",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "Name of the user.");
 
-    registerOutputField("uuid");
-    registerOutputField("user_name");
-    registerOutputField("is_admin");
-    registerOutputField("groups");
+    // output
+    registerOutputField("uuid",
+                        SAKURA_STRING_TYPE,
+                        "UUID of the new user.");
+    registerOutputField("user_name",
+                        SAKURA_STRING_TYPE,
+                        "Name of the new user.");
+    registerOutputField("is_admin",
+                        SAKURA_STRING_TYPE,
+                        "Set this to true to register the new user as admin.");
+    registerOutputField("roles",
+                        SAKURA_STRING_TYPE,
+                        "Comma-separated list of roles of the user.");
+
+    //TODO: hanle projects
 }
 
 /**

@@ -106,6 +106,7 @@ SOURCES += src/main.cpp \
     src/api/user/create_user.cpp \
     src/api/user/get_user.cpp \
     src/api/user/list_users.cpp \
+    src/api/documentation/generate_rest_api_docu.cpp \
     src/misaka_root.cpp \
     src/database/users_table.cpp
 
@@ -119,5 +120,6 @@ HEADERS += \
     src/args.h \
     src/callbacks.h \
     src/config.h \
+    src/api/documentation/generate_rest_api_docu.h \
     src/misaka_root.h \
     src/database/users_table.h

@@ -33,18 +33,45 @@
 using namespace Kitsunemimi::Sakura;
 
 CreateUser::CreateUser()
-    : Kitsunemimi::Sakura::Blossom()
+    : Kitsunemimi::Sakura::Blossom("Register a new user within Misaka.")
 {
-    registerInputField("user_name",     true);
-    registerInputField("user_projects", true);
-    registerInputField("user_roles",    true);
-    registerInputField("pw",            true);
-    registerInputField("is_admin",      true);
+    // input
+    registerInputField("user_name",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "Name of the new user.");
+    registerInputField("user_projects",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "Comma-separated list of projects of the user.");
+    registerInputField("user_roles",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "Comma-separated list of roles of the user.");
+    registerInputField("pw",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "Passphrase of the user.");
+    registerInputField("is_admin",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "Set this to 1 to register the new user as admin.");
 
-    registerOutputField("uuid");
-    registerOutputField("user_name");
-    registerOutputField("is_admin");
-    registerOutputField("roles");
+    // output
+    registerOutputField("uuid",
+                        SAKURA_STRING_TYPE,
+                        "UUID of the new user.");
+    registerOutputField("user_name",
+                        SAKURA_STRING_TYPE,
+                        "Name of the new user.");
+    registerOutputField("is_admin",
+                        SAKURA_STRING_TYPE,
+                        "Show if the user is an admin or not.");
+    registerOutputField("roles",
+                        SAKURA_STRING_TYPE,
+                        "Comma-separated list of roles of the user.");
+
+    //TODO: hanle projects
 }
 
 /**

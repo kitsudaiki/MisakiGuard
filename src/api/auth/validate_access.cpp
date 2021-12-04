@@ -36,17 +36,41 @@ using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
 
 ValidateAccess::ValidateAccess()
-    : Kitsunemimi::Sakura::Blossom()
+    : Kitsunemimi::Sakura::Blossom("Checks if a JWT-access-token of a user is valid or not "
+                                   "and optional check if the user is allowed by its roles "
+                                   "and the policy to access a specific endpoint.")
 {
-    registerInputField("token", true);
-    registerInputField("component", false);
-    registerInputField("endpoint", false);
-    registerInputField("http_type", false);
+    registerInputField("token",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "User specific JWT-access-token.");
+    registerInputField("component",
+                       SAKURA_STRING_TYPE,
+                       false,
+                       "Requested component-name of the request. If this is not set, then only "
+                       "the token in itself will be validated.");
+    registerInputField("endpoint",
+                       SAKURA_STRING_TYPE,
+                       false,
+                       "Requesed endpoint within the component.");
+    registerInputField("http_type",
+                       SAKURA_INT_TYPE,
+                       false,
+                       "Type of the HTTP-request as enum "
+                       "(DELETE = 1, GET = 2, POST = 4, PUT = 5).");
 
-    registerOutputField("uuid");
-    registerOutputField("name");
-    registerOutputField("is_admin");
-    registerOutputField("roles");
+    registerOutputField("uuid",
+                        SAKURA_STRING_TYPE,
+                        "UUID of the user.");
+    registerOutputField("name",
+                        SAKURA_STRING_TYPE,
+                        "Name of the user.");
+    registerOutputField("is_admin",
+                        SAKURA_STRING_TYPE,
+                        "Show if the user is an admin or not.");
+    registerOutputField("roles",
+                        SAKURA_STRING_TYPE,
+                        "Comma-separated liste of all roles of the user.");
 }
 
 /**
