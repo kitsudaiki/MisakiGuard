@@ -53,7 +53,7 @@ CreateUser::CreateUser()
                        true,
                        "Passphrase of the user.");
     registerInputField("is_admin",
-                       SAKURA_STRING_TYPE,
+                       SAKURA_BOOL_TYPE,
                        true,
                        "Set this to 1 to register the new user as admin.");
 
@@ -65,7 +65,7 @@ CreateUser::CreateUser()
                         SAKURA_STRING_TYPE,
                         "Name of the new user.");
     registerOutputField("is_admin",
-                        SAKURA_STRING_TYPE,
+                        SAKURA_BOOL_TYPE,
                         "Show if the user is an admin or not.");
     registerOutputField("roles",
                         SAKURA_STRING_TYPE,
