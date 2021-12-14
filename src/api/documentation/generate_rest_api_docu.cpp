@@ -100,7 +100,7 @@ requestComponent(std::string &completeDocumentation,
  */
 bool
 makeInternalRequest(std::string &completeDocumentation,
-                    Kitsunemimi::ErrorContainer &error)
+                    Kitsunemimi::ErrorContainer &)
 {
     const std::string localComponent = SupportedComponents::getInstance()->localComponent;
 

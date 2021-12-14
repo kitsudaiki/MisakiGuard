@@ -101,6 +101,7 @@ INCLUDEPATH += $$PWD \
                src
 
 SOURCES += src/main.cpp \
+    src/api/auth/create_internal_token.cpp \
     src/api/auth/create_token.cpp \
     src/api/auth/validate_access.cpp \
     src/api/user/create_user.cpp \
@@ -111,6 +112,7 @@ SOURCES += src/main.cpp \
     src/database/users_table.cpp
 
 HEADERS += \
+    src/api/auth/create_internal_token.h \
     src/api/auth/create_token.h \
     src/api/auth/validate_access.h \
     src/api/blossom_initializing.h \

@@ -26,12 +26,15 @@
 #include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
 #include <libKitsunemimiCommon/logger.h>
 
+#include <libKitsunemimiHanamiEndpoints/endpoint.h>
+
 #include <api/user/create_user.h>
 #include <api/user/get_user.h>
 #include <api/user/list_users.h>
 
 #include  <api/documentation/generate_rest_api_docu.h>
 
+#include <api/auth/create_internal_token.h>
 #include <api/auth/create_token.h>
 #include <api/auth/validate_access.h>
 
@@ -43,11 +46,30 @@ using Kitsunemimi::Sakura::SakuraLangInterface;
 void
 tokenBlossomes()
 {
+    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
     const std::string group = "token";
 
     assert(interface->addBlossom(group, "create", new CreateToken()));
+    assert(endpoints->addEndpoint("token",
+                                  Kitsunemimi::Hanami::GET_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "create"));
+
+    assert(interface->addBlossom(group, "create_internal", new CreateInternalToken()));
+    assert(endpoints->addEndpoint("token/internal",
+                                  Kitsunemimi::Hanami::GET_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "create_internal"));
+
     assert(interface->addBlossom(group, "validate", new ValidateAccess()));
+    assert(endpoints->addEndpoint("auth",
+                                  Kitsunemimi::Hanami::GET_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "validate"));
 }
 
 /**
@@ -56,10 +78,16 @@ tokenBlossomes()
 void
 documentationBlossomes()
 {
+    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
     const std::string group = "documentation";
 
     assert(interface->addBlossom(group, "generate_rest_api", new GenerateRestApiDocu()));
+    assert(endpoints->addEndpoint("documentation/api/rest",
+                                  Kitsunemimi::Hanami::GET_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "generate_rest_api"));
 }
 
 /**
@@ -68,12 +96,30 @@ documentationBlossomes()
 void
 userBlossomes()
 {
+    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
     const std::string group = "user";
 
     assert(interface->addBlossom(group, "create", new CreateUser()));
+    assert(endpoints->addEndpoint("user",
+                                  Kitsunemimi::Hanami::POST_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "create"));
+
     assert(interface->addBlossom(group, "get", new GetUser()));
+    assert(endpoints->addEndpoint("user",
+                                  Kitsunemimi::Hanami::GET_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "get"));
+
     assert(interface->addBlossom(group, "list", new ListUsers()));
+    assert(endpoints->addEndpoint("users",
+                                  Kitsunemimi::Hanami::GET_TYPE,
+                                  Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                                  group,
+                                  "list"));
 }
 
 void
