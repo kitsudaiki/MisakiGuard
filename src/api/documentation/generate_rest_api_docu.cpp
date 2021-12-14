@@ -64,7 +64,7 @@ GenerateRestApiDocu::GenerateRestApiDocu()
  * @param request prebuild request-object
  * @param error reference for error-output
  *
- * @return
+ * @return true, if successfull and response is positive, else false
  */
 bool
 requestComponent(std::string &completeDocumentation,
@@ -76,9 +76,7 @@ requestComponent(std::string &completeDocumentation,
     Kitsunemimi::Hanami::ResponseMessage response;
 
     // send request to the target
-    if(msg->triggerSakuraFile(component, response, request, error) == false)
-    {
-        LOG_ERROR(error);
+    if(msg->triggerSakuraFile(component, response, request, error) == false) {
         return false;
     }
 
@@ -86,7 +84,6 @@ requestComponent(std::string &completeDocumentation,
     if(response.success == false)
     {
         error.addMeesage(response.responseContent);
-        LOG_ERROR(error);
         return false;
     }
 
@@ -94,7 +91,6 @@ requestComponent(std::string &completeDocumentation,
     Kitsunemimi::Json::JsonItem jsonItem;
     if(jsonItem.parse(response.responseContent, error) == false)
     {
-        LOG_ERROR(error);
         return false;
     }
 
@@ -104,7 +100,6 @@ requestComponent(std::string &completeDocumentation,
     if(Kitsunemimi::Crypto::decodeBase64(rstDocu, componentDocu) == false)
     {
         error.addMeesage("Unable to convert documentation-payload from base64 back to rst");
-        LOG_ERROR(error);
         return false;
     }
 
