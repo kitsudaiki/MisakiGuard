@@ -33,15 +33,20 @@
 
 using namespace Kitsunemimi::Sakura;
 
+/**
+ * @brief constructor
+ */
 CreateInternalToken::CreateInternalToken()
     : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a internal services, "
                                    "which can not be used from the outside.")
 {
+    // input
     registerInputField("service_name",
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the service.");
 
+    // output
     registerOutputField("token",
                         SAKURA_STRING_TYPE,
                         "New JWT-access-token for the service.");

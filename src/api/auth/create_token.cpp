@@ -31,9 +31,13 @@
 
 using namespace Kitsunemimi::Sakura;
 
+/**
+ * @brief constructor
+ */
 CreateToken::CreateToken()
     : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a specific user.")
 {
+    // input
     registerInputField("user_name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -43,6 +47,7 @@ CreateToken::CreateToken()
                        true,
                        "Passphrase of the user, to verify the access.");
 
+    // output
     registerOutputField("token",
                         SAKURA_STRING_TYPE,
                         "New JWT-access-token for the user.");

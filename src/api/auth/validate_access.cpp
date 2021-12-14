@@ -35,11 +35,15 @@
 using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
 
+/**
+ * @brief constructor
+ */
 ValidateAccess::ValidateAccess()
     : Kitsunemimi::Sakura::Blossom("Checks if a JWT-access-token of a user is valid or not "
                                    "and optional check if the user is allowed by its roles "
                                    "and the policy to access a specific endpoint.")
 {
+    // input
     registerInputField("token",
                        SAKURA_STRING_TYPE,
                        true,
@@ -59,6 +63,7 @@ ValidateAccess::ValidateAccess()
                        "Type of the HTTP-request as enum "
                        "(DELETE = 1, GET = 2, POST = 4, PUT = 5).");
 
+    // output
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the user.");

@@ -32,6 +32,9 @@
 
 using namespace Kitsunemimi::Sakura;
 
+/**
+ * @brief constructor
+ */
 CreateUser::CreateUser()
     : Kitsunemimi::Sakura::Blossom("Register a new user within Misaka.")
 {

@@ -43,11 +43,14 @@ using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::SupportedComponents;
 using Kitsunemimi::Sakura::SakuraLangInterface;
 
-
+/**
+ * @brief constructor
+ */
 GenerateRestApiDocu::GenerateRestApiDocu()
     : Kitsunemimi::Sakura::Blossom("Generate a user-specific documentation for the REST-API "
                                    "of all available components.")
 {
+    // output
     registerOutputField("documentation",
                         SAKURA_STRING_TYPE,
                         "REST-API-documentation as base64 converted string.");

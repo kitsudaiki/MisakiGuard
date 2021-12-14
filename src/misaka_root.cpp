@@ -33,11 +33,15 @@ UsersTable* MisakaRoot::usersTable = nullptr;
 Kitsunemimi::Sakura::SqlDatabase* MisakaRoot::database = nullptr;
 Kitsunemimi::Hanami::Policy* MisakaRoot::policies = nullptr;
 
+/**
+ * @brief constructor
+ */
 MisakaRoot::MisakaRoot() {}
 
 /**
- * @brief MisakaRoot::init
- * @return
+ * @brief init root-object
+ *
+ * @return true, if successfull, else false
  */
 bool
 MisakaRoot::init()

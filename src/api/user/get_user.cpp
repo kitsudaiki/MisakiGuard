@@ -30,9 +30,13 @@
 
 using namespace Kitsunemimi::Sakura;
 
+/**
+ * @brief constructor
+ */
 GetUser::GetUser()
     : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
 {
+    // input
     registerInputField("user_name",
                        SAKURA_STRING_TYPE,
                        true,

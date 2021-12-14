@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // create root-object to start all remaining functions
     MisakaRoot rootObj;
     if(rootObj.init() == false) {
         return 1;

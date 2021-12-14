@@ -28,6 +28,9 @@
 
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
 
+/**
+ * @brief constructor
+ */
 UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     : HanamiSqlTable(db)
 {
@@ -61,10 +64,12 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
 UsersTable::~UsersTable() {}
 
 /**
- * @brief Users::addUser
- * @param data
- * @param errorMessage
- * @return
+ * @brief add a new user to the database
+ *
+ * @param userData json-item with all information of the user to add to database
+ * @param error reference for error-output
+ *
+ * @return true, if successfull, else false
  */
 bool
 UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
@@ -74,12 +79,14 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
 }
 
 /**
- * @brief UsersTable::getUserByName
- * @param result
- * @param tableContent
- * @param userName
- * @param error
- * @return
+ * @brief get a user from the database by his name
+ *
+ * @param result reference for the result-output in case that a user with this name was found
+ * @param userName name of the requested user
+ * @param error reference for error-output
+ * @param showHiddenValues set to true to also show as hidden marked fields
+ *
+ * @return true, if successfull, else false
  */
 bool
 UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
@@ -101,9 +108,12 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
 }
 
 /**
- * @brief UsersDatabase::getAllUser
- * @param error
- * @return
+ * @brief get all users from the database table
+ *
+ * @param result reference for the result-output
+ * @param error reference for error-output
+ *
+ * @return true, if successfull, else false
  */
 bool
 UsersTable::getAllUser(Kitsunemimi::TableItem &result,
@@ -113,10 +123,12 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
 }
 
 /**
- * @brief UsersDatabase::deleteUser
- * @param userID
- * @param error
- * @return
+ * @brief delete a user from the table
+ *
+ * @param userName name of the user to delete
+ * @param error reference for error-output
+ *
+ * @return true, if successfull, else false
  */
 bool
 UsersTable::deleteUser(const std::string &userName,
