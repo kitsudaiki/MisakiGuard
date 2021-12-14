@@ -54,9 +54,14 @@ GenerateRestApiDocu::GenerateRestApiDocu()
 }
 
 /**
- * @brief handleResponse
- * @param completeDocumentation
- * @param response
+ * @brief request another component for its documentation
+ *
+ * @param completeDocumentation reference for the final document to attach new content
+ * @param component name of the requested component
+ * @param request prebuild request-object
+ * @param error reference for error-output
+ *
+ * @return
  */
 bool
 requestComponent(std::string &completeDocumentation,
@@ -67,25 +72,40 @@ requestComponent(std::string &completeDocumentation,
     Kitsunemimi::Hanami::HanamiMessaging* msg = Kitsunemimi::Hanami::HanamiMessaging::getInstance();
     Kitsunemimi::Hanami::ResponseMessage response;
 
-    if(msg->triggerSakuraFile(component, response, request, error) == false) {
+    // send request to the target
+    if(msg->triggerSakuraFile(component, response, request, error) == false)
+    {
+        LOG_ERROR(error);
         return false;
     }
 
-    if(response.success == false) {
+    // check response
+    if(response.success == false)
+    {
+        error.addMeesage(response.responseContent);
+        LOG_ERROR(error);
         return false;
     }
 
+    // parse result
     Kitsunemimi::Json::JsonItem jsonItem;
-    if(jsonItem.parse(response.responseContent, error) == false) {
+    if(jsonItem.parse(response.responseContent, error) == false)
+    {
+        LOG_ERROR(error);
         return false;
     }
 
+    // get payload and convert it from base64 back to rst-file-format
     std::string rstDocu;
     const std::string componentDocu = jsonItem.get("documentation").getString();
-    if(Kitsunemimi::Crypto::decodeBase64(rstDocu, componentDocu) == false) {
+    if(Kitsunemimi::Crypto::decodeBase64(rstDocu, componentDocu) == false)
+    {
+        error.addMeesage("Unable to convert documentation-payload from base64 back to rst");
+        LOG_ERROR(error);
         return false;
     }
 
+    // attach new text to the final document
     completeDocumentation.append("\n");
     completeDocumentation.append(rstDocu);
 
@@ -93,30 +113,26 @@ requestComponent(std::string &completeDocumentation,
 }
 
 /**
- * @brief makeInternalRequest
- * @param completeDocumentation
- * @param error
- * @return
+ * @brief request endpoint-documentation from misaka itself
+ *
+ * @param completeDocumentation reference for the final document to attach new content
  */
-bool
-makeInternalRequest(std::string &completeDocumentation,
-                    Kitsunemimi::ErrorContainer &)
+void
+makeInternalRequest(std::string &completeDocumentation)
 {
-    const std::string localComponent = SupportedComponents::getInstance()->localComponent;
+    const std::string* localComponent = &SupportedComponents::getInstance()->localComponent;
 
     std::string documentsion = "";
-    documentsion.append(localComponent);
+    documentsion.append(*localComponent);
     Kitsunemimi::toUpperCase(documentsion);
     documentsion.append("\n");
-    documentsion.append(localComponent.size(), '=');
+    documentsion.append(localComponent->size(), '=');
     documentsion.append("\n");
 
     Kitsunemimi::Hanami::HanamiMessaging::getInstance()->generateDocu(documentsion);
 
     completeDocumentation.append("\n");
     completeDocumentation.append(documentsion);
-
-    return true;
 }
 
 /**
@@ -130,61 +146,55 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
 {
     const std::string roles = context.getStringByKey("user_roles");
 
+    // create request for remote-calls
     Kitsunemimi::Hanami::RequestMessage request;
     request.id = "documentation/api";
     request.httpType = Kitsunemimi::Hanami::GET_TYPE;
-    const std::string token = context.getStringByKey("token");
-    request.inputValues = "{ \"token\" : \"" + token + "\"}";
+    request.inputValues = "{ \"token\" : \"" + context.getStringByKey("token") + "\"}";
 
+    // create header of the final document
     std::string completeDocumentation = "";
-
     completeDocumentation.append("*****************\n");
     completeDocumentation.append("API documentation\n");
     completeDocumentation.append("*****************\n\n");
 
     SupportedComponents* scomp = SupportedComponents::getInstance();
 
-    if(makeInternalRequest(completeDocumentation, error) == false)
+    //----------------------------------------------------------------------------------------------
+    makeInternalRequest(completeDocumentation);
+    //----------------------------------------------------------------------------------------------
+    if(scomp->support[Kitsunemimi::Hanami::KYOUKO]
+            && requestComponent(completeDocumentation, "kyouko", request, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        return false;
     }
-
-    if(scomp->support[Kitsunemimi::Hanami::KYOUKO])
+    //----------------------------------------------------------------------------------------------
+    if(scomp->support[Kitsunemimi::Hanami::AZUKI]
+            && requestComponent(completeDocumentation, "azuki", request, error) == false)
     {
-        if(requestComponent(completeDocumentation, "kyouko", request, error) == false) {
-            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        }
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
-
-    if(scomp->support[Kitsunemimi::Hanami::AZUKI])
+    //----------------------------------------------------------------------------------------------
+    if(scomp->support[Kitsunemimi::Hanami::SAGIRI]
+            && requestComponent(completeDocumentation, "sagiri", request, error) == false)
     {
-        if(requestComponent(completeDocumentation, "azuki", request, error) == false) {
-            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        }
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
-
-    if(scomp->support[Kitsunemimi::Hanami::SAGIRI])
+    //----------------------------------------------------------------------------------------------
+    if(scomp->support[Kitsunemimi::Hanami::NAGATO]
+            && requestComponent(completeDocumentation, "nagato", request, error) == false)
     {
-        if(requestComponent(completeDocumentation, "sagiri", request, error) == false) {
-            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        }
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
-
-    if(scomp->support[Kitsunemimi::Hanami::NAGATO])
+    //----------------------------------------------------------------------------------------------
+    if(scomp->support[Kitsunemimi::Hanami::IZUNA]
+            && requestComponent(completeDocumentation, "izuna", request, error) == false)
     {
-        if(requestComponent(completeDocumentation, "nagato", request, error) == false) {
-            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        }
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
+    //----------------------------------------------------------------------------------------------
 
-    if(scomp->support[Kitsunemimi::Hanami::IZUNA])
-    {
-        if(requestComponent(completeDocumentation, "izuna", request, error) == false) {
-            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        }
-    }
-
+    // create unique temporary directory
     const std::string uuid = Kitsunemimi::Hanami::generateUuid().toString();
     if(Kitsunemimi::createDirectory("/tmp/" + uuid, error) == false)
     {
@@ -193,9 +203,11 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
+    // define file-paths
     const std::string rstPath = "/tmp/" + uuid + "/rest_api_docu.rst";
     const std::string pdfPath = "/tmp/" + uuid + "/output.pdf";
 
+    // write complete rst-content to the source-file
     if(Kitsunemimi::writeFile(rstPath, completeDocumentation, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
@@ -203,22 +215,26 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
+    // run rst2pdf to convert the rst-document into a pdf-document
     std::vector<std::string> args;
     args.reserve(2);
     args.emplace_back(rstPath);
     args.emplace_back(pdfPath);
     Kitsunemimi::runSyncProcess("rst2pdf", args);
 
+    // read pdf-document into a byte-buffer
     Kitsunemimi::DataBuffer pdfContent;
     Kitsunemimi::BinaryFile pdfFile(pdfPath);
     pdfFile.readCompleteFile(pdfContent);
     pdfFile.closeFile();
-    Kitsunemimi::deleteFileOrDir("/tmp/" + uuid, error);
 
+    // create output for the client
     std::string output;
     Kitsunemimi::Crypto::encodeBase64(output, pdfContent.data, pdfContent.usedBufferSize);
-
     blossomLeaf.output.insert("documentation", new Kitsunemimi::DataValue(output));
+
+    // delete temporary directory again
+    Kitsunemimi::deleteFileOrDir("/tmp/" + uuid, error);
 
     return true;
 }
