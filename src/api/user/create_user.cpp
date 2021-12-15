@@ -90,15 +90,15 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
 
     // genreate hash from password
     std::string pwHash;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.getStringByKey("pw"));
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
 
     // convert values
-    const std::string userName = blossomLeaf.input.getStringByKey("user_name");
+    const std::string userName = blossomLeaf.input.get("user_name").getString();
     userData.insert("user_name", userName);
-    userData.insert("user_roles", blossomLeaf.input.getStringByKey("user_roles"));
-    userData.insert("user_projects", blossomLeaf.input.getStringByKey("user_projects"));
+    userData.insert("user_roles", blossomLeaf.input.get("user_roles"));
+    userData.insert("user_projects", blossomLeaf.input.get("user_projects"));
     userData.insert("pw_hash", pwHash);
-    userData.insert("is_admin", blossomLeaf.input.get("is_admin")->toValue()->getBool());
+    userData.insert("is_admin", blossomLeaf.input.get("is_admin").getBool());
     userData.insert("project_uuid", "-");
     userData.insert("owner_uuid", "-");
     userData.insert("visibility", 0);
@@ -114,15 +114,11 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    Kitsunemimi::Json::JsonItem outputData;
-    if(MisakaRoot::usersTable->getUserByName(outputData, userName, error) == false)
+    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output, userName, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
-
-    // create response
-    blossomLeaf.output = *outputData.getItemContent()->toMap();
 
     return true;
 }

@@ -88,14 +88,13 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
                         Kitsunemimi::ErrorContainer &error)
 {
     // collect information from the input
-    const std::string token = blossomLeaf.input.getStringByKey("token");
-    const std::string component = blossomLeaf.input.getStringByKey("component");
-    const std::string endpoint = blossomLeaf.input.getStringByKey("endpoint");
+    const std::string token = blossomLeaf.input.get("token").getString();
+    const std::string component = blossomLeaf.input.get("component").getString();
+    const std::string endpoint = blossomLeaf.input.get("endpoint").getString();
 
     // validate token
-    Kitsunemimi::Json::JsonItem payload;
     std::string publicError;
-    if(MisakaRoot::jwt->validateToken(payload, token, publicError, error) == false)
+    if(MisakaRoot::jwt->validateToken(blossomLeaf.output, token, publicError, error) == false)
     {
         error.addMeesage("Misaka failed to validate JWT-Token");
         status.errorMessage = publicError;
@@ -114,12 +113,12 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
             return false;
         }
 
-        const uint32_t httpTypeValue = blossomLeaf.input.get("http_type")->toValue()->getInt();
+        const uint32_t httpTypeValue = blossomLeaf.input.get("http_type").getInt();
         const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
         // process payload to get roles of user
         std::vector<std::string> roles;
-        const std::string rolestring = payload.get("user_roles").getString();
+        const std::string rolestring = blossomLeaf.output.get("user_roles").getString();
         Kitsunemimi::splitStringByDelimiter(roles, rolestring, ',');
 
         // check policy
@@ -141,9 +140,8 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
         }
     }
 
-    // create output
-    payload.remove("pw_hash");
-    blossomLeaf.output = *payload.getItemContent()->toMap();
+    // remove password-hash, because it is not relevant for the user
+    blossomLeaf.output.remove("pw_hash");
 
     return true;
 }

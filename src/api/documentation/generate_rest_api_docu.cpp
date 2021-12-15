@@ -229,7 +229,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     // create output for the client
     std::string output;
     Kitsunemimi::Crypto::encodeBase64(output, pdfContent.data, pdfContent.usedBufferSize);
-    blossomLeaf.output.insert("documentation", new Kitsunemimi::DataValue(output));
+    blossomLeaf.output.insert("documentation", output);
 
     // delete temporary directory again
     Kitsunemimi::deleteFileOrDir("/tmp/" + uuid, error);

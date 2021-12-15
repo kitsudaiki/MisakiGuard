@@ -62,7 +62,7 @@ CreateInternalToken::runTask(BlossomLeaf &blossomLeaf,
                              Kitsunemimi::ErrorContainer &)
 {
     // get information from request
-    const std::string serviceName = blossomLeaf.input.getStringByKey("service_name");
+    const std::string serviceName = blossomLeaf.input.get("service_name").getString();
 
     // create struct with the payload for the token
     Kitsunemimi::Json::JsonItem serviceData;
@@ -82,7 +82,7 @@ CreateInternalToken::runTask(BlossomLeaf &blossomLeaf,
     jwtToken = splitedContent.at(0) + "." + splitedContent.at(1) + "._";
 
     // create output
-    blossomLeaf.output.insert("token", new Kitsunemimi::DataValue(jwtToken));
+    blossomLeaf.output.insert("token", jwtToken);
 
     return true;
 }

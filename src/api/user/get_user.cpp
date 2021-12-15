@@ -69,18 +69,15 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
                  Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
-    const std::string userName = blossomLeaf.input.getStringByKey("user_name");
+    const std::string userName = blossomLeaf.input.get("user_name").getString();
 
     // get data from table
-    Kitsunemimi::Json::JsonItem userData;
-    if(MisakaRoot::usersTable->getUserByName(userData, userName, error) == false)
+    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output, userName, error) == false)
     {
         status.errorMessage = "User with name '" + userName + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
-
-    blossomLeaf.output = *userData.getItemContent()->toMap();
 
     return true;
 }

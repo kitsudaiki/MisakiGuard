@@ -63,9 +63,9 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
                      Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
-    const std::string userName = blossomLeaf.input.getStringByKey("user_name");
+    const std::string userName = blossomLeaf.input.get("user_name").getString();
     std::string pwHash = "";
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.getStringByKey("pw"));
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
@@ -90,6 +90,6 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     std::string jwtToken;
     userData.remove("pw_hash");
     MisakaRoot::jwt->create_HS256_Token(jwtToken, userData, 3600);
-    blossomLeaf.output.insert("token", new Kitsunemimi::DataValue(jwtToken));
+    blossomLeaf.output.insert("token", jwtToken);
     return true;
 }
