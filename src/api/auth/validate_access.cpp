@@ -67,15 +67,18 @@ ValidateAccess::ValidateAccess()
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the user.");
-    registerOutputField("name",
+    registerOutputField("user_name",
                         SAKURA_STRING_TYPE,
                         "Name of the user.");
     registerOutputField("is_admin",
-                        SAKURA_STRING_TYPE,
+                        SAKURA_BOOL_TYPE,
                         "Show if the user is an admin or not.");
-    registerOutputField("roles",
+    registerOutputField("user_roles",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all roles of the user.");
+    registerOutputField("user_projects",
+                        SAKURA_STRING_TYPE,
+                        "Comma-separated liste of all projects of the user.");
 }
 
 /**
@@ -140,8 +143,14 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
         }
     }
 
-    // remove password-hash, because it is not relevant for the user
+    // remove irrelevant fields
     blossomLeaf.output.remove("pw_hash");
+    blossomLeaf.output.remove("exp");
+    blossomLeaf.output.remove("iat");
+    blossomLeaf.output.remove("nbf");
+    blossomLeaf.output.remove("owner_uuid");
+    blossomLeaf.output.remove("project_uuid");
+    blossomLeaf.output.remove("visibility");
 
     return true;
 }
