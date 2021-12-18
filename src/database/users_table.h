@@ -46,7 +46,7 @@ public:
                        const bool showHiddenValues = false);
     bool getAllUser(Kitsunemimi::TableItem &result,
                     Kitsunemimi::ErrorContainer &error);
-    bool deleteUser(const std::string &userID,
+    bool deleteUser(const std::string &userName,
                      Kitsunemimi::ErrorContainer &error);
 };
 

@@ -1,5 +1,5 @@
 /**
- * @file        create_user.h
+ * @file        delete_user.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,16 +20,16 @@
  *      limitations under the License.
  */
 
-#ifndef CREATEUSER_H
-#define CREATEUSER_H
+#ifndef DELETEUSER_H
+#define DELETEUSER_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
-class CreateUser
+class DeleteUser
         : public Kitsunemimi::Sakura::Blossom
 {
 public:
-    CreateUser();
+    DeleteUser();
 
 protected:
     bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // CREATEUSER_H
+#endif // DELETEUSER_H

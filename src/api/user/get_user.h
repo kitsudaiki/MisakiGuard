@@ -1,5 +1,5 @@
 /**
- * @file        create_token.h
+ * @file        get_user.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *

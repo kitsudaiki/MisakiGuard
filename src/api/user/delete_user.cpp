@@ -1,5 +1,5 @@
 /**
- * @file        get_user.cpp
+ * @file        delete_user.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include "get_user.h"
+#include "delete_user.h"
 
 #include <misaka_root.h>
 
@@ -33,7 +33,7 @@ using namespace Kitsunemimi::Sakura;
 /**
  * @brief constructor
  */
-GetUser::GetUser()
+DeleteUser::DeleteUser()
     : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
 {
     // input
@@ -41,49 +41,27 @@ GetUser::GetUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the user.");
-
-    // output
-    registerOutputField("uuid",
-                        SAKURA_STRING_TYPE,
-                        "UUID of the new user.");
-    registerOutputField("user_name",
-                        SAKURA_STRING_TYPE,
-                        "Name of the new user.");
-    registerOutputField("is_admin",
-                        SAKURA_BOOL_TYPE,
-                        "Set this to true to register the new user as admin.");
-    registerOutputField("user_roles",
-                        SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all roles of the user.");
-    registerOutputField("user_projects",
-                        SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all projects of the user.");
 }
 
 /**
  * @brief runTask
  */
 bool
-GetUser::runTask(BlossomLeaf &blossomLeaf,
-                 const Kitsunemimi::DataMap &,
-                 BlossomStatus &status,
-                 Kitsunemimi::ErrorContainer &error)
+DeleteUser::runTask(BlossomLeaf &blossomLeaf,
+                    const Kitsunemimi::DataMap &,
+                    BlossomStatus &status,
+                    Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
     const std::string userName = blossomLeaf.input.get("user_name").getString();
 
     // get data from table
-    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output, userName, error) == false)
+    if(MisakaRoot::usersTable->deleteUser(userName, error) == false)
     {
         status.errorMessage = "User with name '" + userName + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
-
-    // remove irrelevant fields
-    blossomLeaf.output.remove("owner_uuid");
-    blossomLeaf.output.remove("project_uuid");
-    blossomLeaf.output.remove("visibility");
 
     return true;
 }

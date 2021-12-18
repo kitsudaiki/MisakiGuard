@@ -4,6 +4,11 @@ TARGET = MisakaGuard
 CONFIG += console c++17
 CONFIG -= app_bundle
 
+LIBS += -L../libKitsunemimiHanamiPredefinitions/src -lKitsunemimiHanamiPredefinitions
+LIBS += -L../libKitsunemimiHanamiPredefinitions/src/debug -lKitsunemimiHanamiPredefinitions
+LIBS += -L../libKitsunemimiHanamiPredefinitions/src/release -lKitsunemimiHanamiPredefinitions
+INCLUDEPATH += ../libKitsunemimiHanamiPredefinitions/include
+
 LIBS += -L../libKitsunemimiHanamiMessaging/src -lKitsunemimiHanamiMessaging
 LIBS += -L../libKitsunemimiHanamiMessaging/src/debug -lKitsunemimiHanamiMessaging
 LIBS += -L../libKitsunemimiHanamiMessaging/src/release -lKitsunemimiHanamiMessaging
@@ -105,6 +110,7 @@ SOURCES += src/main.cpp \
     src/api/auth/create_token.cpp \
     src/api/auth/validate_access.cpp \
     src/api/user/create_user.cpp \
+    src/api/user/delete_user.cpp \
     src/api/user/get_user.cpp \
     src/api/user/list_users.cpp \
     src/api/documentation/generate_rest_api_docu.cpp \
@@ -117,6 +123,7 @@ HEADERS += \
     src/api/auth/validate_access.h \
     src/api/blossom_initializing.h \
     src/api/user/create_user.h \
+    src/api/user/delete_user.h \
     src/api/user/get_user.h \
     src/api/user/list_users.h \
     src/args.h \

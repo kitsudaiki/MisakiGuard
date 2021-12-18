@@ -1,5 +1,5 @@
 /**
- * @file        create_token.h
+ * @file        list_users.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -58,6 +58,11 @@ ListUsers::runTask(BlossomLeaf &blossomLeaf,
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
+
+    table.deleteColumn("uuid");
+    table.deleteColumn("visibility");
+    table.deleteColumn("owner_uuid");
+    table.deleteColumn("project_uuid");
 
     blossomLeaf.output.insert("header", table.getInnerHeader());
     blossomLeaf.output.insert("body", table.getBody());
