@@ -69,12 +69,13 @@ CreateUser::CreateUser()
                         "Name of the new user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
-                        "Show if the user is an admin or not.");
-    registerOutputField("roles",
+                        "Set this to true to register the new user as admin.");
+    registerOutputField("user_roles",
                         SAKURA_STRING_TYPE,
-                        "Comma-separated list of roles of the user.");
-
-    //TODO: hanle projects
+                        "Comma-separated liste of all roles of the user.");
+    registerOutputField("user_projects",
+                        SAKURA_STRING_TYPE,
+                        "Comma-separated liste of all projects of the user.");
 }
 
 /**
@@ -119,6 +120,11 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
+
+    // remove irrelevant fields
+    blossomLeaf.output.remove("owner_uuid");
+    blossomLeaf.output.remove("project_uuid");
+    blossomLeaf.output.remove("visibility");
 
     return true;
 }

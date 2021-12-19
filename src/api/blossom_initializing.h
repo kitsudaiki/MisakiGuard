@@ -31,6 +31,7 @@
 #include <api/user/create_user.h>
 #include <api/user/get_user.h>
 #include <api/user/list_users.h>
+#include <api/user/delete_user.h>
 
 #include  <api/documentation/generate_rest_api_docu.h>
 
@@ -121,7 +122,7 @@ userBlossomes()
                            group,
                            "list");
 
-    assert(interface->addBlossom(group, "delete", new ListUsers()));
+    assert(interface->addBlossom(group, "delete", new DeleteUser()));
     endpoints->addEndpoint("user",
                            Kitsunemimi::Hanami::DELETE_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
