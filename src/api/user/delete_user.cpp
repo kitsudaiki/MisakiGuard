@@ -55,11 +55,19 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
     // get information from request
     const std::string userName = blossomLeaf.input.get("user_name").getString();
 
-    // get data from table
-    if(MisakaRoot::usersTable->deleteUser(userName, error) == false)
+    // check if user exist within the table
+    Kitsunemimi::Json::JsonItem getResult;
+    if(MisakaRoot::usersTable->getUserByName(getResult, userName, error) == false)
     {
         status.errorMessage = "User with name '" + userName + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        return false;
+    }
+
+    // get data from table
+    if(MisakaRoot::usersTable->deleteUser(userName, error) == false)
+    {
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 

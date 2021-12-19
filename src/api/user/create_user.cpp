@@ -88,13 +88,22 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
                     Kitsunemimi::ErrorContainer &error)
 {
     Kitsunemimi::Json::JsonItem userData;
+    const std::string userName = blossomLeaf.input.get("user_name").getString();
+
+    // check if user already exist within the table
+    Kitsunemimi::Json::JsonItem getResult;
+    if(MisakaRoot::usersTable->getUserByName(getResult, userName, error))
+    {
+        status.errorMessage = "User with name '" + userName + "' already exist.";
+        status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
+        return false;
+    }
 
     // genreate hash from password
     std::string pwHash;
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
 
     // convert values
-    const std::string userName = blossomLeaf.input.get("user_name").getString();
     userData.insert("user_name", userName);
     userData.insert("user_roles", blossomLeaf.input.get("user_roles"));
     userData.insert("user_projects", blossomLeaf.input.get("user_projects"));
