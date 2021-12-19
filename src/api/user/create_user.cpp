@@ -43,22 +43,34 @@ CreateUser::CreateUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the new user.");
+    // column in database is limited to 256 characters size
+    assert(addFieldBorder("user_name", 4, 256));
+    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+
     registerInputField("user_projects",
                        SAKURA_STRING_TYPE,
                        true,
                        "Comma-separated list of projects of the user.");
+    assert(addFieldRegex("user_projects", "[a-zA-Z][a-zA-Z_,0-9]*"));
+
     registerInputField("user_roles",
                        SAKURA_STRING_TYPE,
                        true,
                        "Comma-separated list of roles of the user.");
+    assert(addFieldRegex("user_projects", "[a-zA-Z][a-zA-Z_,0-9]*"));
+
     registerInputField("pw",
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user.");
+    assert(addFieldBorder("pw", 8, 4096));
+    assert(addFieldRegex("pw", "[^=]*"));  // no = allowed
+
     registerInputField("is_admin",
                        SAKURA_BOOL_TYPE,
-                       true,
+                       false,
                        "Set this to 1 to register the new user as admin.");
+    assert(addFieldDefault("is_admin", new Kitsunemimi::DataValue(false)));
 
     // output
     registerOutputField("uuid",

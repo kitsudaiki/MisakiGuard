@@ -41,6 +41,9 @@ DeleteUser::DeleteUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the user.");
+    // column in database is limited to 256 characters size
+    assert(addFieldBorder("user_name", 4, 256));
+    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
 }
 
 /**
