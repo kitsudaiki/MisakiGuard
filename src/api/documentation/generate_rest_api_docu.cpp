@@ -56,6 +56,25 @@ GenerateRestApiDocu::GenerateRestApiDocu()
                         "REST-API-documentation as base64 converted string.");
 }
 
+bool
+appendDocu(std::string &completeDocumentation,
+           const std::string &componentDocu,
+           Kitsunemimi::ErrorContainer &error)
+{
+    std::string rstDocu;
+    if(Kitsunemimi::Crypto::decodeBase64(rstDocu, componentDocu) == false)
+    {
+        error.addMeesage("Unable to convert documentation-payload from base64 back to rst");
+        return false;
+    }
+
+    // attach new text to the final document
+    completeDocumentation.append("\n");
+    completeDocumentation.append(rstDocu);
+
+    return true;
+}
+
 /**
  * @brief request another component for its documentation
  *
@@ -95,19 +114,9 @@ requestComponent(std::string &completeDocumentation,
     }
 
     // get payload and convert it from base64 back to rst-file-format
-    std::string rstDocu;
     const std::string componentDocu = jsonItem.get("documentation").getString();
-    if(Kitsunemimi::Crypto::decodeBase64(rstDocu, componentDocu) == false)
-    {
-        error.addMeesage("Unable to convert documentation-payload from base64 back to rst");
-        return false;
-    }
 
-    // attach new text to the final document
-    completeDocumentation.append("\n");
-    completeDocumentation.append(rstDocu);
-
-    return true;
+    return appendDocu(completeDocumentation, componentDocu, error);
 }
 
 /**
@@ -115,22 +124,25 @@ requestComponent(std::string &completeDocumentation,
  *
  * @param completeDocumentation reference for the final document to attach new content
  */
-void
+bool
 makeInternalRequest(std::string &completeDocumentation)
 {
-    const std::string* localComponent = &SupportedComponents::getInstance()->localComponent;
+    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    Kitsunemimi::DataMap result;
+    Kitsunemimi::ErrorContainer error;
+    Kitsunemimi::Sakura::BlossomStatus status;
+    const bool ret = interface->triggerBlossom(result,
+                                               "get_api_documentation",
+                                               "-",
+                                               Kitsunemimi::DataMap(),
+                                               Kitsunemimi::DataMap(),
+                                               status,
+                                               error);
+    if(ret == false) {
+        return false;
+    }
 
-    std::string documentsion = "";
-    documentsion.append(*localComponent);
-    Kitsunemimi::toUpperCase(documentsion);
-    documentsion.append("\n");
-    documentsion.append(localComponent->size(), '=');
-    documentsion.append("\n");
-
-    Kitsunemimi::Hanami::HanamiMessaging::getInstance()->generateDocu(documentsion);
-
-    completeDocumentation.append("\n");
-    completeDocumentation.append(documentsion);
+    return appendDocu(completeDocumentation, result.getStringByKey("documentation"), error);
 }
 
 /**
