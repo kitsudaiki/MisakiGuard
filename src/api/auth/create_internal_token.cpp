@@ -45,6 +45,8 @@ CreateInternalToken::CreateInternalToken()
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the service.");
+    assert(addFieldBorder("service_name", 4, 256));
+    assert(addFieldRegex("service_name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     // output
     registerOutputField("token",

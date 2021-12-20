@@ -48,20 +48,29 @@ ValidateAccess::ValidateAccess()
                        SAKURA_STRING_TYPE,
                        true,
                        "User specific JWT-access-token.");
+    assert(addFieldRegex("token", "[a-zA-Z_.0-9]*"));
+
     registerInputField("component",
                        SAKURA_STRING_TYPE,
                        false,
                        "Requested component-name of the request. If this is not set, then only "
                        "the token in itself will be validated.");
+    assert(addFieldBorder("component", 4, 256));
+    assert(addFieldRegex("component", "[a-zA-Z][a-zA-Z_0-9]*"));
+
     registerInputField("endpoint",
                        SAKURA_STRING_TYPE,
                        false,
                        "Requesed endpoint within the component.");
+    assert(addFieldBorder("endpoint", 4, 256));
+    assert(addFieldRegex("endpoint", "[a-zA-Z][a-zA-Z_/0-9]*"));
+
     registerInputField("http_type",
                        SAKURA_INT_TYPE,
                        false,
                        "Type of the HTTP-request as enum "
                        "(DELETE = 1, GET = 2, POST = 4, PUT = 5).");
+    assert(addFieldBorder("http_type", 1, 5));
 
     // output
     registerOutputField("uuid",

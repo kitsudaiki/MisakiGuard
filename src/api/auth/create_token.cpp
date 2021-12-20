@@ -42,10 +42,15 @@ CreateToken::CreateToken()
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the user.");
+    assert(addFieldBorder("user_name", 4, 256));
+    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+
     registerInputField("pw",
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user, to verify the access.");
+    assert(addFieldBorder("pw", 6, 4096));
+    assert(addFieldRegex("pw", "[^=]*"));  // no = allowed
 
     // output
     registerOutputField("token",

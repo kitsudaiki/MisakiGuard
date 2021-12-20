@@ -63,7 +63,7 @@ CreateUser::CreateUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user.");
-    assert(addFieldBorder("pw", 8, 4096));
+    assert(addFieldBorder("pw", 6, 4096));
     assert(addFieldRegex("pw", "[^=]*"));  // no = allowed
 
     registerInputField("is_admin",
