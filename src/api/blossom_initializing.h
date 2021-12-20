@@ -28,16 +28,16 @@
 
 #include <libKitsunemimiHanamiEndpoints/endpoint.h>
 
-#include <api/user/create_user.h>
-#include <api/user/get_user.h>
-#include <api/user/list_users.h>
-#include <api/user/delete_user.h>
+#include <api/v1/user/create_user.h>
+#include <api/v1/user/get_user.h>
+#include <api/v1/user/list_users.h>
+#include <api/v1/user/delete_user.h>
 
-#include  <api/documentation/generate_rest_api_docu.h>
+#include  <api/v1/documentation/generate_rest_api_docu.h>
 
-#include <api/auth/create_internal_token.h>
-#include <api/auth/create_token.h>
-#include <api/auth/validate_access.h>
+#include <api/v1/auth/create_internal_token.h>
+#include <api/v1/auth/create_token.h>
+#include <api/v1/auth/validate_access.h>
 
 using Kitsunemimi::Sakura::SakuraLangInterface;
 
@@ -52,21 +52,21 @@ tokenBlossomes()
     const std::string group = "token";
 
     assert(interface->addBlossom(group, "create", new CreateToken()));
-    endpoints->addEndpoint("token",
+    endpoints->addEndpoint("v1/token",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
 
     assert(interface->addBlossom(group, "create_internal", new CreateInternalToken()));
-    endpoints->addEndpoint("token/internal",
+    endpoints->addEndpoint("v1/token/internal",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create_internal");
 
     assert(interface->addBlossom(group, "validate", new ValidateAccess()));
-    endpoints->addEndpoint("auth",
+    endpoints->addEndpoint("v1/auth",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
@@ -84,7 +84,7 @@ documentationBlossomes()
     const std::string group = "documentation";
 
     assert(interface->addBlossom(group, "generate_rest_api", new GenerateRestApiDocu()));
-    endpoints->addEndpoint("documentation/api/rest",
+    endpoints->addEndpoint("v1/documentation/api/rest",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
@@ -102,28 +102,28 @@ userBlossomes()
     const std::string group = "user";
 
     assert(interface->addBlossom(group, "create", new CreateUser()));
-    endpoints->addEndpoint("user",
+    endpoints->addEndpoint("v1/user",
                            Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
 
     assert(interface->addBlossom(group, "get", new GetUser()));
-    endpoints->addEndpoint("user",
+    endpoints->addEndpoint("v1/user",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "get");
 
     assert(interface->addBlossom(group, "list", new ListUsers()));
-    endpoints->addEndpoint("user/all",
+    endpoints->addEndpoint("v1/user/all",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "list");
 
     assert(interface->addBlossom(group, "delete", new DeleteUser()));
-    endpoints->addEndpoint("user",
+    endpoints->addEndpoint("v1/user",
                            Kitsunemimi::Hanami::DELETE_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,

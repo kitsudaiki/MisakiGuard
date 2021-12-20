@@ -106,29 +106,29 @@ INCLUDEPATH += $$PWD \
                src
 
 SOURCES += src/main.cpp \
-    src/api/auth/create_internal_token.cpp \
-    src/api/auth/create_token.cpp \
-    src/api/auth/validate_access.cpp \
-    src/api/user/create_user.cpp \
-    src/api/user/delete_user.cpp \
-    src/api/user/get_user.cpp \
-    src/api/user/list_users.cpp \
-    src/api/documentation/generate_rest_api_docu.cpp \
+    src/api/v1/auth/create_internal_token.cpp \
+    src/api/v1/auth/create_token.cpp \
+    src/api/v1/auth/validate_access.cpp \
+    src/api/v1/user/create_user.cpp \
+    src/api/v1/user/delete_user.cpp \
+    src/api/v1/user/get_user.cpp \
+    src/api/v1/user/list_users.cpp \
+    src/api/v1/documentation/generate_rest_api_docu.cpp \
     src/misaka_root.cpp \
     src/database/users_table.cpp
 
 HEADERS += \
-    src/api/auth/create_internal_token.h \
-    src/api/auth/create_token.h \
-    src/api/auth/validate_access.h \
+    src/api/v1/auth/create_internal_token.h \
+    src/api/v1/auth/create_token.h \
+    src/api/v1/auth/validate_access.h \
     src/api/blossom_initializing.h \
-    src/api/user/create_user.h \
-    src/api/user/delete_user.h \
-    src/api/user/get_user.h \
-    src/api/user/list_users.h \
+    src/api/v1/user/create_user.h \
+    src/api/v1/user/delete_user.h \
+    src/api/v1/user/get_user.h \
+    src/api/v1/user/list_users.h \
     src/args.h \
     src/callbacks.h \
     src/config.h \
-    src/api/documentation/generate_rest_api_docu.h \
+    src/api/v1/documentation/generate_rest_api_docu.h \
     src/misaka_root.h \
     src/database/users_table.h

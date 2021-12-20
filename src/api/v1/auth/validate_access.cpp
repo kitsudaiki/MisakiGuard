@@ -48,7 +48,7 @@ ValidateAccess::ValidateAccess()
                        SAKURA_STRING_TYPE,
                        true,
                        "User specific JWT-access-token.");
-    assert(addFieldRegex("token", "[a-zA-Z_.0-9]*"));
+    assert(addFieldRegex("token", "[a-zA-Z_.\\-0-9]*"));
 
     registerInputField("component",
                        SAKURA_STRING_TYPE,
