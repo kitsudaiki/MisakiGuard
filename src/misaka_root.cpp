@@ -47,6 +47,27 @@ bool
 MisakaRoot::init()
 {
     Kitsunemimi::ErrorContainer error;
+
+    if(initDatabase(error) == false) {
+        return false;
+    }
+
+    initBlossoms();
+
+    if(initJwt(error) == false) {
+        return false;
+    }
+
+    if(initPolicies(error) == false) {
+        return false;
+    }
+
+    return true;
+}
+
+bool
+MisakaRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
+{
     bool success = false;
 
     // read database-path from config
@@ -76,20 +97,13 @@ MisakaRoot::init()
         return false;
     }
 
-    initBlossoms();
+    return true;
+}
 
-    // read jwt-token-key from config
-    const std::string tokenKeyString = GET_STRING_CONFIG("misaka", "token_key", success);
-    if(success == false)
-    {
-        error.addMeesage("No token-key defined in config.");
-        LOG_ERROR(error);
-        return false;
-    }
-
-    // init jwt for token create and sign
-    CryptoPP::SecByteBlock tokenKey((unsigned char*)tokenKeyString.c_str(), tokenKeyString.size());
-    jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
+bool
+MisakaRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
+{
+    bool success = false;
 
     // read policy-file-path from config
     const std::string policyFilePath = GET_STRING_CONFIG("misaka", "policies", success);
@@ -117,6 +131,27 @@ MisakaRoot::init()
         LOG_ERROR(error);
         return false;
     }
+
+    return true;
+}
+
+bool
+MisakaRoot::initJwt(Kitsunemimi::ErrorContainer &error)
+{
+    bool success = false;
+
+    // read jwt-token-key from config
+    const std::string tokenKeyString = GET_STRING_CONFIG("misaka", "token_key", success);
+    if(success == false)
+    {
+        error.addMeesage("No token-key defined in config.");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // init jwt for token create and sign
+    CryptoPP::SecByteBlock tokenKey((unsigned char*)tokenKeyString.c_str(), tokenKeyString.size());
+    jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
 
     return true;
 }

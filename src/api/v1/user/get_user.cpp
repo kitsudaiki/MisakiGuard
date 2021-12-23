@@ -48,10 +48,10 @@ GetUser::GetUser()
     // output
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
-                        "UUID of the new user.");
+                        "UUID of the user.");
     registerOutputField("user_name",
                         SAKURA_STRING_TYPE,
-                        "Name of the new user.");
+                        "Name of the user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Set this to true to register the new user as admin.");

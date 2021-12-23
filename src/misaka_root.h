@@ -38,6 +38,11 @@ public:
     static UsersTable* usersTable;
     static Kitsunemimi::Sakura::SqlDatabase* database;
     static Kitsunemimi::Hanami::Policy* policies;
+
+private:
+    bool initDatabase(Kitsunemimi::ErrorContainer &error);
+    bool initPolicies(Kitsunemimi::ErrorContainer &error);
+    bool initJwt(Kitsunemimi::ErrorContainer &error);
 };
 
 #endif // MISAKAROOT_H

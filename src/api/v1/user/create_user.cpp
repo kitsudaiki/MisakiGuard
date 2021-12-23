@@ -99,7 +99,6 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
-    Kitsunemimi::Json::JsonItem userData;
     const std::string userName = blossomLeaf.input.get("user_name").getString();
 
     // check if user already exist within the table
@@ -116,6 +115,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
 
     // convert values
+    Kitsunemimi::Json::JsonItem userData;
     userData.insert("user_name", userName);
     userData.insert("user_roles", blossomLeaf.input.get("user_roles"));
     userData.insert("user_projects", blossomLeaf.input.get("user_projects"));
@@ -124,8 +124,6 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     userData.insert("project_uuid", "-");
     userData.insert("owner_uuid", "-");
     userData.insert("visibility", 0);
-
-    std::cout<<userData.toString(true)<<std::endl;
 
     // add new user to table
     if(MisakaRoot::usersTable->addUser(userData, error) == false)

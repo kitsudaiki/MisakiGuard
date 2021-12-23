@@ -34,7 +34,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 DeleteUser::DeleteUser()
-    : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
+    : Kitsunemimi::Sakura::Blossom("Delete a specific user from the database.")
 {
     // input
     registerInputField("user_name",
