@@ -76,16 +76,16 @@ ValidateAccess::ValidateAccess()
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the user.");
-    registerOutputField("user_name",
+    registerOutputField("name",
                         SAKURA_STRING_TYPE,
                         "Name of the user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Show if the user is an admin or not.");
-    registerOutputField("user_roles",
+    registerOutputField("roles",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all roles of the user.");
-    registerOutputField("user_projects",
+    registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
 }
@@ -130,7 +130,7 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
 
         // process payload to get roles of user
         std::vector<std::string> roles;
-        const std::string rolestring = blossomLeaf.output.get("user_roles").getString();
+        const std::string rolestring = blossomLeaf.output.get("roles").getString();
         Kitsunemimi::splitStringByDelimiter(roles, rolestring, ',');
 
         // check policy

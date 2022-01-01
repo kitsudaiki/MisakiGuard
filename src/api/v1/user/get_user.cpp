@@ -37,28 +37,28 @@ GetUser::GetUser()
     : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
 {
     // input
-    registerInputField("user_name",
+    registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("user_name", 4, 256));
-    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("name", 4, 256));
+    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     // output
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the user.");
-    registerOutputField("user_name",
+    registerOutputField("name",
                         SAKURA_STRING_TYPE,
                         "Name of the user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Set this to true to register the new user as admin.");
-    registerOutputField("user_roles",
+    registerOutputField("roles",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all roles of the user.");
-    registerOutputField("user_projects",
+    registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
 }
@@ -73,7 +73,7 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
                  Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
-    const std::string userName = blossomLeaf.input.get("user_name").getString();
+    const std::string userName = blossomLeaf.input.get("name").getString();
 
     // get data from table
     if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output, userName, error) == false)

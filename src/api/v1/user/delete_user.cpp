@@ -37,13 +37,13 @@ DeleteUser::DeleteUser()
     : Kitsunemimi::Sakura::Blossom("Delete a specific user from the database.")
 {
     // input
-    registerInputField("user_name",
+    registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("user_name", 4, 256));
-    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("name", 4, 256));
+    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
 }
 
 /**
@@ -56,7 +56,7 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
                     Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
-    const std::string userName = blossomLeaf.input.get("user_name").getString();
+    const std::string userName = blossomLeaf.input.get("name").getString();
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem getResult;

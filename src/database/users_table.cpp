@@ -37,16 +37,16 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     m_tableName = "users";
 
     DbHeaderEntry userName;
-    userName.name = "user_name";
+    userName.name = "name";
     userName.maxLength = 256;
     m_tableHeader.push_back(userName);
 
     DbHeaderEntry roles;
-    roles.name = "user_roles";
+    roles.name = "roles";
     m_tableHeader.push_back(roles);
 
     DbHeaderEntry projects;
-    projects.name = "user_projects";
+    projects.name = "projects";
     m_tableHeader.push_back(projects);
 
     DbHeaderEntry pwHash;
@@ -95,7 +95,7 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
                           const bool showHiddenValues)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("user_name", userName);
+    conditions.emplace_back("name", userName);
 
     // get user from db
     if(get(result, conditions, error, showHiddenValues) == false)
@@ -135,7 +135,7 @@ UsersTable::deleteUser(const std::string &userName,
                        Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("user_name", userName);
+    conditions.emplace_back("name", userName);
 
     return deleteFromDb(conditions, error);
 }

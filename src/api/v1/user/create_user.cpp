@@ -39,25 +39,25 @@ CreateUser::CreateUser()
     : Kitsunemimi::Sakura::Blossom("Register a new user within Misaka.")
 {
     // input
-    registerInputField("user_name",
+    registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the new user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("user_name", 4, 256));
-    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("name", 4, 256));
+    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
-    registerInputField("user_projects",
+    registerInputField("projects",
                        SAKURA_STRING_TYPE,
                        true,
                        "Comma-separated list of projects of the user.");
-    assert(addFieldRegex("user_projects", "[a-zA-Z][a-zA-Z_,0-9]*"));
+    assert(addFieldRegex("projects", "[a-zA-Z][a-zA-Z_,0-9]*"));
 
-    registerInputField("user_roles",
+    registerInputField("roles",
                        SAKURA_STRING_TYPE,
                        true,
                        "Comma-separated list of roles of the user.");
-    assert(addFieldRegex("user_projects", "[a-zA-Z][a-zA-Z_,0-9]*"));
+    assert(addFieldRegex("roles", "[a-zA-Z][a-zA-Z_,0-9]*"));
 
     registerInputField("pw",
                        SAKURA_STRING_TYPE,
@@ -76,16 +76,16 @@ CreateUser::CreateUser()
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the new user.");
-    registerOutputField("user_name",
+    registerOutputField("name",
                         SAKURA_STRING_TYPE,
                         "Name of the new user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Set this to true to register the new user as admin.");
-    registerOutputField("user_roles",
+    registerOutputField("roles",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all roles of the user.");
-    registerOutputField("user_projects",
+    registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
 }
@@ -99,7 +99,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userName = blossomLeaf.input.get("user_name").getString();
+    const std::string userName = blossomLeaf.input.get("name").getString();
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
@@ -116,9 +116,9 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
 
     // convert values
     Kitsunemimi::Json::JsonItem userData;
-    userData.insert("user_name", userName);
-    userData.insert("user_roles", blossomLeaf.input.get("user_roles"));
-    userData.insert("user_projects", blossomLeaf.input.get("user_projects"));
+    userData.insert("name", userName);
+    userData.insert("roles", blossomLeaf.input.get("roles"));
+    userData.insert("projects", blossomLeaf.input.get("projects"));
     userData.insert("pw_hash", pwHash);
     userData.insert("is_admin", blossomLeaf.input.get("is_admin").getBool());
     userData.insert("project_uuid", "-");

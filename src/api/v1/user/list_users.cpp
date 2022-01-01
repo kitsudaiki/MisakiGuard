@@ -38,9 +38,9 @@ ListUsers::ListUsers()
     registerOutputField("header",
                         SAKURA_ARRAY_TYPE,
                         "Array with the namings all columns of the table.");
-    assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"user_name\","
-                                                              "\"user_roles\","
-                                                              "\"user_projects\","
+    assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"name\","
+                                                              "\"roles\","
+                                                              "\"projects\","
                                                               "\"is_admin\"]")));
     registerOutputField("body",
                         SAKURA_ARRAY_TYPE,

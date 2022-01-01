@@ -38,12 +38,12 @@ CreateToken::CreateToken()
     : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a specific user.")
 {
     // input
-    registerInputField("user_name",
+    registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the user.");
-    assert(addFieldBorder("user_name", 4, 256));
-    assert(addFieldRegex("user_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("name", 4, 256));
+    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     registerInputField("pw",
                        SAKURA_STRING_TYPE,
@@ -68,7 +68,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
                      Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
-    const std::string userName = blossomLeaf.input.get("user_name").getString();
+    const std::string userName = blossomLeaf.input.get("name").getString();
     std::string pwHash = "";
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
 

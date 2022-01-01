@@ -154,7 +154,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
                              BlossomStatus &status,
                              Kitsunemimi::ErrorContainer &error)
 {
-    const std::string roles = context.getStringByKey("user_roles");
+    const std::string roles = context.getStringByKey("roles");
 
     // create request for remote-calls
     Kitsunemimi::Hanami::RequestMessage request;
