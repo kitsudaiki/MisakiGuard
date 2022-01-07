@@ -38,7 +38,10 @@ using namespace Kitsunemimi::Sakura;
 CreateUser::CreateUser()
     : Kitsunemimi::Sakura::Blossom("Register a new user within Misaka.")
 {
+    //----------------------------------------------------------------------------------------------
     // input
+    //----------------------------------------------------------------------------------------------
+
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -72,7 +75,10 @@ CreateUser::CreateUser()
                        "Set this to 1 to register the new user as admin.");
     assert(addFieldDefault("is_admin", new Kitsunemimi::DataValue(false)));
 
+    //----------------------------------------------------------------------------------------------
     // output
+    //----------------------------------------------------------------------------------------------
+
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the new user.");
@@ -88,6 +94,10 @@ CreateUser::CreateUser()
     registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 /**

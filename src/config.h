@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef MISAKAGUARD_CONFIG_H
+#define MISAKAGUARD_CONFIG_H
 
 #include <libKitsunemimiConfig/config_handler.h>
 #include <libKitsunemimiHanamiCommon/config.h>
@@ -40,4 +40,4 @@ registerConfigs(Kitsunemimi::ErrorContainer &error)
 
 }
 
-#endif // CONFIG_H
+#endif // MISAKAGUARD_CONFIG_H

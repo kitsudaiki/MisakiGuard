@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef VALIDATE_ACCESS_H
-#define VALIDATE_ACCESS_H
+#ifndef MISAKAGUARD_VALIDATE_ACCESS_H
+#define MISAKAGUARD_VALIDATE_ACCESS_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // VALIDATE_ACCESS_H
+#endif // MISAKAGUARD_VALIDATE_ACCESS_H

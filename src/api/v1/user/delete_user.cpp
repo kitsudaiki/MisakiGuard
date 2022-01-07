@@ -36,7 +36,10 @@ using namespace Kitsunemimi::Sakura;
 DeleteUser::DeleteUser()
     : Kitsunemimi::Sakura::Blossom("Delete a specific user from the database.")
 {
+    //----------------------------------------------------------------------------------------------
     // input
+    //----------------------------------------------------------------------------------------------
+
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -44,6 +47,10 @@ DeleteUser::DeleteUser()
     // column in database is limited to 256 characters size
     assert(addFieldBorder("name", 4, 256));
     assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 /**

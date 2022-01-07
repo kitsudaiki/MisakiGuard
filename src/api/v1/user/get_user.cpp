@@ -36,7 +36,10 @@ using namespace Kitsunemimi::Sakura;
 GetUser::GetUser()
     : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
 {
+    //----------------------------------------------------------------------------------------------
     // input
+    //----------------------------------------------------------------------------------------------
+
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -45,7 +48,10 @@ GetUser::GetUser()
     assert(addFieldBorder("name", 4, 256));
     assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
+    //----------------------------------------------------------------------------------------------
     // output
+    //----------------------------------------------------------------------------------------------
+
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the user.");
@@ -61,6 +67,10 @@ GetUser::GetUser()
     registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 /**

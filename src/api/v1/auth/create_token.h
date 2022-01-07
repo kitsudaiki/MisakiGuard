@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef CREATETOKEN_H
-#define CREATETOKEN_H
+#ifndef MISAKAGUARD_CREATETOKEN_H
+#define MISAKAGUARD_CREATETOKEN_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // CREATETOKEN_H
+#endif // MISAKAGUARD_CREATETOKEN_H

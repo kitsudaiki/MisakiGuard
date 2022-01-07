@@ -69,7 +69,7 @@ UsersTable::~UsersTable() {}
  * @param userData json-item with all information of the user to add to database
  * @param error reference for error-output
  *
- * @return true, if successfull, else false
+ * @return true, if successful, else false
  */
 bool
 UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
@@ -86,7 +86,7 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
  * @param error reference for error-output
  * @param showHiddenValues set to true to also show as hidden marked fields
  *
- * @return true, if successfull, else false
+ * @return true, if successful, else false
  */
 bool
 UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
@@ -113,7 +113,7 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
  * @param result reference for the result-output
  * @param error reference for error-output
  *
- * @return true, if successfull, else false
+ * @return true, if successful, else false
  */
 bool
 UsersTable::getAllUser(Kitsunemimi::TableItem &result,
@@ -128,7 +128,7 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
  * @param userName name of the user to delete
  * @param error reference for error-output
  *
- * @return true, if successfull, else false
+ * @return true, if successful, else false
  */
 bool
 UsersTable::deleteUser(const std::string &userName,

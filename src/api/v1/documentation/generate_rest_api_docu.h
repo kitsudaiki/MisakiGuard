@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef GENERATERESTAPIDOCU_H
-#define GENERATERESTAPIDOCU_H
+#ifndef MISAKAGUARD_GENERATERESTAPIDOCU_H
+#define MISAKAGUARD_GENERATERESTAPIDOCU_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // GENERATERESTAPIDOCU_H
+#endif // MISAKAGUARD_GENERATERESTAPIDOCU_H

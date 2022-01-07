@@ -43,7 +43,10 @@ ValidateAccess::ValidateAccess()
                                    "and optional check if the user is allowed by its roles "
                                    "and the policy to access a specific endpoint.")
 {
+    //----------------------------------------------------------------------------------------------
     // input
+    //----------------------------------------------------------------------------------------------
+
     registerInputField("token",
                        SAKURA_STRING_TYPE,
                        true,
@@ -72,7 +75,10 @@ ValidateAccess::ValidateAccess()
                        "(DELETE = 1, GET = 2, POST = 4, PUT = 5).");
     assert(addFieldBorder("http_type", 1, 5));
 
+    //----------------------------------------------------------------------------------------------
     // output
+    //----------------------------------------------------------------------------------------------
+
     registerOutputField("uuid",
                         SAKURA_STRING_TYPE,
                         "UUID of the user.");
@@ -88,6 +94,10 @@ ValidateAccess::ValidateAccess()
     registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 /**

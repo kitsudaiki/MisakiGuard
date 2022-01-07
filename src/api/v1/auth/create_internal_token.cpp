@@ -40,7 +40,10 @@ CreateInternalToken::CreateInternalToken()
     : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a internal services, "
                                    "which can not be used from the outside.")
 {
+    //----------------------------------------------------------------------------------------------
     // input
+    //----------------------------------------------------------------------------------------------
+
     registerInputField("service_name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -48,10 +51,17 @@ CreateInternalToken::CreateInternalToken()
     assert(addFieldBorder("service_name", 4, 256));
     assert(addFieldRegex("service_name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
+    //----------------------------------------------------------------------------------------------
     // output
+    //----------------------------------------------------------------------------------------------
+
     registerOutputField("token",
                         SAKURA_STRING_TYPE,
                         "New JWT-access-token for the service.");
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 /**

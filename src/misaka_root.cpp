@@ -41,7 +41,7 @@ MisakaRoot::MisakaRoot() {}
 /**
  * @brief init root-object
  *
- * @return true, if successfull, else false
+ * @return true, if successful, else false
  */
 bool
 MisakaRoot::init()
@@ -65,6 +65,13 @@ MisakaRoot::init()
     return true;
 }
 
+/**
+ * @brief init database
+ *
+ * @param error reference for error-output
+ *
+ * @return true, if successful, else false
+ */
 bool
 MisakaRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
 {
@@ -100,6 +107,13 @@ MisakaRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
     return true;
 }
 
+/**
+ * @brief init policies
+ *
+ * @param error reference for error-output
+ *
+ * @return true, if successful, else false
+ */
 bool
 MisakaRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
 {
@@ -135,6 +149,13 @@ MisakaRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
     return true;
 }
 
+/**
+ * @brief init jwt-class to validate incoming requested
+ *
+ * @param error reference for error-output
+ *
+ * @return true, if successful, else false
+ */
 bool
 MisakaRoot::initJwt(Kitsunemimi::ErrorContainer &error)
 {

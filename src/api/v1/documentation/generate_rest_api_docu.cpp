@@ -50,10 +50,17 @@ GenerateRestApiDocu::GenerateRestApiDocu()
     : Kitsunemimi::Sakura::Blossom("Generate a user-specific documentation for the REST-API "
                                    "of all available components.")
 {
+    //----------------------------------------------------------------------------------------------
     // output
+    //----------------------------------------------------------------------------------------------
+
     registerOutputField("documentation",
                         SAKURA_STRING_TYPE,
                         "REST-API-documentation as base64 converted string.");
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 bool
@@ -83,7 +90,7 @@ appendDocu(std::string &completeDocumentation,
  * @param request prebuild request-object
  * @param error reference for error-output
  *
- * @return true, if successfull and response is positive, else false
+ * @return true, if successful and response is positive, else false
  */
 bool
 requestComponent(std::string &completeDocumentation,
@@ -158,7 +165,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
 
     // create request for remote-calls
     Kitsunemimi::Hanami::RequestMessage request;
-    request.id = "documentation/api";
+    request.id = "v1/documentation/api";
     request.httpType = Kitsunemimi::Hanami::GET_TYPE;
     request.inputValues = "{ \"token\" : \"" + context.getStringByKey("token") + "\"}";
 

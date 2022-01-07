@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef ARGS_H
-#define ARGS_H
+#ifndef MISAKAGUARD_ARGS_H
+#define MISAKAGUARD_ARGS_H
 
 #include <libKitsunemimiArgs/arg_parser.h>
 #include <libKitsunemimiHanamiCommon/args.h>
@@ -45,4 +45,4 @@ registerArguments(Kitsunemimi::Args::ArgParser* argparser,
     return true;
 }
 
-#endif // ARGS_H
+#endif // MISAKAGUARD_ARGS_H

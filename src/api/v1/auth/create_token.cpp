@@ -37,7 +37,10 @@ using namespace Kitsunemimi::Sakura;
 CreateToken::CreateToken()
     : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a specific user.")
 {
+    //----------------------------------------------------------------------------------------------
     // input
+    //----------------------------------------------------------------------------------------------
+
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -52,10 +55,17 @@ CreateToken::CreateToken()
     assert(addFieldBorder("pw", 6, 4096));
     assert(addFieldRegex("pw", "[^=]*"));  // no = allowed
 
+    //----------------------------------------------------------------------------------------------
     // output
+    //----------------------------------------------------------------------------------------------
+
     registerOutputField("token",
                         SAKURA_STRING_TYPE,
                         "New JWT-access-token for the user.");
+
+    //----------------------------------------------------------------------------------------------
+    //
+    //----------------------------------------------------------------------------------------------
 }
 
 /**

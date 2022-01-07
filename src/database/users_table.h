@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef USERS_TABLE_H
-#define USERS_TABLE_H
+#ifndef MISAKAGUARD_USERS_TABLE_H
+#define MISAKAGUARD_USERS_TABLE_H
 
 #include <libKitsunemimiCommon/logger.h>
 #include <libKitsunemimiHanamiDatabase/hanami_sql_table.h>
@@ -50,4 +50,4 @@ public:
                      Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // USERS_TABLE_H
+#endif // MISAKAGUARD_USERS_TABLE_H

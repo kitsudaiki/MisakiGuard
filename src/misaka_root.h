@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAROOT_H
-#define MISAKAROOT_H
+#ifndef MISAKAGUARD_MISAKAROOT_H
+#define MISAKAGUARD_MISAKAROOT_H
 
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiHanamiPolicies/policy.h>
@@ -45,4 +45,4 @@ private:
     bool initJwt(Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKAROOT_H
+#endif // MISAKAGUARD_MISAKAROOT_H
