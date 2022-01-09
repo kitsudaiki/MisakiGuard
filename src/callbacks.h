@@ -1,5 +1,5 @@
 /**
- * @file        args.h
+ * @file        callbacks.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,29 +20,18 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_ARGS_H
-#define MISAKAGUARD_ARGS_H
+#ifndef MISAKAGUARD_CALLBACKS_H
+#define MISAKAGUARD_CALLBACKS_H
 
-#include <libKitsunemimiArgs/arg_parser.h>
-#include <libKitsunemimiHanamiCommon/args.h>
-#include <libKitsunemimiCommon/logger.h>
+#include <libKitsunemimiSakuraNetwork/session.h>
 
-/**
- * @brief register cli-arguments
- *
- * @param argparser reference to argument parser
- *
- * @return true if successful, else false
- */
-bool
-registerArguments(Kitsunemimi::Args::ArgParser* argparser,
-                  Kitsunemimi::ErrorContainer &error)
+void streamDataCallback(void*,
+                        Kitsunemimi::Sakura::Session*,
+                        const void*,
+                        const uint64_t)
 {
-    if(Kitsunemimi::Hanami::registerArguments(*argparser, error) == false) {
-        return false;
-    }
 
-    return true;
 }
 
-#endif // MISAKAGUARD_ARGS_H
+
+#endif // MISAKAGUARD_CALLBACKS_H

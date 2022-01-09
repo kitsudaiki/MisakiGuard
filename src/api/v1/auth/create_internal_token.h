@@ -1,5 +1,5 @@
 /**
- * @file        args.h
+ * @file        create_internal_token.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,29 +20,22 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_ARGS_H
-#define MISAKAGUARD_ARGS_H
+#ifndef MISAKAGUARD_CREATEINTERNALTOKEN_H
+#define MISAKAGUARD_CREATEINTERNALTOKEN_H
 
-#include <libKitsunemimiArgs/arg_parser.h>
-#include <libKitsunemimiHanamiCommon/args.h>
-#include <libKitsunemimiCommon/logger.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
-/**
- * @brief register cli-arguments
- *
- * @param argparser reference to argument parser
- *
- * @return true if successful, else false
- */
-bool
-registerArguments(Kitsunemimi::Args::ArgParser* argparser,
-                  Kitsunemimi::ErrorContainer &error)
+class CreateInternalToken
+        : public Kitsunemimi::Sakura::Blossom
 {
-    if(Kitsunemimi::Hanami::registerArguments(*argparser, error) == false) {
-        return false;
-    }
+public:
+    CreateInternalToken();
 
-    return true;
-}
+protected:
+    bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &,
+                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::ErrorContainer &);
+};
 
-#endif // MISAKAGUARD_ARGS_H
+#endif // MISAKAGUARD_CREATEINTERNALTOKEN_H

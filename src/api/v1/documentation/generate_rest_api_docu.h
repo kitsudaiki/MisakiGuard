@@ -1,5 +1,5 @@
 /**
- * @file        args.h
+ * @file        generate_rest_api_docu.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,29 +20,22 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_ARGS_H
-#define MISAKAGUARD_ARGS_H
+#ifndef MISAKAGUARD_GENERATERESTAPIDOCU_H
+#define MISAKAGUARD_GENERATERESTAPIDOCU_H
 
-#include <libKitsunemimiArgs/arg_parser.h>
-#include <libKitsunemimiHanamiCommon/args.h>
-#include <libKitsunemimiCommon/logger.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
-/**
- * @brief register cli-arguments
- *
- * @param argparser reference to argument parser
- *
- * @return true if successful, else false
- */
-bool
-registerArguments(Kitsunemimi::Args::ArgParser* argparser,
-                  Kitsunemimi::ErrorContainer &error)
+class GenerateRestApiDocu
+        : public Kitsunemimi::Sakura::Blossom
 {
-    if(Kitsunemimi::Hanami::registerArguments(*argparser, error) == false) {
-        return false;
-    }
+public:
+    GenerateRestApiDocu();
 
-    return true;
-}
+protected:
+    bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &context,
+                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::ErrorContainer &error);
+};
 
-#endif // MISAKAGUARD_ARGS_H
+#endif // MISAKAGUARD_GENERATERESTAPIDOCU_H
