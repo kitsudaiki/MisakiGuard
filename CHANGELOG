@@ -1,2 +1,10 @@
 # Changelog
 
+## [0.1.0] - 2022-01-09
+
+### Added
+- handling for users
+- create and validate jwt-token
+- check user-permissions against policies
+- rest-api-docu generation
+
