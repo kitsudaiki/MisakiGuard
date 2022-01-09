@@ -1,5 +1,5 @@
 /**
- * @file        args.h
+ * @file        misaka_root.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,29 +20,29 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_ARGS_H
-#define MISAKAGUARD_ARGS_H
+#ifndef MISAKAGUARD_MISAKAROOT_H
+#define MISAKAGUARD_MISAKAROOT_H
 
-#include <libKitsunemimiArgs/arg_parser.h>
-#include <libKitsunemimiHanamiCommon/args.h>
-#include <libKitsunemimiCommon/logger.h>
+#include <libKitsunemimiJwt/jwt.h>
+#include <libKitsunemimiHanamiPolicies/policy.h>
+#include <database/users_table.h>
 
-/**
- * @brief register cli-arguments
- *
- * @param argparser reference to argument parser
- *
- * @return true if successful, else false
- */
-bool
-registerArguments(Kitsunemimi::Args::ArgParser* argparser,
-                  Kitsunemimi::ErrorContainer &error)
+class MisakaRoot
 {
-    if(Kitsunemimi::Hanami::registerArguments(*argparser, error) == false) {
-        return false;
-    }
+public:
+    MisakaRoot();
 
-    return true;
-}
+    bool init();
 
-#endif // MISAKAGUARD_ARGS_H
+    static Kitsunemimi::Jwt::Jwt* jwt;
+    static UsersTable* usersTable;
+    static Kitsunemimi::Sakura::SqlDatabase* database;
+    static Kitsunemimi::Hanami::Policy* policies;
+
+private:
+    bool initDatabase(Kitsunemimi::ErrorContainer &error);
+    bool initPolicies(Kitsunemimi::ErrorContainer &error);
+    bool initJwt(Kitsunemimi::ErrorContainer &error);
+};
+
+#endif // MISAKAGUARD_MISAKAROOT_H

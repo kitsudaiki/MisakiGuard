@@ -1,5 +1,5 @@
 /**
- * @file        args.h
+ * @file        validate_access.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,29 +20,22 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_ARGS_H
-#define MISAKAGUARD_ARGS_H
+#ifndef MISAKAGUARD_VALIDATE_ACCESS_H
+#define MISAKAGUARD_VALIDATE_ACCESS_H
 
-#include <libKitsunemimiArgs/arg_parser.h>
-#include <libKitsunemimiHanamiCommon/args.h>
-#include <libKitsunemimiCommon/logger.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
-/**
- * @brief register cli-arguments
- *
- * @param argparser reference to argument parser
- *
- * @return true if successful, else false
- */
-bool
-registerArguments(Kitsunemimi::Args::ArgParser* argparser,
-                  Kitsunemimi::ErrorContainer &error)
+class ValidateAccess
+        : public Kitsunemimi::Sakura::Blossom
 {
-    if(Kitsunemimi::Hanami::registerArguments(*argparser, error) == false) {
-        return false;
-    }
+public:
+    ValidateAccess();
 
-    return true;
-}
+protected:
+    bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &,
+                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::ErrorContainer &error);
+};
 
-#endif // MISAKAGUARD_ARGS_H
+#endif // MISAKAGUARD_VALIDATE_ACCESS_H
