@@ -58,16 +58,25 @@ DeleteUser::DeleteUser()
  */
 bool
 DeleteUser::runTask(BlossomLeaf &blossomLeaf,
-                    const Kitsunemimi::DataMap &,
+                    const Kitsunemimi::DataMap &context,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
+    const std::string userUuid = context.getStringByKey("uuid");
+    const std::string projectUuid = context.getStringByKey("projects");
+    const bool isAdmin = context.getBoolByKey("is_admin");
+
     // get information from request
     const std::string userName = blossomLeaf.input.get("name").getString();
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakaRoot::usersTable->getUserByName(getResult, userName, error) == false)
+    if(MisakaRoot::usersTable->getUserByName(getResult,
+                                             userName,
+                                             userUuid,
+                                             projectUuid,
+                                             isAdmin,
+                                             error) == false)
     {
         status.errorMessage = "User with name '" + userName + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
@@ -75,7 +84,11 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get data from table
-    if(MisakaRoot::usersTable->deleteUser(userName, error) == false)
+    if(MisakaRoot::usersTable->deleteUser(userName,
+                                          userUuid,
+                                          projectUuid,
+                                          isAdmin,
+                                          error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;

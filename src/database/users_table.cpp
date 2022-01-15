@@ -67,15 +67,19 @@ UsersTable::~UsersTable() {}
  * @brief add a new user to the database
  *
  * @param userData json-item with all information of the user to add to database
+ * @param userUuid user-uuid to filter
+ * @param projectUuid project-uuid to filter
  * @param error reference for error-output
  *
  * @return true, if successful, else false
  */
 bool
 UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
+                    const std::string &userUuid,
+                    const std::string &projectUuid,
                     Kitsunemimi::ErrorContainer &error)
 {
-    return add(userData, error);
+    return add(userData, userUuid, projectUuid, error);
 }
 
 /**
@@ -91,6 +95,9 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
 bool
 UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
                           const std::string &userName,
+                          const std::string &userUuid,
+                          const std::string &projectUuid,
+                          const bool isAdmin,
                           Kitsunemimi::ErrorContainer &error,
                           const bool showHiddenValues)
 {
@@ -98,7 +105,7 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
     conditions.emplace_back("name", userName);
 
     // get user from db
-    if(get(result, conditions, error, showHiddenValues) == false)
+    if(get(result, userUuid, projectUuid, isAdmin, conditions, error, showHiddenValues) == false)
     {
         LOG_ERROR(error);
         return false;
@@ -117,9 +124,12 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
  */
 bool
 UsersTable::getAllUser(Kitsunemimi::TableItem &result,
+                       const std::string &userUuid,
+                       const std::string &projectUuid,
+                       const bool isAdmin,
                        Kitsunemimi::ErrorContainer &error)
 {
-    return getAll(result, error);
+    return getAll(result, userUuid, projectUuid, isAdmin, error);
 }
 
 /**
@@ -132,10 +142,13 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
  */
 bool
 UsersTable::deleteUser(const std::string &userName,
+                       const std::string &userUuid,
+                       const std::string &projectUuid,
+                       const bool isAdmin,
                        Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("name", userName);
 
-    return deleteFromDb(conditions, error);
+    return del(conditions, userUuid, projectUuid, isAdmin, error);
 }
