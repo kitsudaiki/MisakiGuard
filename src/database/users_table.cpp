@@ -87,6 +87,9 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
  *
  * @param result reference for the result-output in case that a user with this name was found
  * @param userName name of the requested user
+ * @param userUuid user-uuid to filter
+ * @param projectUuid project-uuid to filter
+ * @param isAdmin true, if use who makes request is admin
  * @param error reference for error-output
  * @param showHiddenValues set to true to also show as hidden marked fields
  *
@@ -118,6 +121,9 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
  * @brief get all users from the database table
  *
  * @param result reference for the result-output
+ * @param userUuid user-uuid to filter
+ * @param projectUuid project-uuid to filter
+ * @param isAdmin true, if use who makes request is admin
  * @param error reference for error-output
  *
  * @return true, if successful, else false
@@ -136,6 +142,9 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
  * @brief delete a user from the table
  *
  * @param userName name of the user to delete
+ * @param userUuid user-uuid to filter
+ * @param projectUuid project-uuid to filter
+ * @param isAdmin true, if use who makes request is admin
  * @param error reference for error-output
  *
  * @return true, if successful, else false
