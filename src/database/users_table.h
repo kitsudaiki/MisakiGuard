@@ -39,15 +39,26 @@ public:
     ~UsersTable();
 
     bool addUser(Kitsunemimi::Json::JsonItem &userData,
+                 const std::string &userUuid,
+                 const std::string &projectUuid,
                  Kitsunemimi::ErrorContainer &error);
     bool getUserByName(Kitsunemimi::Json::JsonItem &result,
                        const std::string &userName,
+                       const std::string &userUuid,
+                       const std::string &projectUuid,
+                       const bool isAdmin,
                        Kitsunemimi::ErrorContainer &error,
                        const bool showHiddenValues = false);
     bool getAllUser(Kitsunemimi::TableItem &result,
+                    const std::string &userUuid,
+                    const std::string &projectUuid,
+                    const bool isAdmin,
                     Kitsunemimi::ErrorContainer &error);
     bool deleteUser(const std::string &userName,
-                     Kitsunemimi::ErrorContainer &error);
+                    const std::string &userUuid,
+                    const std::string &projectUuid,
+                    const bool isAdmin,
+                    Kitsunemimi::ErrorContainer &error);
 };
 
 #endif // MISAKAGUARD_USERS_TABLE_H

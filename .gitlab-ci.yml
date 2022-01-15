@@ -17,7 +17,7 @@ build:
     - apt-get update
     - apt-get install -y libssl-dev libcrypto++-dev libsqlite3-dev  uuid-dev 
 
-    - cd /builds/kitsudaiki/MisakaGuard
+    - cd /builds/hanami/MisakaGuard
     - ./build.sh
 
     - mkdir upload
@@ -37,7 +37,7 @@ create_image:
     - ip a
     - echo "172.17.0.1  registry.kitsunemimi.moe" >> /etc/hosts
     - >
-      if [ "$CI_COMMIT_BRANCH" != "" ]; then
+      if [ "$CI_COMMIT_BRANCH" == "master" ]; then
         docker build -t registry.kitsunemimi.moe:5000/misaka_guard:$CI_COMMIT_BRANCH .
         docker push registry.kitsunemimi.moe:5000/misaka_guard:$CI_COMMIT_BRANCH
         docker rmi registry.kitsunemimi.moe:5000/misaka_guard:$CI_COMMIT_BRANCH

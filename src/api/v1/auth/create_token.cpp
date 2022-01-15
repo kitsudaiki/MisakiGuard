@@ -77,6 +77,12 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
                      BlossomStatus &status,
                      Kitsunemimi::ErrorContainer &error)
 {
+    // everybody should be allowed to create a token, so at least for this action the user is
+    // upgraded to an admin to be able to get the data from the database
+    const std::string userUuid = "-";
+    const std::string projectUuid = "-";
+    const bool isAdmin = true;
+
     // get information from request
     const std::string userName = blossomLeaf.input.get("name").getString();
     std::string pwHash = "";
@@ -84,7 +90,12 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
-    if(MisakaRoot::usersTable->getUserByName(userData, userName, error, true) == false)
+    if(MisakaRoot::usersTable->getUserByName(userData,
+                                             userName,
+                                             userUuid,
+                                             projectUuid,
+                                             isAdmin,
+                                             error, true) == false)
     {
         status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
         error.addMeesage(status.errorMessage);

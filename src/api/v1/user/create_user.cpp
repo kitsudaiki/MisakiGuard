@@ -105,15 +105,22 @@ CreateUser::CreateUser()
  */
 bool
 CreateUser::runTask(BlossomLeaf &blossomLeaf,
-                    const Kitsunemimi::DataMap &,
+                    const Kitsunemimi::DataMap &context,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
     const std::string userName = blossomLeaf.input.get("name").getString();
+    const std::string userUuid = context.getStringByKey("uuid");
+    const std::string projectUuid = context.getStringByKey("projects");
+    const bool isAdmin = context.getBoolByKey("is_admin");
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakaRoot::usersTable->getUserByName(getResult, userName, error))
+    if(MisakaRoot::usersTable->getUserByName(getResult,
+                                             userName,                                              userUuid,
+                                             projectUuid,
+                                             isAdmin,
+                                             error))
     {
         status.errorMessage = "User with name '" + userName + "' already exist.";
         status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
@@ -136,7 +143,10 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     userData.insert("visibility", 0);
 
     // add new user to table
-    if(MisakaRoot::usersTable->addUser(userData, error) == false)
+    if(MisakaRoot::usersTable->addUser(userData,
+                                       userUuid,
+                                       projectUuid,
+                                       error) == false)
     {
         status.errorMessage = error.toString();
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
@@ -144,7 +154,12 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output, userName, error) == false)
+    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output,
+                                             userName,
+                                             userUuid,
+                                             projectUuid,
+                                             isAdmin,
+                                             error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
