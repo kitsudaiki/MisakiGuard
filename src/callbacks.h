@@ -33,5 +33,12 @@ void streamDataCallback(void*,
 
 }
 
+void genericCallback(Kitsunemimi::Sakura::Session*,
+                     const void*,
+                     const uint64_t,
+                     const uint64_t)
+{
+
+}
 
 #endif // MISAKAGUARD_CALLBACKS_H
