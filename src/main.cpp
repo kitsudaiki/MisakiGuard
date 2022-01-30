@@ -50,7 +50,8 @@ int main(int argc, char *argv[])
     if(HanamiMessaging::getInstance()->initialize("misaka",
                                                   groupNames,
                                                   nullptr,
-                                                  streamDataCallback,
+                                                  &streamDataCallback,
+                                                  &genericCallback,
                                                   error,
                                                   true) == false)
     {
