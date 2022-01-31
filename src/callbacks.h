@@ -24,6 +24,7 @@
 #define MISAKAGUARD_CALLBACKS_H
 
 #include <libKitsunemimiSakuraNetwork/session.h>
+#include <libKitsunemimiJson/json_item.h>
 
 void streamDataCallback(void*,
                         Kitsunemimi::Sakura::Session*,
@@ -34,8 +35,7 @@ void streamDataCallback(void*,
 }
 
 void genericCallback(Kitsunemimi::Sakura::Session*,
-                     const void*,
-                     const uint64_t,
+                     const Kitsunemimi::Json::JsonItem&,
                      const uint64_t)
 {
 
