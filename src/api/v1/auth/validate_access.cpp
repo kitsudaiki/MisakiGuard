@@ -27,13 +27,16 @@
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiJson/json_item.h>
 
-#include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/component_support.h>
 #include <libKitsunemimiHanamiPolicies/policy.h>
+#include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
 
 #include <misaka_root.h>
 
 using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
+using Kitsunemimi::Hanami::SupportedComponents;
+using Kitsunemimi::Hanami::HanamiMessaging;
 
 /**
  * @brief constructor
@@ -160,6 +163,12 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
             error.addMeesage(status.errorMessage);
             return false;
         }
+
+        sendAuditMessage(component,
+                         endpoint,
+                         blossomLeaf.output.get("uuid").getString(),
+                         httpType);
+
     }
 
     // remove irrelevant fields
@@ -172,4 +181,54 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     blossomLeaf.output.remove("visibility");
 
     return true;
+}
+
+/**
+ * @brief send error-message to sagiri
+ *
+ * @param context context context-object to log
+ * @param inputValues inputValues input-values of the request to log
+ */
+void
+ValidateAccess::sendAuditMessage(const std::string &targetComponent,
+                                 const std::string &targetEndpoint,
+                                 const std::string &userUuid,
+                                 const HttpRequestType requestType)
+{
+    // check if sagiri is supported
+    if(SupportedComponents::getInstance()->support[Kitsunemimi::Hanami::SAGIRI] == false) {
+        return;
+    }
+
+    // convert http-type into string
+    std::string httpType = "GET";
+    if(requestType == Kitsunemimi::Hanami::DELETE_TYPE) {
+        httpType = "DELETE";
+    }
+    if(requestType == Kitsunemimi::Hanami::GET_TYPE) {
+        httpType = "GET";
+    }
+    if(requestType == Kitsunemimi::Hanami::HEAD_TYPE) {
+        httpType = "HEAD";
+    }
+    if(requestType == Kitsunemimi::Hanami::POST_TYPE) {
+        httpType = "POST";
+    }
+    if(requestType == Kitsunemimi::Hanami::PUT_TYPE) {
+        httpType = "PUT";
+    }
+
+    // create message
+    const std::string message = "{\"message_type\":\"audit_log\","
+                                "\"component\" : \"" + targetComponent + "\","
+                                "\"endpoint\" : \"" + targetEndpoint + "\","
+                                "\"type\" : \"" + httpType + "\","
+                                "\"user_uuid\" : \"" + userUuid + "\"}";
+
+    // send
+    Kitsunemimi::ErrorContainer error;
+    HanamiMessaging* msg = HanamiMessaging::getInstance();
+    if(msg->sendGenericMessage("sagiri", message.c_str(), message.size(), error) == false) {
+        LOG_ERROR(error);
+    }
 }

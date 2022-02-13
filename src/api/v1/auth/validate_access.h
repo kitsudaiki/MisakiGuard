@@ -24,6 +24,7 @@
 #define MISAKAGUARD_VALIDATE_ACCESS_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiCommon/enums.h>
 
 class ValidateAccess
         : public Kitsunemimi::Sakura::Blossom
@@ -36,6 +37,12 @@ protected:
                  const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
+
+private:
+    void sendAuditMessage(const std::string &targetComponent,
+                          const std::string &targetEndpoint,
+                          const std::string &userUuid,
+                          const Kitsunemimi::Hanami::HttpRequestType requestType);
 };
 
 #endif // MISAKAGUARD_VALIDATE_ACCESS_H
