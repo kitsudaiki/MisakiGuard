@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.1] - 2022-02-14
+
+### Added
+- send audit-logs to sagiri
+
+### Changed
+- consider user-scope in database-requests
+
+
 ## [0.1.0] - 2022-01-09
 
 ### Added
