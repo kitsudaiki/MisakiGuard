@@ -117,7 +117,8 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
     if(MisakaRoot::usersTable->getUserByName(getResult,
-                                             userName,                                              userUuid,
+                                             userName,
+                                             userUuid,
                                              projectUuid,
                                              isAdmin,
                                              error))

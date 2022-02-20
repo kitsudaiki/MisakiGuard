@@ -28,6 +28,7 @@
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/component_support.h>
 #include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
+#include <libKitsunemimiHanamiMessaging/hanami_messaging_client.h>
 
 #include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
 
@@ -100,9 +101,14 @@ requestComponent(std::string &completeDocumentation,
 {
     Kitsunemimi::Hanami::HanamiMessaging* msg = Kitsunemimi::Hanami::HanamiMessaging::getInstance();
     Kitsunemimi::Hanami::ResponseMessage response;
+    Kitsunemimi::Hanami::HanamiMessagingClient* client = msg->getOutgoingClient(component);
+
+    if(client == nullptr) {
+        return false;
+    }
 
     // send request to the target
-    if(msg->triggerSakuraFile(component, response, request, error) == false) {
+    if(client->triggerSakuraFile(response, request, error) == false) {
         return false;
     }
 

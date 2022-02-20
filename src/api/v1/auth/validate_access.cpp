@@ -30,6 +30,7 @@
 #include <libKitsunemimiHanamiCommon/component_support.h>
 #include <libKitsunemimiHanamiPolicies/policy.h>
 #include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
+#include <libKitsunemimiHanamiMessaging/hanami_messaging_client.h>
 
 #include <misaka_root.h>
 
@@ -37,6 +38,7 @@ using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
 using Kitsunemimi::Hanami::SupportedComponents;
 using Kitsunemimi::Hanami::HanamiMessaging;
+using Kitsunemimi::Hanami::HanamiMessagingClient;
 
 /**
  * @brief constructor
@@ -228,7 +230,12 @@ ValidateAccess::sendAuditMessage(const std::string &targetComponent,
     // send
     Kitsunemimi::ErrorContainer error;
     HanamiMessaging* msg = HanamiMessaging::getInstance();
-    if(msg->sendGenericMessage("sagiri", message.c_str(), message.size(), error) == false) {
+
+    if(msg->sagiriClient == nullptr) {
+        return;
+    }
+
+    if(msg->sagiriClient->sendGenericMessage(message.c_str(), message.size(), error) == false) {
         LOG_ERROR(error);
     }
 }
