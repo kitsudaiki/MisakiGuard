@@ -37,12 +37,6 @@ protected:
                  const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
-
-private:
-    void sendAuditMessage(const std::string &targetComponent,
-                          const std::string &targetEndpoint,
-                          const std::string &userUuid,
-                          const Kitsunemimi::Hanami::HttpRequestType requestType);
 };
 
 #endif // MISAKAGUARD_VALIDATE_ACCESS_H
