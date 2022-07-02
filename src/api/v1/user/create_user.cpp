@@ -128,12 +128,17 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
+    // generate predefined uuid, because this will also be used as salt-value
+    const std::string uuid = Kitsunemimi::Hanami::generateUuid().toString();
+
     // genreate hash from password
     std::string pwHash;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("password").getString());
+    const std::string saltedPw = blossomLeaf.input.get("password").getString() + uuid;
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
 
     // convert values
     Kitsunemimi::Json::JsonItem userData;
+    userData.insert("uuid", uuid);
     userData.insert("name", userName);
     userData.insert("roles", blossomLeaf.input.get("roles"));
     userData.insert("projects", blossomLeaf.input.get("projects"));
