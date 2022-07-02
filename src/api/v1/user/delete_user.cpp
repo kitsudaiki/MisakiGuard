@@ -70,8 +70,8 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
     const std::string userName = blossomLeaf.input.get("name").getString();
 
     // check if user exist within the table
-    Kitsunemimi::Json::JsonItem getResult;
-    if(MisakaRoot::usersTable->getUserByName(getResult,
+    Kitsunemimi::Json::JsonItem result;
+    if(MisakaRoot::usersTable->getUserByName(result,
                                              userName,
                                              userUuid,
                                              projectUuid,
@@ -80,6 +80,18 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
     {
         status.errorMessage = "User with name '" + userName + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        error.addMeesage(status.errorMessage);
+        return false;
+    }
+
+    // prevent user from deleting himself
+    if(result.get("uuid").getString() == userUuid)
+    {
+        status.errorMessage = "User with name '"
+                              + userName
+                              + "' tries to delete himself, which is not allowed.";
+        status.statusCode = Kitsunemimi::Hanami::BAD_REQUEST_RTYPE;
+        error.addMeesage(status.errorMessage);
         return false;
     }
 
