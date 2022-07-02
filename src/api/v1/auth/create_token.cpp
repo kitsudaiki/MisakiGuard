@@ -82,11 +82,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     const std::string userUuid = "-";
     const std::string projectUuid = "-";
     const bool isAdmin = true;
-
-    // get information from request
     const std::string userName = blossomLeaf.input.get("name").getString();
-    std::string pwHash = "";
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("password").getString());
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
@@ -102,6 +98,12 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
+
+    // regenerate password-hash for comparism
+    std::string pwHash = "";
+    const std::string saltedPw = blossomLeaf.input.get("password").getString()
+                                 + userData.get("uuid").getString();
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
 
     // check password
     if(userData.get("pw_hash").getString() != pwHash)
