@@ -53,14 +53,14 @@ tokenBlossomes()
 
     assert(interface->addBlossom(group, "create", new CreateToken()));
     endpoints->addEndpoint("v1/token",
-                           Kitsunemimi::Hanami::GET_TYPE,
+                           Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
 
     assert(interface->addBlossom(group, "create_internal", new CreateInternalToken()));
     endpoints->addEndpoint("v1/token/internal",
-                           Kitsunemimi::Hanami::GET_TYPE,
+                           Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create_internal");
