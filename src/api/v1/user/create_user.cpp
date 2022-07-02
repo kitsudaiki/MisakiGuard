@@ -62,12 +62,12 @@ CreateUser::CreateUser()
                        "Comma-separated list of roles of the user.");
     assert(addFieldRegex("roles", "[a-zA-Z][a-zA-Z_,0-9]*"));
 
-    registerInputField("pw",
+    registerInputField("password",
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user.");
-    assert(addFieldBorder("pw", 6, 4096));
-    assert(addFieldRegex("pw", "[^=]*"));  // no = allowed
+    assert(addFieldBorder("password", 6, 4096));
+    assert(addFieldRegex("password", "[^=]*"));  // no '=' allowed
 
     registerInputField("is_admin",
                        SAKURA_BOOL_TYPE,
@@ -130,7 +130,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
 
     // genreate hash from password
     std::string pwHash;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("password").getString());
 
     // convert values
     Kitsunemimi::Json::JsonItem userData;

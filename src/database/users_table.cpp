@@ -79,7 +79,13 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
                     const std::string &projectUuid,
                     Kitsunemimi::ErrorContainer &error)
 {
-    return add(userData, userUuid, projectUuid, error);
+    if(add(userData, userUuid, projectUuid, error) == false)
+    {
+        error.addMeesage("Failed to add user to database");
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -110,6 +116,9 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
     // get user from db
     if(get(result, userUuid, projectUuid, isAdmin, conditions, error, showHiddenValues) == false)
     {
+        error.addMeesage("Failed to get user with name '"
+                         + userName
+                         + "' from database");
         LOG_ERROR(error);
         return false;
     }
@@ -135,7 +144,13 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
                        const bool isAdmin,
                        Kitsunemimi::ErrorContainer &error)
 {
-    return getAll(result, userUuid, projectUuid, isAdmin, error);
+    if(getAll(result, userUuid, projectUuid, isAdmin, error) == false)
+    {
+        error.addMeesage("Failed to get all users from database");
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -159,5 +174,13 @@ UsersTable::deleteUser(const std::string &userName,
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("name", userName);
 
-    return del(conditions, userUuid, projectUuid, isAdmin, error);
+    if(del(conditions, userUuid, projectUuid, isAdmin, error) == false)
+    {
+        error.addMeesage("Failed to delete user with name '"
+                         + userName
+                         + "' from database");
+        return false;
+    }
+
+    return true;
 }

@@ -222,6 +222,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     if(Kitsunemimi::createDirectory("/tmp/" + uuid, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        // TODO: make error-message better
         status.errorMessage = "directory";
         return false;
     }
@@ -234,6 +235,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     if(Kitsunemimi::writeFile(rstPath, completeDocumentation, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        // TODO: make error-message better
         status.errorMessage = "files";
         return false;
     }

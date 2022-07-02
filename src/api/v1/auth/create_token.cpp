@@ -48,12 +48,12 @@ CreateToken::CreateToken()
     assert(addFieldBorder("name", 4, 256));
     assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
 
-    registerInputField("pw",
+    registerInputField("password",
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user, to verify the access.");
-    assert(addFieldBorder("pw", 6, 4096));
-    assert(addFieldRegex("pw", "[^=]*"));  // no = allowed
+    assert(addFieldBorder("password", 6, 4096));
+    assert(addFieldRegex("password", "[^=]*"));  // no '=' allowed
 
     //----------------------------------------------------------------------------------------------
     // output
@@ -86,7 +86,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     // get information from request
     const std::string userName = blossomLeaf.input.get("name").getString();
     std::string pwHash = "";
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("pw").getString());
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, blossomLeaf.input.get("password").getString());
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
