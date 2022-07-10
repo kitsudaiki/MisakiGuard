@@ -25,6 +25,7 @@
 #include <libKitsunemimiCommon/common_items/table_item.h>
 #include <libKitsunemimiCommon/common_methods/string_methods.h>
 #include <libKitsunemimiJson/json_item.h>
+#include <libKitsunemimiCrypto/hashes.h>
 
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
 
@@ -61,7 +62,131 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     m_tableHeader.push_back(isAdmin);
 }
 
+/**
+ * @brief destructor
+ */
 UsersTable::~UsersTable() {}
+
+/**
+ * @brief get content of an environment-variable
+ *
+ * @param content reference for output
+ * @param key name of the environment-variable
+ *
+ * @return false, if varibale is not set, else true
+ */
+bool
+UsersTable::getEnvVar(std::string &content,
+                      const std::string &key) const
+{
+    const char* val = getenv(key.c_str());
+    if(val == NULL) {
+        return false;
+    }
+
+    content = std::string(val);
+    return true;
+}
+
+/**
+ * @brief get list of all users, who have admin-status
+ *
+ * @param error reference for error-output
+ *
+ * @return true, if seccuessful, else false
+ */
+bool
+UsersTable::getAllAdminUser(Kitsunemimi::ErrorContainer &error)
+{
+    std::vector<RequestCondition> conditions;
+    conditions.emplace_back("is_admin", "true");
+
+    // get admin-user from db
+    Kitsunemimi::Json::JsonItem users;
+    if(get(users, "-", "-", true, conditions, error, false) == false)
+    {
+        error.addMeesage("Failed to get admin-users from database");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief try to initialize a new admin-user in database
+ *
+ * @param error reference for error-output
+ *
+ * @return true, if seccuessful, else false
+ */
+bool
+UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
+{
+    std::string userName = "";
+    std::string pw = "";
+    std::string role = "";
+    const std::string uuid = "e307bee0-9286-49bd-9273-6f644c12da1d";
+
+    // check if there is already an admin-user in the databasae
+    if(getAllAdminUser(error)) {
+        return true;
+    }
+    LOG_DEBUG("Found no admin-users in database, so try to create a new one");
+
+    // get env with new admin-user name
+    if(getEnvVar(userName, "HANAMI_ADMIN_USER") == false)
+    {
+        error.addMeesage("environment variable 'HANAMI_ADMIN_USER' was not set, "
+                         "but is required to initialize a new admin-user");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // get env with new admin-user password
+    if(getEnvVar(pw, "HANAMI_ADMIN_PASSWORD") == false)
+    {
+        error.addMeesage("environment variable 'HANAMI_ADMIN_PASSWORD' was not set, "
+                         "but is required to initialize a new admin-user");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // get env with new admin-user role
+    if(getEnvVar(role, "HANAMI_ADMIN_ROLE") == false)
+    {
+        error.addMeesage("environment variable 'HANAMI_ADMIN_ROLE' was not set, "
+                         "but is required to initialize a new admin-user");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // generate hash from password
+    std::string pwHash;
+    const std::string saltedPw = pw + uuid;
+    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
+
+    Kitsunemimi::Json::JsonItem userData;
+    userData.insert("uuid", uuid);
+    userData.insert("name", userName);
+    userData.insert("roles", role);
+    userData.insert("projects", "-");
+    userData.insert("pw_hash", pwHash);
+    userData.insert("is_admin", true);
+    userData.insert("project_uuid", "-");
+    userData.insert("owner_uuid", "-");
+    userData.insert("visibility", 0);
+
+    // add new admin-user to db
+    if(addUser(userData, "-", "-", error) == false)
+    {
+        error.addMeesage("Failed to add new initial admin-user to database");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    return true;
+}
 
 /**
  * @brief add a new user to the database
