@@ -38,6 +38,8 @@ public:
     UsersTable(Kitsunemimi::Sakura::SqlDatabase* db);
     ~UsersTable();
 
+    bool initNewAdminUser(Kitsunemimi::ErrorContainer &error);
+
     bool addUser(Kitsunemimi::Json::JsonItem &userData,
                  const std::string &userUuid,
                  const std::string &projectUuid,
@@ -59,6 +61,11 @@ public:
                     const std::string &projectUuid,
                     const bool isAdmin,
                     Kitsunemimi::ErrorContainer &error);
+
+private:
+    bool getEnvVar(std::string &content, const std::string &key) const;
+
+    bool getAllAdminUser(Kitsunemimi::ErrorContainer &error);
 };
 
 #endif // MISAKAGUARD_USERS_TABLE_H

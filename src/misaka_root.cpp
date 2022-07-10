@@ -103,6 +103,12 @@ MisakaRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
         LOG_ERROR(error);
         return false;
     }
+    if(usersTable->initNewAdminUser(error) == false)
+    {
+        error.addMeesage("Failed to initialize new admin-user even this is necessary.");
+        LOG_ERROR(error);
+        return false;
+    }
 
     return true;
 }
