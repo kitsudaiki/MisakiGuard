@@ -22,7 +22,7 @@
 
 #include "delete_user.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 #include <libKitsunemimiJson/json_item.h>
 
@@ -71,7 +71,7 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem result;
-    if(MisakaRoot::usersTable->getUserByName(result,
+    if(MisakiRoot::usersTable->getUserByName(result,
                                              userName,
                                              userUuid,
                                              projectUuid,
@@ -96,7 +96,7 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get data from table
-    if(MisakaRoot::usersTable->deleteUser(userName,
+    if(MisakiRoot::usersTable->deleteUser(userName,
                                           userUuid,
                                           projectUuid,
                                           isAdmin,

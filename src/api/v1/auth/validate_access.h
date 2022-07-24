@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_VALIDATE_ACCESS_H
-#define MISAKAGUARD_VALIDATE_ACCESS_H
+#ifndef MISAKIGUARD_VALIDATE_ACCESS_H
+#define MISAKIGUARD_VALIDATE_ACCESS_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
@@ -39,4 +39,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKAGUARD_VALIDATE_ACCESS_H
+#endif // MISAKIGUARD_VALIDATE_ACCESS_H

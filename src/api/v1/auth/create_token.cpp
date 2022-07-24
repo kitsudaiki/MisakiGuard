@@ -22,7 +22,7 @@
 
 #include "create_token.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiJwt/jwt.h>
@@ -86,7 +86,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
-    if(MisakaRoot::usersTable->getUserByName(userData,
+    if(MisakiRoot::usersTable->getUserByName(userData,
                                              userName,
                                              userUuid,
                                              projectUuid,
@@ -117,7 +117,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     // TODO: make validation-time configurable
     std::string jwtToken;
     userData.remove("pw_hash");
-    MisakaRoot::jwt->create_HS256_Token(jwtToken, userData, 3600);
+    MisakiRoot::jwt->create_HS256_Token(jwtToken, userData, 3600);
     blossomLeaf.output.insert("token", jwtToken);
     return true;
 }

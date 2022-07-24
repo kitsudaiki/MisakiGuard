@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_CONFIG_H
-#define MISAKAGUARD_CONFIG_H
+#ifndef MISAKIGUARD_CONFIG_H
+#define MISAKIGUARD_CONFIG_H
 
 #include <libKitsunemimiConfig/config_handler.h>
 #include <libKitsunemimiHanamiCommon/config.h>
@@ -35,9 +35,9 @@ registerConfigs(Kitsunemimi::ErrorContainer &error)
 {
     Kitsunemimi::Hanami::registerBasicConfigs(error);
 
-    REGISTER_STRING_CONFIG("misaka", "token_key", error, "", true);
-    REGISTER_STRING_CONFIG("misaka", "policies", error, "", true);
+    REGISTER_STRING_CONFIG("misaki", "token_key", error, "", true);
+    REGISTER_STRING_CONFIG("misaki", "policies", error, "", true);
 
 }
 
-#endif // MISAKAGUARD_CONFIG_H
+#endif // MISAKIGUARD_CONFIG_H

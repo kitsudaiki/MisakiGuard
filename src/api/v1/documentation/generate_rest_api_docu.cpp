@@ -22,7 +22,7 @@
 
 #include "generate_rest_api_docu.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 #include <libKitsunemimiHanamiCommon/enums.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
@@ -133,7 +133,7 @@ requestComponent(std::string &completeDocumentation,
 }
 
 /**
- * @brief request endpoint-documentation from misaka itself
+ * @brief request endpoint-documentation from misaki itself
  *
  * @param completeDocumentation reference for the final document to attach new content
  */
@@ -204,14 +204,14 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
     //----------------------------------------------------------------------------------------------
-    if(scomp->support[Kitsunemimi::Hanami::NAGATO]
-            && requestComponent(completeDocumentation, "nagato", request, error) == false)
+    if(scomp->support[Kitsunemimi::Hanami::NOZOMI]
+            && requestComponent(completeDocumentation, "nozomi", request, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
     //----------------------------------------------------------------------------------------------
-    if(scomp->support[Kitsunemimi::Hanami::IZUNA]
-            && requestComponent(completeDocumentation, "izuna", request, error) == false)
+    if(scomp->support[Kitsunemimi::Hanami::INORI]
+            && requestComponent(completeDocumentation, "inori", request, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }

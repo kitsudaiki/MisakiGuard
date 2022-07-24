@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 #include <iostream>
 #include <thread>
 #include <args.h>
@@ -31,7 +31,7 @@
 #include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
 
 #include <libAzukiHeart/azuki_input.h>
-#include <libMisakaGuard/misaka_input.h>
+#include <libMisakiGuard/misaki_input.h>
 
 using Kitsunemimi::Hanami::HanamiMessaging;
 using Kitsunemimi::Hanami::initMain;
@@ -39,7 +39,7 @@ using Kitsunemimi::Hanami::initMain;
 int main(int argc, char *argv[])
 {
     Kitsunemimi::ErrorContainer error;
-    if(initMain(argc, argv, "misaka", &registerArguments, &registerConfigs, error) == false)
+    if(initMain(argc, argv, "misaki", &registerArguments, &registerConfigs, error) == false)
     {
         LOG_ERROR(error);
         return 1;
@@ -47,11 +47,11 @@ int main(int argc, char *argv[])
 
     // init included components
     Azuki::initAzukiBlossoms();
-    Misaka::initMisakaBlossoms();
+    Misaki::initMisakiBlossoms();
 
     // initialize server and connections based on the config-file
     const std::vector<std::string> groupNames = {"kyouko", "azuki", "sagiri"};
-    if(HanamiMessaging::getInstance()->initialize("misaka",
+    if(HanamiMessaging::getInstance()->initialize("misaki",
                                                   groupNames,
                                                   nullptr,
                                                   &streamDataCallback,
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     }
 
     // create root-object to start all remaining functions
-    MisakaRoot rootObj;
+    MisakiRoot rootObj;
     if(rootObj.init() == false) {
         return 1;
     }

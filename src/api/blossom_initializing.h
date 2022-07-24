@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_BLOSSOM_INITIALIZING_H
-#define MISAKAGUARD_BLOSSOM_INITIALIZING_H
+#ifndef MISAKIGUARD_BLOSSOM_INITIALIZING_H
+#define MISAKIGUARD_BLOSSOM_INITIALIZING_H
 
 #include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
 #include <libKitsunemimiCommon/logger.h>
@@ -138,4 +138,4 @@ initBlossoms()
     tokenBlossomes();
 }
 
-#endif // MISAKAGUARD_BLOSSOM_INITIALIZING_H
+#endif // MISAKIGUARD_BLOSSOM_INITIALIZING_H

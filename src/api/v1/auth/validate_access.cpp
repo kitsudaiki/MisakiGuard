@@ -32,7 +32,7 @@
 #include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
 #include <libKitsunemimiHanamiMessaging/hanami_messaging_client.h>
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 using namespace Kitsunemimi::Sakura;
 using Kitsunemimi::Hanami::HttpRequestType;
@@ -121,9 +121,9 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
 
     // validate token
     std::string publicError;
-    if(MisakaRoot::jwt->validateToken(blossomLeaf.output, token, publicError, error) == false)
+    if(MisakiRoot::jwt->validateToken(blossomLeaf.output, token, publicError, error) == false)
     {
-        error.addMeesage("Misaka failed to validate JWT-Token");
+        error.addMeesage("Misaki failed to validate JWT-Token");
         status.errorMessage = publicError;
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
@@ -152,7 +152,7 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
         bool foundPolicy = false;
         for(const std::string &role : roles)
         {
-            if(MisakaRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, role)) {
+            if(MisakiRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, role)) {
                 foundPolicy = true;
             }
         }

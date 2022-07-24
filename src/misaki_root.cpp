@@ -1,5 +1,5 @@
 /**
- * @file        misaka_root.cpp
+ * @file        misaki_root.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include "misaka_root.h"
+#include "misaki_root.h"
 
 #include <libKitsunemimiConfig/config_handler.h>
 #include <libKitsunemimiSakuraDatabase/sql_database.h>
@@ -28,15 +28,15 @@
 
 #include <api/blossom_initializing.h>
 
-Kitsunemimi::Jwt::Jwt* MisakaRoot::jwt = nullptr;
-UsersTable* MisakaRoot::usersTable = nullptr;
-Kitsunemimi::Sakura::SqlDatabase* MisakaRoot::database = nullptr;
-Kitsunemimi::Hanami::Policy* MisakaRoot::policies = nullptr;
+Kitsunemimi::Jwt::Jwt* MisakiRoot::jwt = nullptr;
+UsersTable* MisakiRoot::usersTable = nullptr;
+Kitsunemimi::Sakura::SqlDatabase* MisakiRoot::database = nullptr;
+Kitsunemimi::Hanami::Policy* MisakiRoot::policies = nullptr;
 
 /**
  * @brief constructor
  */
-MisakaRoot::MisakaRoot() {}
+MisakiRoot::MisakiRoot() {}
 
 /**
  * @brief init root-object
@@ -44,7 +44,7 @@ MisakaRoot::MisakaRoot() {}
  * @return true, if successful, else false
  */
 bool
-MisakaRoot::init()
+MisakiRoot::init()
 {
     Kitsunemimi::ErrorContainer error;
 
@@ -73,7 +73,7 @@ MisakaRoot::init()
  * @return true, if successful, else false
  */
 bool
-MisakaRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
+MisakiRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
 {
     bool success = false;
 
@@ -121,12 +121,12 @@ MisakaRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
  * @return true, if successful, else false
  */
 bool
-MisakaRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
+MisakiRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
 {
     bool success = false;
 
     // read policy-file-path from config
-    const std::string policyFilePath = GET_STRING_CONFIG("misaka", "policies", success);
+    const std::string policyFilePath = GET_STRING_CONFIG("misaki", "policies", success);
     if(success == false)
     {
         error.addMeesage("No policy-file defined in config.");
@@ -163,12 +163,12 @@ MisakaRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
  * @return true, if successful, else false
  */
 bool
-MisakaRoot::initJwt(Kitsunemimi::ErrorContainer &error)
+MisakiRoot::initJwt(Kitsunemimi::ErrorContainer &error)
 {
     bool success = false;
 
     // read jwt-token-key from config
-    const std::string tokenKeyString = GET_STRING_CONFIG("misaka", "token_key", success);
+    const std::string tokenKeyString = GET_STRING_CONFIG("misaki", "token_key", success);
     if(success == false)
     {
         error.addMeesage("No token-key defined in config.");

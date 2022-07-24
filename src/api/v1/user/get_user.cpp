@@ -22,7 +22,7 @@
 
 #include "get_user.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 #include <libKitsunemimiJson/json_item.h>
 
@@ -90,7 +90,7 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
     const std::string userName = blossomLeaf.input.get("name").getString();
 
     // get data from table
-    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output,
+    if(MisakiRoot::usersTable->getUserByName(blossomLeaf.output,
                                              userName,
                                              userUuid,
                                              projectUuid,

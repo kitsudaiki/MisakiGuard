@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_CREATEINTERNALTOKEN_H
-#define MISAKAGUARD_CREATEINTERNALTOKEN_H
+#ifndef MISAKIGUARD_CREATEINTERNALTOKEN_H
+#define MISAKIGUARD_CREATEINTERNALTOKEN_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &);
 };
 
-#endif // MISAKAGUARD_CREATEINTERNALTOKEN_H
+#endif // MISAKIGUARD_CREATEINTERNALTOKEN_H

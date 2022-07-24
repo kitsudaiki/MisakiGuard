@@ -22,7 +22,7 @@
 
 #include "create_internal_token.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 #include <libKitsunemimiCommon/common_methods/string_methods.h>
 #include <libKitsunemimiCrypto/hashes.h>
@@ -82,7 +82,7 @@ CreateInternalToken::runTask(BlossomLeaf &blossomLeaf,
 
     // TODO: make validation-time configurable
     std::string jwtToken;
-    if(MisakaRoot::jwt->create_HS256_Token(jwtToken, serviceData, 3600) == false)
+    if(MisakiRoot::jwt->create_HS256_Token(jwtToken, serviceData, 3600) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;

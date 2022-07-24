@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_GETUSER_H
-#define MISAKAGUARD_GETUSER_H
+#ifndef MISAKIGUARD_GETUSER_H
+#define MISAKIGUARD_GETUSER_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKAGUARD_GETUSER_H
+#endif // MISAKIGUARD_GETUSER_H
