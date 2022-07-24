@@ -146,7 +146,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     userData.insert("is_admin", blossomLeaf.input.get("is_admin").getBool());
     userData.insert("project_uuid", "-");
     userData.insert("owner_uuid", "-");
-    userData.insert("visibility", 0);
+    userData.insert("visibility", "private");
 
     // add new user to table
     if(MisakaRoot::usersTable->addUser(userData,

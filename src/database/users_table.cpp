@@ -175,7 +175,7 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
     userData.insert("is_admin", true);
     userData.insert("project_uuid", "-");
     userData.insert("owner_uuid", "-");
-    userData.insert("visibility", 0);
+    userData.insert("visibility", "private");
 
     // add new admin-user to db
     if(addUser(userData, "-", "-", error) == false)
