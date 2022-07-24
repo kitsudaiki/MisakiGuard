@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_DELETEUSER_H
-#define MISAKAGUARD_DELETEUSER_H
+#ifndef MISAKIGUARD_DELETEUSER_H
+#define MISAKIGUARD_DELETEUSER_H
 
 #include <libKitsunemimiSakuraLang/blossom.h>
 
@@ -38,4 +38,4 @@ protected:
                  Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKAGUARD_DELETEUSER_H
+#endif // MISAKIGUARD_DELETEUSER_H

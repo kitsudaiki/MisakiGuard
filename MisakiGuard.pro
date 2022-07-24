@@ -1,6 +1,6 @@
 QT -= qt core gui
 
-TARGET = MisakaGuard
+TARGET = MisakiGuard
 CONFIG += console c++17
 CONFIG -= app_bundle
 
@@ -9,10 +9,10 @@ LIBS += -L../libAzukiHeart/src/debug -lAzukiHeart
 LIBS += -L../libAzukiHeart/src/release -lAzukiHeart
 INCLUDEPATH += ../libAzukiHeart/include
 
-LIBS += -L../libMisakaGuard/src -lMisakaGuard
-LIBS += -L../libMisakaGuard/src/debug -lMisakaGuard
-LIBS += -L../libMisakaGuard/src/release -lMisakaGuard
-INCLUDEPATH += ../libMisakaGuard/include
+LIBS += -L../libMisakiGuard/src -lMisakiGuard
+LIBS += -L../libMisakiGuard/src/debug -lMisakiGuard
+LIBS += -L../libMisakiGuard/src/release -lMisakiGuard
+INCLUDEPATH += ../libMisakiGuard/include
 
 LIBS += -L../libKitsunemimiHanamiMessaging/src -lKitsunemimiHanamiMessaging
 LIBS += -L../libKitsunemimiHanamiMessaging/src/debug -lKitsunemimiHanamiMessaging
@@ -119,7 +119,7 @@ SOURCES += src/main.cpp \
     src/api/v1/user/get_user.cpp \
     src/api/v1/user/list_users.cpp \
     src/api/v1/documentation/generate_rest_api_docu.cpp \
-    src/misaka_root.cpp \
+    src/misaki_root.cpp \
     src/database/users_table.cpp
 
 HEADERS += \
@@ -135,5 +135,5 @@ HEADERS += \
     src/callbacks.h \
     src/config.h \
     src/api/v1/documentation/generate_rest_api_docu.h \
-    src/misaka_root.h \
+    src/misaki_root.h \
     src/database/users_table.h

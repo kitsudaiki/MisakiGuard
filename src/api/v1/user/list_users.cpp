@@ -22,7 +22,7 @@
 
 #include "list_users.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 
 #include <libKitsunemimiHanamiCommon/enums.h>
 
@@ -69,7 +69,7 @@ ListUsers::runTask(BlossomLeaf &blossomLeaf,
 
     // get data from table
     Kitsunemimi::TableItem table;
-    if(MisakaRoot::usersTable->getAllUser(table,
+    if(MisakiRoot::usersTable->getAllUser(table,
                                           userUuid,
                                           projectUuid,
                                           isAdmin,

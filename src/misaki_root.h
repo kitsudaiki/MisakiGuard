@@ -1,5 +1,5 @@
 /**
- * @file        misaka_root.h
+ * @file        misaki_root.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,17 +20,17 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_MISAKAROOT_H
-#define MISAKAGUARD_MISAKAROOT_H
+#ifndef MISAKIGUARD_MISAKIROOT_H
+#define MISAKIGUARD_MISAKIROOT_H
 
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiHanamiPolicies/policy.h>
 #include <database/users_table.h>
 
-class MisakaRoot
+class MisakiRoot
 {
 public:
-    MisakaRoot();
+    MisakiRoot();
 
     bool init();
 
@@ -45,4 +45,4 @@ private:
     bool initJwt(Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKAGUARD_MISAKAROOT_H
+#endif // MISAKIGUARD_MISAKIROOT_H

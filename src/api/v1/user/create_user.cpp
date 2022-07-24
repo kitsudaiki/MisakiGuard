@@ -22,7 +22,7 @@
 
 #include "create_user.h"
 
-#include <misaka_root.h>
+#include <misaki_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
 
@@ -36,7 +36,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 CreateUser::CreateUser()
-    : Kitsunemimi::Sakura::Blossom("Register a new user within Misaka.")
+    : Kitsunemimi::Sakura::Blossom("Register a new user within Misaki.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -116,7 +116,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakaRoot::usersTable->getUserByName(getResult,
+    if(MisakiRoot::usersTable->getUserByName(getResult,
                                              userName,
                                              userUuid,
                                              projectUuid,
@@ -149,7 +149,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     userData.insert("visibility", "private");
 
     // add new user to table
-    if(MisakaRoot::usersTable->addUser(userData,
+    if(MisakiRoot::usersTable->addUser(userData,
                                        userUuid,
                                        projectUuid,
                                        error) == false)
@@ -160,7 +160,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakaRoot::usersTable->getUserByName(blossomLeaf.output,
+    if(MisakiRoot::usersTable->getUserByName(blossomLeaf.output,
                                              userName,
                                              userUuid,
                                              projectUuid,

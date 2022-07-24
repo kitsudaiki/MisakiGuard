@@ -1,4 +1,4 @@
-# MisakaGuard
+# MisakiGuard
 
 ## Description
 
@@ -50,7 +50,7 @@ libKitsunemimiHanamiDatabase | v0.3.0 |  -
 libKitsunemimiHanamiPolicies | v0.1.0 |  -
 libKitsunemimiHanamiMessaging | v0.4.1 |  -
 libAzukiHeart | v0.2.0 | -
-libMisakaGuard | v0.1.0 | -
+libMisakiGuard | v0.1.0 | -
 
 HINT: These Kitsunemimi-Libraries will be downloaded and build automatically with the build-script below.
 
@@ -62,8 +62,8 @@ In all of my repositories you will find a `build.sh`. You only have to run this 
 Run the following commands:
 
 ```
-git clone https://github.com/kitsudaiki/MisakaGuard.git
-cd MisakaGuard
+git clone https://github.com/kitsudaiki/MisakiGuard.git
+cd MisakiGuard
 ./build.sh
 cd ../result
 ```

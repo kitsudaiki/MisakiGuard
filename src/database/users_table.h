@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_USERS_TABLE_H
-#define MISAKAGUARD_USERS_TABLE_H
+#ifndef MISAKIGUARD_USERS_TABLE_H
+#define MISAKIGUARD_USERS_TABLE_H
 
 #include <libKitsunemimiCommon/logger.h>
 #include <libKitsunemimiHanamiDatabase/hanami_sql_table.h>
@@ -68,4 +68,4 @@ private:
     bool getAllAdminUser(Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKAGUARD_USERS_TABLE_H
+#endif // MISAKIGUARD_USERS_TABLE_H

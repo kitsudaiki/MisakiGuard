@@ -112,23 +112,23 @@ echo ""
 echo "###########################################################################################################"
 echo ""
 get_required_private_repo_gitlab "libAzukiHeart" "master" "glpat-R3vZd81MXGVUTSxgHz1q" 8
-get_required_private_repo_gitlab "libMisakaGuard" "v0.1.0" "glpat-sUgJE_tJH_jV19zL8X_x" 8
+get_required_private_repo_gitlab "libMisakiGuard" "master" "glpat-sUgJE_tJH_jV19zL8X_x" 8
 echo ""
 echo "###########################################################################################################"
 
 #-----------------------------------------------------------------------------------------------------------------
 
 # create build directory for KyoukoMind and go into this directory
-LIB_KITSUNE_SAKURA_TREE_DIR="$BUILD_DIR/MisakaGuard"
+LIB_KITSUNE_SAKURA_TREE_DIR="$BUILD_DIR/MisakiGuard"
 mkdir -p $LIB_KITSUNE_SAKURA_TREE_DIR
 cd $LIB_KITSUNE_SAKURA_TREE_DIR
 
-# build MisakaGuard with qmake
-/usr/lib/x86_64-linux-gnu/qt5/bin/qmake "$PARENT_DIR/MisakaGuard/MisakaGuard.pro" -spec linux-g++ "CONFIG += optimize_full"
+# build MisakiGuard with qmake
+/usr/lib/x86_64-linux-gnu/qt5/bin/qmake "$PARENT_DIR/MisakiGuard/MisakiGuard.pro" -spec linux-g++ "CONFIG += optimize_full"
 /usr/bin/make -j8
 
 # copy build-result and include-files into the result-directory
-cp "$LIB_KITSUNE_SAKURA_TREE_DIR/MisakaGuard" "$RESULT_DIR/"
+cp "$LIB_KITSUNE_SAKURA_TREE_DIR/MisakiGuard" "$RESULT_DIR/"
 
 #-----------------------------------------------------------------------------------------------------------------
 

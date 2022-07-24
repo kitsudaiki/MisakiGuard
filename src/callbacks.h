@@ -20,8 +20,8 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKAGUARD_CALLBACKS_H
-#define MISAKAGUARD_CALLBACKS_H
+#ifndef MISAKIGUARD_CALLBACKS_H
+#define MISAKIGUARD_CALLBACKS_H
 
 #include <libKitsunemimiSakuraNetwork/session.h>
 #include <libKitsunemimiJson/json_item.h>
@@ -42,4 +42,4 @@ void genericCallback(Kitsunemimi::Sakura::Session*,
 
 }
 
-#endif // MISAKAGUARD_CALLBACKS_H
+#endif // MISAKIGUARD_CALLBACKS_H
