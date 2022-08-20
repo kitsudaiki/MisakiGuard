@@ -117,7 +117,14 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     // TODO: make validation-time configurable
     std::string jwtToken;
     userData.remove("pw_hash");
-    MisakiRoot::jwt->create_HS256_Token(jwtToken, userData, 3600);
+    if(MisakiRoot::jwt->create_HS256_Token(jwtToken, userData, 3600, error) == false)
+    {
+        error.addMeesage("Failed to create JWT-Token");
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        return false;
+    }
+
     blossomLeaf.output.insert("token", jwtToken);
+
     return true;
 }

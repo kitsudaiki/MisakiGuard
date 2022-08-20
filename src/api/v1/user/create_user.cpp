@@ -27,7 +27,7 @@
 #include <libKitsunemimiHanamiCommon/enums.h>
 
 #include <libKitsunemimiCrypto/hashes.h>
-#include <libKitsunemimiCommon/common_methods/string_methods.h>
+#include <libKitsunemimiCommon/methods/string_methods.h>
 #include <libKitsunemimiJson/json_item.h>
 
 using namespace Kitsunemimi::Sakura;
