@@ -27,6 +27,8 @@
 #include <config.h>
 #include <callbacks.h>
 
+#include <libKitsunemimiCommon/logger.h>
+
 #include <libKitsunemimiHanamiCommon/generic_main.h>
 #include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
 
@@ -65,7 +67,9 @@ int main(int argc, char *argv[])
 
     // create root-object to start all remaining functions
     MisakiRoot rootObj;
-    if(rootObj.init() == false) {
+    if(rootObj.init(error) == false)
+    {
+        LOG_ERROR(error);
         return 1;
     }
 

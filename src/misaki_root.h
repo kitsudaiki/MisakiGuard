@@ -32,7 +32,7 @@ class MisakiRoot
 public:
     MisakiRoot();
 
-    bool init();
+    bool init(Kitsunemimi::ErrorContainer &error);
 
     static Kitsunemimi::Jwt::Jwt* jwt;
     static UsersTable* usersTable;
