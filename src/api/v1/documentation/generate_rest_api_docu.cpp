@@ -33,8 +33,8 @@
 #include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
 
 #include <libKitsunemimiCrypto/common.h>
-#include <libKitsunemimiCommon/common_methods/string_methods.h>
-#include <libKitsunemimiCommon/common_methods/file_methods.h>
+#include <libKitsunemimiCommon/methods/string_methods.h>
+#include <libKitsunemimiCommon/methods/file_methods.h>
 #include <libKitsunemimiCommon/files/text_file.h>
 #include <libKitsunemimiCommon/files/binary_file.h>
 #include <libKitsunemimiCommon/process_execution.h>
@@ -250,8 +250,10 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     // read pdf-document into a byte-buffer
     Kitsunemimi::DataBuffer pdfContent;
     Kitsunemimi::BinaryFile pdfFile(pdfPath);
-    pdfFile.readCompleteFile(pdfContent);
-    pdfFile.closeFile();
+
+    // TODO: handle error-response
+    pdfFile.readCompleteFile(pdfContent, error);
+    pdfFile.closeFile(error);
 
     // create output for the client
     std::string output;

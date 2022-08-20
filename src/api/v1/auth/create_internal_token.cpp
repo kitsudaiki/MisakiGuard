@@ -24,7 +24,7 @@
 
 #include <misaki_root.h>
 
-#include <libKitsunemimiCommon/common_methods/string_methods.h>
+#include <libKitsunemimiCommon/methods/string_methods.h>
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiJson/json_item.h>
@@ -71,7 +71,7 @@ bool
 CreateInternalToken::runTask(BlossomLeaf &blossomLeaf,
                              const Kitsunemimi::DataMap &,
                              BlossomStatus &status,
-                             Kitsunemimi::ErrorContainer &)
+                             Kitsunemimi::ErrorContainer &error)
 {
     // get information from request
     const std::string serviceName = blossomLeaf.input.get("service_name").getString();
@@ -82,8 +82,9 @@ CreateInternalToken::runTask(BlossomLeaf &blossomLeaf,
 
     // TODO: make validation-time configurable
     std::string jwtToken;
-    if(MisakiRoot::jwt->create_HS256_Token(jwtToken, serviceData, 3600) == false)
+    if(MisakiRoot::jwt->create_HS256_Token(jwtToken, serviceData, 3600, error) == false)
     {
+        error.addMeesage("Failed to create JWT-Token");
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }

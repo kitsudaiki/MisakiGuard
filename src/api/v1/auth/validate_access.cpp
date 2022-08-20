@@ -22,8 +22,8 @@
 
 #include "validate_access.h"
 
-#include <libKitsunemimiCommon/common_items/data_items.h>
-#include <libKitsunemimiCommon/common_methods/string_methods.h>
+#include <libKitsunemimiCommon/items/data_items.h>
+#include <libKitsunemimiCommon/methods/string_methods.h>
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiJson/json_item.h>
 
@@ -77,7 +77,7 @@ ValidateAccess::ValidateAccess()
                        SAKURA_INT_TYPE,
                        false,
                        "Type of the HTTP-request as enum "
-                       "(DELETE = 1, GET = 2, POST = 4, PUT = 5).");
+                       "(DELETE = 1, GET = 2, HEAD = 3, POST = 4, PUT = 5).");
     assert(addFieldBorder("http_type", 1, 5));
 
     //----------------------------------------------------------------------------------------------

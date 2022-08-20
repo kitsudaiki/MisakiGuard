@@ -41,24 +41,30 @@ MisakiRoot::MisakiRoot() {}
 /**
  * @brief init root-object
  *
+ * @param error reference for error-output
+ *
  * @return true, if successful, else false
  */
 bool
-MisakiRoot::init()
+MisakiRoot::init(Kitsunemimi::ErrorContainer &error)
 {
-    Kitsunemimi::ErrorContainer error;
-
-    if(initDatabase(error) == false) {
+    if(initDatabase(error) == false)
+    {
+        error.addMeesage("Failed to initialize database");
         return false;
     }
 
     initBlossoms();
 
-    if(initJwt(error) == false) {
+    if(initJwt(error) == false)
+    {
+        error.addMeesage("Failed to initialize jwt");
         return false;
     }
 
-    if(initPolicies(error) == false) {
+    if(initPolicies(error) == false)
+    {
+        error.addMeesage("Failed to initialize policies");
         return false;
     }
 
@@ -83,7 +89,6 @@ MisakiRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
     if(success == false)
     {
         error.addMeesage("No database-path defined in config.");
-        LOG_ERROR(error);
         return false;
     }
 
@@ -91,7 +96,6 @@ MisakiRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
     if(database->initDatabase(databasePath, error) == false)
     {
         error.addMeesage("Failed to initialize sql-database.");
-        LOG_ERROR(error);
         return false;
     }
 
@@ -100,13 +104,11 @@ MisakiRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
     if(usersTable->initTable(error) == false)
     {
         error.addMeesage("Failed to initialize user-table in database.");
-        LOG_ERROR(error);
         return false;
     }
     if(usersTable->initNewAdminUser(error) == false)
     {
         error.addMeesage("Failed to initialize new admin-user even this is necessary.");
-        LOG_ERROR(error);
         return false;
     }
 
@@ -130,7 +132,6 @@ MisakiRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
     if(success == false)
     {
         error.addMeesage("No policy-file defined in config.");
-        LOG_ERROR(error);
         return false;
     }
 
@@ -139,7 +140,6 @@ MisakiRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
     if(Kitsunemimi::readFile(policyFileContent, policyFilePath, error) == false)
     {
         error.addMeesage("Failed to read policy-file");
-        LOG_ERROR(error);
         return false;
     }
 
@@ -148,7 +148,6 @@ MisakiRoot::initPolicies(Kitsunemimi::ErrorContainer &error)
     if(policies->parse(policyFileContent, error) == false)
     {
         error.addMeesage("Failed to parser policy-file");
-        LOG_ERROR(error);
         return false;
     }
 
@@ -168,11 +167,17 @@ MisakiRoot::initJwt(Kitsunemimi::ErrorContainer &error)
     bool success = false;
 
     // read jwt-token-key from config
-    const std::string tokenKeyString = GET_STRING_CONFIG("misaki", "token_key", success);
+    const std::string tokenKeyPath = GET_STRING_CONFIG("misaki", "token_key_path", success);
     if(success == false)
     {
-        error.addMeesage("No token-key defined in config.");
-        LOG_ERROR(error);
+        error.addMeesage("No token_key_path defined in config.");
+        return false;
+    }
+
+    std::string tokenKeyString;
+    if(Kitsunemimi::readFile(tokenKeyString, tokenKeyPath, error) == false)
+    {
+        error.addMeesage("Failed to read token-file '" + tokenKeyPath + "'");
         return false;
     }
 
