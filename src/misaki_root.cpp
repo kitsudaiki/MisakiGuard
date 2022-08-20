@@ -168,10 +168,18 @@ MisakiRoot::initJwt(Kitsunemimi::ErrorContainer &error)
     bool success = false;
 
     // read jwt-token-key from config
-    const std::string tokenKeyString = GET_STRING_CONFIG("misaki", "token_key", success);
+    const std::string tokenKeyPath = GET_STRING_CONFIG("misaki", "token_key_path", success);
     if(success == false)
     {
-        error.addMeesage("No token-key defined in config.");
+        error.addMeesage("No token_key_path defined in config.");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    std::string tokenKeyString;
+    if(Kitsunemimi::readFile(tokenKeyString, tokenKeyPath, error) == false)
+    {
+        error.addMeesage("Failed to read token-file '" + tokenKeyPath + "'");
         LOG_ERROR(error);
         return false;
     }
