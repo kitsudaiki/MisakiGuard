@@ -1,5 +1,5 @@
 /**
- * @file        misaki_root.h
+ * @file        list_projects.h
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,31 +20,22 @@
  *      limitations under the License.
  */
 
-#ifndef MISAKIGUARD_MISAKIROOT_H
-#define MISAKIGUARD_MISAKIROOT_H
+#ifndef MISAKIGUARD_LISTPROJECTS_H
+#define MISAKIGUARD_LISTPROJECTS_H
 
-#include <libKitsunemimiJwt/jwt.h>
-#include <libKitsunemimiHanamiPolicies/policy.h>
-#include <database/users_table.h>
-#include <database/projects_table.h>
+#include <libKitsunemimiSakuraLang/blossom.h>
 
-class MisakiRoot
+class ListProjects
+        : public Kitsunemimi::Sakura::Blossom
 {
 public:
-    MisakiRoot();
+    ListProjects();
 
-    bool init(Kitsunemimi::ErrorContainer &error);
-
-    static Kitsunemimi::Jwt::Jwt* jwt;
-    static UsersTable* usersTable;
-    static ProjectsTable* projectsTable;
-    static Kitsunemimi::Sakura::SqlDatabase* database;
-    static Kitsunemimi::Hanami::Policy* policies;
-
-private:
-    bool initDatabase(Kitsunemimi::ErrorContainer &error);
-    bool initPolicies(Kitsunemimi::ErrorContainer &error);
-    bool initJwt(Kitsunemimi::ErrorContainer &error);
+protected:
+    bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+                 const Kitsunemimi::DataMap &context,
+                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::ErrorContainer &error);
 };
 
-#endif // MISAKIGUARD_MISAKIROOT_H
+#endif // MISAKIGUARD_LISTPROJECTS_H
