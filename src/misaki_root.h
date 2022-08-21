@@ -26,6 +26,7 @@
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiHanamiPolicies/policy.h>
 #include <database/users_table.h>
+#include <database/projects_table.h>
 
 class MisakiRoot
 {
@@ -36,6 +37,7 @@ public:
 
     static Kitsunemimi::Jwt::Jwt* jwt;
     static UsersTable* usersTable;
+    static ProjectsTable* projectsTable;
     static Kitsunemimi::Sakura::SqlDatabase* database;
     static Kitsunemimi::Hanami::Policy* policies;
 

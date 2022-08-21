@@ -30,6 +30,7 @@
 
 Kitsunemimi::Jwt::Jwt* MisakiRoot::jwt = nullptr;
 UsersTable* MisakiRoot::usersTable = nullptr;
+ProjectsTable* MisakiRoot::projectsTable = nullptr;
 Kitsunemimi::Sakura::SqlDatabase* MisakiRoot::database = nullptr;
 Kitsunemimi::Hanami::Policy* MisakiRoot::policies = nullptr;
 
@@ -96,6 +97,14 @@ MisakiRoot::initDatabase(Kitsunemimi::ErrorContainer &error)
     if(database->initDatabase(databasePath, error) == false)
     {
         error.addMeesage("Failed to initialize sql-database.");
+        return false;
+    }
+
+    // initialize projects-table
+    projectsTable = new ProjectsTable(database);
+    if(projectsTable->initTable(error) == false)
+    {
+        error.addMeesage("Failed to initialize project-table in database.");
         return false;
     }
 
