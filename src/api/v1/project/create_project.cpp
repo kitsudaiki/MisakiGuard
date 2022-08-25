@@ -36,16 +36,24 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 CreateProject::CreateProject()
-    : Kitsunemimi::Sakura::Blossom("Register a new user within Misaki.")
+    : Kitsunemimi::Sakura::Blossom("Register a new project within Misaki.")
 {
     //----------------------------------------------------------------------------------------------
     // input
     //----------------------------------------------------------------------------------------------
 
+    registerInputField("id",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "ID of the new project.");
+    // column in database is limited to 256 characters size
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the new user.");
+                       "Name of the new project.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("name", 4, 256));
     assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
@@ -54,12 +62,18 @@ CreateProject::CreateProject()
     // output
     //----------------------------------------------------------------------------------------------
 
-    registerOutputField("uuid",
+    registerOutputField("id",
                         SAKURA_STRING_TYPE,
-                        "UUID of the new user.");
+                        "ID of the new project.");
+
     registerOutputField("name",
                         SAKURA_STRING_TYPE,
-                        "Name of the new user.");
+                        "Name of the new project.");
+
+    registerOutputField("creator_id",
+                        SAKURA_STRING_TYPE,
+                        "Id of the creator of the project.");
+
     //----------------------------------------------------------------------------------------------
     //
     //----------------------------------------------------------------------------------------------
@@ -74,40 +88,32 @@ CreateProject::runTask(BlossomLeaf &blossomLeaf,
                        BlossomStatus &status,
                        Kitsunemimi::ErrorContainer &error)
 {
-    const bool isAdmin = context.getBoolByKey("is_admin");
-    if(isAdmin == false)
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
     {
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
     // get information from request
+    const std::string projectId = blossomLeaf.input.get("id").getString();
     const std::string projectName = blossomLeaf.input.get("name").getString();
+    const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakiRoot::projectsTable->getProjectByName(getResult, projectName, error))
+    if(MisakiRoot::projectsTable->getProject(getResult, projectId, error))
     {
-        status.errorMessage = "Project with name '" + projectName + "' already exist.";
+        status.errorMessage = "Project with id '" + projectId + "' already exist.";
         status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
         return false;
     }
 
-    // generate predefined uuid, because this will also be used as salt-value
-    const std::string uuid = Kitsunemimi::Hanami::generateUuid().toString();
-
-    // genreate hash from password
-    std::string pwHash;
-    const std::string saltedPw = blossomLeaf.input.get("password").getString() + uuid;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
-
     // convert values
     Kitsunemimi::Json::JsonItem userData;
-    userData.insert("uuid", uuid);
+    userData.insert("id", projectId);
     userData.insert("name", projectName);
-    userData.insert("project_uuid", "-");
-    userData.insert("owner_uuid", "-");
-    userData.insert("visibility", "private");
+    userData.insert("creator_id", creatorId);
 
     // add new user to table
     if(MisakiRoot::projectsTable->addProject(userData, error) == false)
@@ -118,18 +124,13 @@ CreateProject::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakiRoot::projectsTable->getProjectByName(blossomLeaf.output,
-                                                   projectName,
+    if(MisakiRoot::projectsTable->getProject(blossomLeaf.output,
+                                                   projectId,
                                                    error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
-
-    // remove irrelevant fields
-    blossomLeaf.output.remove("owner_uuid");
-    blossomLeaf.output.remove("project_uuid");
-    blossomLeaf.output.remove("visibility");
 
     return true;
 }

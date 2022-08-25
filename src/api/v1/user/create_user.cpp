@@ -42,6 +42,14 @@ CreateUser::CreateUser()
     // input
     //----------------------------------------------------------------------------------------------
 
+    registerInputField("id",
+                       SAKURA_STRING_TYPE,
+                       true,
+                       "ID of the new user.");
+    // column in database is limited to 256 characters size
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
@@ -66,7 +74,7 @@ CreateUser::CreateUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user.");
-    assert(addFieldBorder("password", 6, 4096));
+    assert(addFieldBorder("password", 8, 4096));
     assert(addFieldRegex("password", "[^=]*"));  // no '=' allowed
 
     registerInputField("is_admin",
@@ -79,9 +87,9 @@ CreateUser::CreateUser()
     // output
     //----------------------------------------------------------------------------------------------
 
-    registerOutputField("uuid",
+    registerOutputField("id",
                         SAKURA_STRING_TYPE,
-                        "UUID of the new user.");
+                        "ID of the new user.");
     registerOutputField("name",
                         SAKURA_STRING_TYPE,
                         "Name of the new user.");
@@ -94,6 +102,9 @@ CreateUser::CreateUser()
     registerOutputField("projects",
                         SAKURA_STRING_TYPE,
                         "Comma-separated liste of all projects of the user.");
+    registerOutputField("creator_id",
+                        SAKURA_STRING_TYPE,
+                        "Id of the creator of the user.");
 
     //----------------------------------------------------------------------------------------------
     //
@@ -109,50 +120,44 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userName = blossomLeaf.input.get("name").getString();
-    const std::string userUuid = context.getStringByKey("uuid");
-    const std::string projectUuid = context.getStringByKey("projects");
-    const bool isAdmin = context.getBoolByKey("is_admin");
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
+    {
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        return false;
+    }
+
+    const std::string newUserId = blossomLeaf.input.get("id").getString();
+    const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakiRoot::usersTable->getUserByName(getResult,
-                                             userName,
-                                             userUuid,
-                                             projectUuid,
-                                             isAdmin,
-                                             error))
+    if(MisakiRoot::usersTable->getUser(getResult, newUserId, error, false))
     {
-        status.errorMessage = "User with name '" + userName + "' already exist.";
+        status.errorMessage = "User with id '" + newUserId + "' already exist.";
         status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
         return false;
     }
 
-    // generate predefined uuid, because this will also be used as salt-value
-    const std::string uuid = Kitsunemimi::Hanami::generateUuid().toString();
-
-    // genreate hash from password
+    // genreate hash from password and random salt
     std::string pwHash;
-    const std::string saltedPw = blossomLeaf.input.get("password").getString() + uuid;
+    const std::string salt = Kitsunemimi::Hanami::generateUuid().toString();
+    const std::string saltedPw = blossomLeaf.input.get("password").getString() + salt;
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
 
     // convert values
     Kitsunemimi::Json::JsonItem userData;
-    userData.insert("uuid", uuid);
-    userData.insert("name", userName);
+    userData.insert("id", newUserId);
+    userData.insert("name", blossomLeaf.input.get("name").getString());
     userData.insert("roles", blossomLeaf.input.get("roles"));
     userData.insert("projects", blossomLeaf.input.get("projects"));
     userData.insert("pw_hash", pwHash);
     userData.insert("is_admin", blossomLeaf.input.get("is_admin").getBool());
-    userData.insert("project_uuid", "-");
-    userData.insert("owner_uuid", "-");
-    userData.insert("visibility", "private");
+    userData.insert("creator_id", creatorId);
+    userData.insert("salt", salt);
 
     // add new user to table
-    if(MisakiRoot::usersTable->addUser(userData,
-                                       userUuid,
-                                       projectUuid,
-                                       error) == false)
+    if(MisakiRoot::usersTable->addUser(userData, error) == false)
     {
         status.errorMessage = error.toString();
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
@@ -160,21 +165,14 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakiRoot::usersTable->getUserByName(blossomLeaf.output,
-                                             userName,
-                                             userUuid,
-                                             projectUuid,
-                                             isAdmin,
-                                             error) == false)
+    if(MisakiRoot::usersTable->getUser(blossomLeaf.output,
+                                       newUserId,
+                                       error,
+                                       false) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
-
-    // remove irrelevant fields
-    blossomLeaf.output.remove("owner_uuid");
-    blossomLeaf.output.remove("project_uuid");
-    blossomLeaf.output.remove("visibility");
 
     return true;
 }

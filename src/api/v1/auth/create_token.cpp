@@ -41,12 +41,12 @@ CreateToken::CreateToken()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("name",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the user.");
-    assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+                       "ID of the user.");
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     registerInputField("password",
                        SAKURA_STRING_TYPE,
@@ -77,23 +77,14 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
                      BlossomStatus &status,
                      Kitsunemimi::ErrorContainer &error)
 {
-    // everybody should be allowed to create a token, so at least for this action the user is
-    // upgraded to an admin to be able to get the data from the database
-    const std::string userUuid = "-";
-    const std::string projectUuid = "-";
-    const bool isAdmin = true;
-    const std::string userName = blossomLeaf.input.get("name").getString();
+    const std::string userId = blossomLeaf.input.get("id").getString();
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
-    if(MisakiRoot::usersTable->getUserByName(userData,
-                                             userName,
-                                             userUuid,
-                                             projectUuid,
-                                             isAdmin,
-                                             error, true) == false)
+    if(MisakiRoot::usersTable->getUser(userData, userId, error, true) == false)
     {
-        status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
+        status.errorMessage = "ACCESS DENIED!\n"
+                              "User or password is incorrect.";
         error.addMeesage(status.errorMessage);
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
@@ -102,13 +93,14 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     // regenerate password-hash for comparism
     std::string pwHash = "";
     const std::string saltedPw = blossomLeaf.input.get("password").getString()
-                                 + userData.get("uuid").getString();
+                                 + userData.get("salt").getString();
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
 
     // check password
     if(userData.get("pw_hash").getString() != pwHash)
     {
-        status.errorMessage = "ACCESS DENIED!\nUser or password is incorrect.";
+        status.errorMessage = "ACCESS DENIED!\n"
+                              "User or password is incorrect.";
         error.addMeesage(status.errorMessage);
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
@@ -117,6 +109,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     // TODO: make validation-time configurable
     std::string jwtToken;
     userData.remove("pw_hash");
+    userData.remove("salt");
     if(MisakiRoot::jwt->create_HS256_Token(jwtToken, userData, 3600, error) == false)
     {
         error.addMeesage("Failed to create JWT-Token");

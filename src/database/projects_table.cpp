@@ -33,14 +33,9 @@
  * @brief constructor
  */
 ProjectsTable::ProjectsTable(Kitsunemimi::Sakura::SqlDatabase* db)
-    : HanamiSqlTable(db)
+    : HanamiSqlAdminTable(db)
 {
     m_tableName = "projects";
-
-    DbHeaderEntry userName;
-    userName.name = "name";
-    userName.maxLength = 256;
-    m_tableHeader.push_back(userName);
 }
 
 /**
@@ -60,7 +55,7 @@ bool
 ProjectsTable::addProject(Kitsunemimi::Json::JsonItem &userData,
                           Kitsunemimi::ErrorContainer &error)
 {
-    if(add(userData, "-", "-", error) == false)
+    if(add(userData, error) == false)
     {
         error.addMeesage("Failed to add user to database");
         return false;
@@ -70,29 +65,28 @@ ProjectsTable::addProject(Kitsunemimi::Json::JsonItem &userData,
 }
 
 /**
- * @brief get a project from the database by his name
+ * @brief get a project from the database by its id
  *
  * @param result reference for the result-output in case that a project with this name was found
- * @param projectName name of the requested project
+ * @param projectId id of the requested project
  * @param error reference for error-output
  * @param showHiddenValues set to true to also show as hidden marked fields
  *
  * @return true, if successful, else false
  */
 bool
-ProjectsTable::getProjectByName(Kitsunemimi::Json::JsonItem &result,
-                                const std::string &projectName,
-                                Kitsunemimi::ErrorContainer &error,
-                                const bool showHiddenValues)
+ProjectsTable::getProject(Kitsunemimi::Json::JsonItem &result,
+                          const std::string &projectId,
+                          Kitsunemimi::ErrorContainer &error,
+                          const bool showHiddenValues)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("name", projectName);
+    conditions.emplace_back("id", projectId);
 
-    // get user from db
-    if(get(result, "-", "-", true, conditions, error, showHiddenValues) == false)
+    if(get(result, conditions, error, showHiddenValues) == false)
     {
-        error.addMeesage("Failed to get user with name '"
-                         + projectName
+        error.addMeesage("Failed to get user with id '"
+                         + projectId
                          + "' from database");
         LOG_ERROR(error);
         return false;
@@ -114,7 +108,7 @@ ProjectsTable::getAllProjects(Kitsunemimi::TableItem &result,
                               Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    if(getAll(result, "-", "-", true, conditions, error) == false)
+    if(getAll(result, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get all users from database");
         return false;
@@ -126,22 +120,22 @@ ProjectsTable::getAllProjects(Kitsunemimi::TableItem &result,
 /**
  * @brief delete a project from the table
  *
- * @param projectName name of the project to delete
+ * @param projectId id of the project to delete
  * @param error reference for error-output
  *
  * @return true, if successful, else false
  */
 bool
-ProjectsTable::deleteProject(const std::string &projectName,
+ProjectsTable::deleteProject(const std::string &projectId,
                              Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("name", projectName);
+    conditions.emplace_back("id", projectId);
 
-    if(del(conditions, "-", "-", true, error) == false)
+    if(del(conditions, error) == false)
     {
-        error.addMeesage("Failed to delete user with name '"
-                         + projectName
+        error.addMeesage("Failed to delete user with id '"
+                         + projectId
                          + "' from database");
         return false;
     }

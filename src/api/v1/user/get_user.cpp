@@ -40,24 +40,27 @@ GetUser::GetUser()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("name",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the user.");
+                       "Id of the user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     //----------------------------------------------------------------------------------------------
     // output
     //----------------------------------------------------------------------------------------------
 
-    registerOutputField("uuid",
+    registerOutputField("id",
                         SAKURA_STRING_TYPE,
-                        "UUID of the user.");
+                        "ID of the user.");
     registerOutputField("name",
                         SAKURA_STRING_TYPE,
                         "Name of the user.");
+    registerOutputField("creator_id",
+                        SAKURA_STRING_TYPE,
+                        "Id of the creator of the user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Set this to true to register the new user as admin.");
@@ -82,30 +85,23 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
                  BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userUuid = context.getStringByKey("uuid");
-    const std::string projectUuid = context.getStringByKey("projects");
-    const bool isAdmin = context.getBoolByKey("is_admin");
-
-    // get information from request
-    const std::string userName = blossomLeaf.input.get("name").getString();
-
-    // get data from table
-    if(MisakiRoot::usersTable->getUserByName(blossomLeaf.output,
-                                             userName,
-                                             userUuid,
-                                             projectUuid,
-                                             isAdmin,
-                                             error) == false)
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
     {
-        status.errorMessage = "User with name '" + userName + "' not found.";
-        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
-    // remove irrelevant fields
-    blossomLeaf.output.remove("owner_uuid");
-    blossomLeaf.output.remove("project_uuid");
-    blossomLeaf.output.remove("visibility");
+    // get information from request
+    const std::string userId = blossomLeaf.input.get("id").getString();
+
+    // get data from table
+    if(MisakiRoot::usersTable->getUser(blossomLeaf.output, userId, error, false) == false)
+    {
+        status.errorMessage = "User with id '" + userId + "' not found.";
+        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
+        return false;
+    }
 
     return true;
 }

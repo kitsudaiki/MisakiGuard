@@ -33,14 +33,9 @@
  * @brief constructor
  */
 UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
-    : HanamiSqlTable(db)
+    : HanamiSqlAdminTable(db)
 {
     m_tableName = "users";
-
-    DbHeaderEntry userName;
-    userName.name = "name";
-    userName.maxLength = 256;
-    m_tableHeader.push_back(userName);
 
     DbHeaderEntry roles;
     roles.name = "roles";
@@ -55,6 +50,12 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     pwHash.maxLength = 64;
     pwHash.hide = true;
     m_tableHeader.push_back(pwHash);
+
+    DbHeaderEntry saltVal;
+    saltVal.name = "salt";
+    saltVal.maxLength = 64;
+    saltVal.hide = true;
+    m_tableHeader.push_back(saltVal);
 
     DbHeaderEntry isAdmin;
     isAdmin.name = "is_admin";
@@ -103,7 +104,7 @@ UsersTable::getAllAdminUser(Kitsunemimi::ErrorContainer &error)
 
     // get admin-user from db
     Kitsunemimi::Json::JsonItem users;
-    if(get(users, "-", "-", true, conditions, error, false) == false)
+    if(get(users, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get admin-users from database");
         LOG_ERROR(error);
@@ -123,10 +124,10 @@ UsersTable::getAllAdminUser(Kitsunemimi::ErrorContainer &error)
 bool
 UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
 {
+    std::string userId = "";
     std::string userName = "";
     std::string pw = "";
     std::string role = "";
-    const std::string uuid = "e307bee0-9286-49bd-9273-6f644c12da1d";
 
     // check if there is already an admin-user in the databasae
     if(getAllAdminUser(error)) {
@@ -134,10 +135,19 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
     }
     LOG_DEBUG("Found no admin-users in database, so try to create a new one");
 
-    // get env with new admin-user name
-    if(getEnvVar(userName, "HANAMI_ADMIN_USER") == false)
+    // get env with new admin-user id
+    if(getEnvVar(userId, "HANAMI_ADMIN_USER_ID") == false)
     {
-        error.addMeesage("environment variable 'HANAMI_ADMIN_USER' was not set, "
+        error.addMeesage("environment variable 'HANAMI_ADMIN_USER_ID' was not set, "
+                         "but is required to initialize a new admin-user");
+        LOG_ERROR(error);
+        return false;
+    }
+
+    // get env with new admin-user name
+    if(getEnvVar(userName, "HANAMI_ADMIN_USER_NAME") == false)
+    {
+        error.addMeesage("environment variable 'HANAMI_ADMIN_USER_NAME' was not set, "
                          "but is required to initialize a new admin-user");
         LOG_ERROR(error);
         return false;
@@ -163,22 +173,22 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
 
     // generate hash from password
     std::string pwHash;
-    const std::string saltedPw = pw + uuid;
+    const std::string salt = "e307bee0-9286-49bd-9273-6f644c12da1d";
+    const std::string saltedPw = pw + salt;
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
 
     Kitsunemimi::Json::JsonItem userData;
-    userData.insert("uuid", uuid);
+    userData.insert("id", userId);
     userData.insert("name", userName);
     userData.insert("roles", role);
     userData.insert("projects", "-");
-    userData.insert("pw_hash", pwHash);
     userData.insert("is_admin", true);
-    userData.insert("project_uuid", "-");
-    userData.insert("owner_uuid", "-");
-    userData.insert("visibility", "private");
+    userData.insert("creator_id", "MISAKI");
+    userData.insert("pw_hash", pwHash);
+    userData.insert("salt", salt);
 
     // add new admin-user to db
-    if(addUser(userData, "-", "-", error) == false)
+    if(addUser(userData, error) == false)
     {
         error.addMeesage("Failed to add new initial admin-user to database");
         LOG_ERROR(error);
@@ -192,19 +202,15 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
  * @brief add a new user to the database
  *
  * @param userData json-item with all information of the user to add to database
- * @param userUuid user-uuid to filter
- * @param projectUuid project-uuid to filter
  * @param error reference for error-output
  *
  * @return true, if successful, else false
  */
 bool
 UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
-                    const std::string &userUuid,
-                    const std::string &projectUuid,
                     Kitsunemimi::ErrorContainer &error)
 {
-    if(add(userData, userUuid, projectUuid, error) == false)
+    if(add(userData, error) == false)
     {
         error.addMeesage("Failed to add user to database");
         return false;
@@ -214,35 +220,29 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
 }
 
 /**
- * @brief get a user from the database by his name
+ * @brief get a user from the database
  *
  * @param result reference for the result-output in case that a user with this name was found
- * @param userName name of the requested user
- * @param userUuid user-uuid to filter
- * @param projectUuid project-uuid to filter
- * @param isAdmin true, if use who makes request is admin
+ * @param userId id of the requested user
  * @param error reference for error-output
  * @param showHiddenValues set to true to also show as hidden marked fields
  *
  * @return true, if successful, else false
  */
 bool
-UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
-                          const std::string &userName,
-                          const std::string &userUuid,
-                          const std::string &projectUuid,
-                          const bool isAdmin,
-                          Kitsunemimi::ErrorContainer &error,
-                          const bool showHiddenValues)
+UsersTable::getUser(Kitsunemimi::Json::JsonItem &result,
+                    const std::string &userId,
+                    Kitsunemimi::ErrorContainer &error,
+                    const bool showHiddenValues)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("name", userName);
+    conditions.emplace_back("id", userId);
 
     // get user from db
-    if(get(result, userUuid, projectUuid, isAdmin, conditions, error, showHiddenValues) == false)
+    if(get(result, conditions, error, showHiddenValues) == false)
     {
-        error.addMeesage("Failed to get user with name '"
-                         + userName
+        error.addMeesage("Failed to get user with id '"
+                         + userId
                          + "' from database");
         LOG_ERROR(error);
         return false;
@@ -255,22 +255,16 @@ UsersTable::getUserByName(Kitsunemimi::Json::JsonItem &result,
  * @brief get all users from the database table
  *
  * @param result reference for the result-output
- * @param userUuid user-uuid to filter
- * @param projectUuid project-uuid to filter
- * @param isAdmin true, if use who makes request is admin
  * @param error reference for error-output
  *
  * @return true, if successful, else false
  */
 bool
 UsersTable::getAllUser(Kitsunemimi::TableItem &result,
-                       const std::string &userUuid,
-                       const std::string &projectUuid,
-                       const bool isAdmin,
                        Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    if(getAll(result, userUuid, projectUuid, isAdmin, conditions, error) == false)
+    if(getAll(result, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get all users from database");
         return false;
@@ -282,28 +276,22 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
 /**
  * @brief delete a user from the table
  *
- * @param userName name of the user to delete
- * @param userUuid user-uuid to filter
- * @param projectUuid project-uuid to filter
- * @param isAdmin true, if use who makes request is admin
+ * @param userId id of the user to delete
  * @param error reference for error-output
  *
  * @return true, if successful, else false
  */
 bool
-UsersTable::deleteUser(const std::string &userName,
-                       const std::string &userUuid,
-                       const std::string &projectUuid,
-                       const bool isAdmin,
+UsersTable::deleteUser(const std::string &userId,
                        Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    conditions.emplace_back("name", userName);
+    conditions.emplace_back("id", userId);
 
-    if(del(conditions, userUuid, projectUuid, isAdmin, error) == false)
+    if(del(conditions, error) == false)
     {
-        error.addMeesage("Failed to delete user with name '"
-                         + userName
+        error.addMeesage("Failed to delete user with id '"
+                         + userId
                          + "' from database");
         return false;
     }
