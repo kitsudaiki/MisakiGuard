@@ -40,13 +40,13 @@ DeleteProject::DeleteProject()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("name",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the user.");
+                       "ID of the project.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     //----------------------------------------------------------------------------------------------
     //
@@ -62,28 +62,28 @@ DeleteProject::runTask(BlossomLeaf &blossomLeaf,
                        BlossomStatus &status,
                        Kitsunemimi::ErrorContainer &error)
 {
-    const bool isAdmin = context.getBoolByKey("is_admin");
-    if(isAdmin == false)
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
     {
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
     // get information from request
-    const std::string projectName = blossomLeaf.input.get("name").getString();
+    const std::string projectId = blossomLeaf.input.get("id").getString();
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem result;
-    if(MisakiRoot::projectsTable->getProjectByName(result, projectName, error) == false)
+    if(MisakiRoot::projectsTable->getProject(result, projectId, error) == false)
     {
-        status.errorMessage = "Project with name '" + projectName + "' not found.";
+        status.errorMessage = "Project with id '" + projectId + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         error.addMeesage(status.errorMessage);
         return false;
     }
 
     // get data from table
-    if(MisakiRoot::projectsTable->deleteProject(projectName, error) == false)
+    if(MisakiRoot::projectsTable->deleteProject(projectId, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;

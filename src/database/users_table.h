@@ -24,7 +24,7 @@
 #define MISAKIGUARD_USERS_TABLE_H
 
 #include <libKitsunemimiCommon/logger.h>
-#include <libKitsunemimiHanamiDatabase/hanami_sql_table.h>
+#include <libKitsunemimiHanamiDatabase/hanami_sql_admin_table.h>
 
 namespace Kitsunemimi {
 namespace Json {
@@ -32,7 +32,7 @@ class JsonItem;
 }
 }
 class UsersTable
-        : public Kitsunemimi::Hanami::HanamiSqlTable
+        : public Kitsunemimi::Hanami::HanamiSqlAdminTable
 {
 public:
     UsersTable(Kitsunemimi::Sakura::SqlDatabase* db);
@@ -41,25 +41,14 @@ public:
     bool initNewAdminUser(Kitsunemimi::ErrorContainer &error);
 
     bool addUser(Kitsunemimi::Json::JsonItem &userData,
-                 const std::string &userUuid,
-                 const std::string &projectUuid,
                  Kitsunemimi::ErrorContainer &error);
-    bool getUserByName(Kitsunemimi::Json::JsonItem &result,
-                       const std::string &userName,
-                       const std::string &userUuid,
-                       const std::string &projectUuid,
-                       const bool isAdmin,
-                       Kitsunemimi::ErrorContainer &error,
-                       const bool showHiddenValues = false);
+    bool getUser(Kitsunemimi::Json::JsonItem &result,
+                 const std::string &userId,
+                 Kitsunemimi::ErrorContainer &error,
+                 const bool showHiddenValues);
     bool getAllUser(Kitsunemimi::TableItem &result,
-                    const std::string &userUuid,
-                    const std::string &projectUuid,
-                    const bool isAdmin,
                     Kitsunemimi::ErrorContainer &error);
     bool deleteUser(const std::string &userName,
-                    const std::string &userUuid,
-                    const std::string &projectUuid,
-                    const bool isAdmin,
                     Kitsunemimi::ErrorContainer &error);
 
 private:

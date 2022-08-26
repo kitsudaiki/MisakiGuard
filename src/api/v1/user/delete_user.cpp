@@ -40,13 +40,13 @@ DeleteUser::DeleteUser()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("name",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the user.");
+                       "ID of the user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     //----------------------------------------------------------------------------------------------
     //
@@ -62,33 +62,32 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userUuid = context.getStringByKey("uuid");
-    const std::string projectUuid = context.getStringByKey("projects");
-    const bool isAdmin = context.getBoolByKey("is_admin");
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
+    {
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        return false;
+    }
 
     // get information from request
-    const std::string userName = blossomLeaf.input.get("name").getString();
+    const std::string deleterId = context.getStringByKey("id");
+    const std::string userId = blossomLeaf.input.get("id").getString();
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem result;
-    if(MisakiRoot::usersTable->getUserByName(result,
-                                             userName,
-                                             userUuid,
-                                             projectUuid,
-                                             isAdmin,
-                                             error) == false)
+    if(MisakiRoot::usersTable->getUser(result, userId, error, false) == false)
     {
-        status.errorMessage = "User with name '" + userName + "' not found.";
+        status.errorMessage = "User with id '" + userId + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         error.addMeesage(status.errorMessage);
         return false;
     }
 
     // prevent user from deleting himself
-    if(result.get("uuid").getString() == userUuid)
+    if(result.get("id").getString() == deleterId)
     {
-        status.errorMessage = "User with name '"
-                              + userName
+        status.errorMessage = "User with id '"
+                              + userId
                               + "' tries to delete himself, which is not allowed.";
         status.statusCode = Kitsunemimi::Hanami::BAD_REQUEST_RTYPE;
         error.addMeesage(status.errorMessage);
@@ -96,11 +95,7 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get data from table
-    if(MisakiRoot::usersTable->deleteUser(userName,
-                                          userUuid,
-                                          projectUuid,
-                                          isAdmin,
-                                          error) == false)
+    if(MisakiRoot::usersTable->deleteUser(userId, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;

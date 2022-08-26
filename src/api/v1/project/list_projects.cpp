@@ -41,7 +41,9 @@ ListProjects::ListProjects()
     registerOutputField("header",
                         SAKURA_ARRAY_TYPE,
                         "Array with the namings all columns of the table.");
-    assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"uuid\",\"name\"]")));
+    assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"id\""
+                                                              ",\"name\""
+                                                              ",\"creator_id\"]")));
     registerOutputField("body",
                         SAKURA_ARRAY_TYPE,
                         "Array with all rows of the table, which array arrays too.");
@@ -60,8 +62,8 @@ ListProjects::runTask(BlossomLeaf &blossomLeaf,
                       BlossomStatus &status,
                       Kitsunemimi::ErrorContainer &error)
 {
-    const bool isAdmin = context.getBoolByKey("is_admin");
-    if(isAdmin == false)
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
     {
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
@@ -74,10 +76,6 @@ ListProjects::runTask(BlossomLeaf &blossomLeaf,
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
-
-    table.deleteColumn("visibility");
-    table.deleteColumn("owner_uuid");
-    table.deleteColumn("project_uuid");
 
     blossomLeaf.output.insert("header", table.getInnerHeader());
     blossomLeaf.output.insert("body", table.getBody());

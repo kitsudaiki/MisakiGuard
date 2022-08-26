@@ -41,7 +41,9 @@ ListUsers::ListUsers()
     registerOutputField("header",
                         SAKURA_ARRAY_TYPE,
                         "Array with the namings all columns of the table.");
-    assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"name\","
+    assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"id\","
+                                                              "\"name\","
+                                                              "\"creator_id\","
                                                               "\"roles\","
                                                               "\"projects\","
                                                               "\"is_admin\"]")));
@@ -63,26 +65,20 @@ ListUsers::runTask(BlossomLeaf &blossomLeaf,
                    BlossomStatus &status,
                    Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userUuid = context.getStringByKey("uuid");
-    const std::string projectUuid = context.getStringByKey("projects");
-    const bool isAdmin = context.getBoolByKey("is_admin");
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
+    {
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        return false;
+    }
 
     // get data from table
     Kitsunemimi::TableItem table;
-    if(MisakiRoot::usersTable->getAllUser(table,
-                                          userUuid,
-                                          projectUuid,
-                                          isAdmin,
-                                          error) == false)
+    if(MisakiRoot::usersTable->getAllUser(table, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
-
-    table.deleteColumn("uuid");
-    table.deleteColumn("visibility");
-    table.deleteColumn("owner_uuid");
-    table.deleteColumn("project_uuid");
 
     blossomLeaf.output.insert("header", table.getInnerHeader());
     blossomLeaf.output.insert("body", table.getBody());

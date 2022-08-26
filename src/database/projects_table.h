@@ -24,7 +24,7 @@
 #define MISAKIGUARD_PROJECTS_TABLE_H
 
 #include <libKitsunemimiCommon/logger.h>
-#include <libKitsunemimiHanamiDatabase/hanami_sql_table.h>
+#include <libKitsunemimiHanamiDatabase/hanami_sql_admin_table.h>
 
 namespace Kitsunemimi {
 namespace Json {
@@ -32,7 +32,7 @@ class JsonItem;
 }
 }
 class ProjectsTable
-        : public Kitsunemimi::Hanami::HanamiSqlTable
+        : public Kitsunemimi::Hanami::HanamiSqlAdminTable
 {
 public:
     ProjectsTable(Kitsunemimi::Sakura::SqlDatabase* db);
@@ -40,7 +40,7 @@ public:
 
     bool addProject(Kitsunemimi::Json::JsonItem &userData,
                     Kitsunemimi::ErrorContainer &error);
-    bool getProjectByName(Kitsunemimi::Json::JsonItem &result,
+    bool getProject(Kitsunemimi::Json::JsonItem &result,
                           const std::string &projectName,
                           Kitsunemimi::ErrorContainer &error,
                           const bool showHiddenValues = false);

@@ -84,9 +84,9 @@ ValidateAccess::ValidateAccess()
     // output
     //----------------------------------------------------------------------------------------------
 
-    registerOutputField("uuid",
+    registerOutputField("id",
                         SAKURA_STRING_TYPE,
-                        "UUID of the user.");
+                        "ID of the user.");
     registerOutputField("name",
                         SAKURA_STRING_TYPE,
                         "Name of the user.");
@@ -169,12 +169,10 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
 
     // remove irrelevant fields
     blossomLeaf.output.remove("pw_hash");
+    blossomLeaf.output.remove("creator_id");
     blossomLeaf.output.remove("exp");
     blossomLeaf.output.remove("iat");
     blossomLeaf.output.remove("nbf");
-    blossomLeaf.output.remove("owner_uuid");
-    blossomLeaf.output.remove("project_uuid");
-    blossomLeaf.output.remove("visibility");
 
     return true;
 }

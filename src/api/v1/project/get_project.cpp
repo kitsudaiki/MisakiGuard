@@ -40,34 +40,27 @@ GetProject::GetProject()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("name",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the user.");
+                       "Id of the user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
     //----------------------------------------------------------------------------------------------
     // output
     //----------------------------------------------------------------------------------------------
 
-    registerOutputField("uuid",
+    registerOutputField("id",
                         SAKURA_STRING_TYPE,
-                        "UUID of the user.");
+                        "ID of the new user.");
     registerOutputField("name",
                         SAKURA_STRING_TYPE,
-                        "Name of the user.");
-    registerOutputField("is_admin",
-                        SAKURA_BOOL_TYPE,
-                        "Set this to true to register the new user as admin.");
-    registerOutputField("roles",
+                        "Name of the new user.");
+    registerOutputField("creator_id",
                         SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all roles of the user.");
-    registerOutputField("projects",
-                        SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all projects of the user.");
-
+                        "Id of the creator of the user.");
     //----------------------------------------------------------------------------------------------
     //
     //----------------------------------------------------------------------------------------------
@@ -82,28 +75,23 @@ GetProject::runTask(BlossomLeaf &blossomLeaf,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
-    const bool isAdmin = context.getBoolByKey("is_admin");
-    if(isAdmin == false)
+    // check if admin
+    if(context.getBoolByKey("is_admin") == false)
     {
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
     }
 
     // get information from request
-    const std::string projectName = blossomLeaf.input.get("name").getString();
+    const std::string projectId = blossomLeaf.input.get("id").getString();
 
     // get data from table
-    if(MisakiRoot::projectsTable->getProjectByName(blossomLeaf.output, projectName, error) == false)
+    if(MisakiRoot::projectsTable->getProject(blossomLeaf.output, projectId, error) == false)
     {
-        status.errorMessage = "Project with name '" + projectName + "' not found.";
+        status.errorMessage = "Project with id '" + projectId + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
-
-    // remove irrelevant fields
-    blossomLeaf.output.remove("owner_uuid");
-    blossomLeaf.output.remove("project_uuid");
-    blossomLeaf.output.remove("visibility");
 
     return true;
 }
