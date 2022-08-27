@@ -122,31 +122,30 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    // get project is user is not an admin.
+    // get project
     const bool isAdmin = userData.get("is_admin").getBool();
     if(isAdmin)
     {
+        // admin user get alway the admin-project per default
         userData.remove("projects");
         userData.insert("project_id", "-");
         userData.insert("roles", "admin");
         userData.insert("is_project_admin", false);
     }
+    else if(parsedProjects.size() != 0)
+    {
+        // normal user get assigned to first project in their project-list at beginning
+        userData.remove("projects");
+        userData.insert("project_id", parsedProjects.get(0).get("project_id"));
+        userData.insert("roles", parsedProjects.get(0).get("project_id"));
+        userData.insert("is_project_admin", parsedProjects.get(0).get("is_project_admin"));
+    }
     else
     {
-        if(parsedProjects.size() == 0)
-        {
-            status.errorMessage = "User with id '" + userId + "' has no project assigned.";
-            error.addMeesage(status.errorMessage);
-            status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
-            return false;
-        }
-        else
-        {
-            userData.remove("projects");
-            userData.insert("project_id", parsedProjects.get(0).get("project_id"));
-            userData.insert("roles", parsedProjects.get(0).get("project_id"));
-            userData.insert("is_project_admin", parsedProjects.get(0).get("is_project_admin"));
-        }
+        status.errorMessage = "User with id '" + userId + "' has no project assigned.";
+        error.addMeesage(status.errorMessage);
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        return false;
     }
 
     // create token
