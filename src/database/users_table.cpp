@@ -37,13 +37,14 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
 {
     m_tableName = "users";
 
-    DbHeaderEntry roles;
-    roles.name = "roles";
-    m_tableHeader.push_back(roles);
-
     DbHeaderEntry projects;
     projects.name = "projects";
     m_tableHeader.push_back(projects);
+
+    DbHeaderEntry isAdmin;
+    isAdmin.name = "is_admin";
+    isAdmin.type = BOOL_TYPE;
+    m_tableHeader.push_back(isAdmin);
 
     DbHeaderEntry pwHash;
     pwHash.name = "pw_hash";
@@ -56,11 +57,6 @@ UsersTable::UsersTable(Kitsunemimi::Sakura::SqlDatabase* db)
     saltVal.maxLength = 64;
     saltVal.hide = true;
     m_tableHeader.push_back(saltVal);
-
-    DbHeaderEntry isAdmin;
-    isAdmin.name = "is_admin";
-    isAdmin.type = BOOL_TYPE;
-    m_tableHeader.push_back(isAdmin);
 }
 
 /**
@@ -127,7 +123,6 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
     std::string userId = "";
     std::string userName = "";
     std::string pw = "";
-    std::string role = "";
 
     // check if there is already an admin-user in the databasae
     if(getAllAdminUser(error)) {
@@ -162,15 +157,6 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
         return false;
     }
 
-    // get env with new admin-user role
-    if(getEnvVar(role, "HANAMI_ADMIN_ROLE") == false)
-    {
-        error.addMeesage("environment variable 'HANAMI_ADMIN_ROLE' was not set, "
-                         "but is required to initialize a new admin-user");
-        LOG_ERROR(error);
-        return false;
-    }
-
     // generate hash from password
     std::string pwHash;
     const std::string salt = "e307bee0-9286-49bd-9273-6f644c12da1d";
@@ -180,8 +166,7 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
     Kitsunemimi::Json::JsonItem userData;
     userData.insert("id", userId);
     userData.insert("name", userName);
-    userData.insert("roles", role);
-    userData.insert("projects", "-");
+    userData.insert("projects", "[]");
     userData.insert("is_admin", true);
     userData.insert("creator_id", "MISAKI");
     userData.insert("pw_hash", pwHash);
@@ -291,6 +276,37 @@ UsersTable::deleteUser(const std::string &userId,
     if(del(conditions, error) == false)
     {
         error.addMeesage("Failed to delete user with id '"
+                         + userId
+                         + "' from database");
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief update the projects-frild of a specific user
+ *
+ * @param userId id of the user, who has to be updated
+ * @param newProjects new projects-entry for the database
+ * @param error reference for error-output
+ *
+ * @return true, if successful, else false
+ */
+bool
+UsersTable::updateProjectsOfUser(const std::string &userId,
+                                 const std::string &newProjects,
+                                 Kitsunemimi::ErrorContainer &error)
+{
+    Kitsunemimi::Json::JsonItem newValues;
+    newValues.insert("projects", Kitsunemimi::Json::JsonItem(newProjects));
+
+    std::vector<RequestCondition> conditions;
+    conditions.emplace_back("id", userId);
+
+    if(update(newValues, conditions, error) == false)
+    {
+        error.addMeesage("Failed to update projects for user with id '"
                          + userId
                          + "' from database");
         return false;

@@ -91,13 +91,15 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // regenerate password-hash for comparism
-    std::string pwHash = "";
+    std::string compareHash = "";
     const std::string saltedPw = blossomLeaf.input.get("password").getString()
                                  + userData.get("salt").getString();
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
+    Kitsunemimi::Crypto::generate_SHA_256(compareHash, saltedPw);
 
     // check password
-    if(userData.get("pw_hash").getString() != pwHash)
+    const std::string pwHash = userData.get("pw_hash").getString();
+    if(pwHash.size() != compareHash.size()
+            || memcmp(pwHash.c_str(), compareHash.c_str(), pwHash.size()) != 0)
     {
         status.errorMessage = "ACCESS DENIED!\n"
                               "User or password is incorrect.";
@@ -106,10 +108,49 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    // TODO: make validation-time configurable
+    // remove entries, which are NOT allowed to be part of the token
     std::string jwtToken;
     userData.remove("pw_hash");
     userData.remove("salt");
+
+    // parse projects from result
+    Kitsunemimi::Json::JsonItem parsedProjects;
+    if(parsedProjects.parse(userData.get("projects").getString(), error) == false)
+    {
+        error.addMeesage("Failed to parse projects of user with id '" + userId + "'");
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        return false;
+    }
+
+    // get project is user is not an admin.
+    const bool isAdmin = userData.get("is_admin").getBool();
+    if(isAdmin)
+    {
+        userData.remove("projects");
+        userData.insert("project_id", "-");
+        userData.insert("roles", "admin");
+        userData.insert("is_project_admin", false);
+    }
+    else
+    {
+        if(parsedProjects.size() == 0)
+        {
+            status.errorMessage = "User with id '" + userId + "' has no project assigned.";
+            error.addMeesage(status.errorMessage);
+            status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+            return false;
+        }
+        else
+        {
+            userData.remove("projects");
+            userData.insert("project_id", parsedProjects.get(0).get("project_id"));
+            userData.insert("roles", parsedProjects.get(0).get("project_id"));
+            userData.insert("is_project_admin", parsedProjects.get(0).get("is_project_admin"));
+        }
+    }
+
+    // create token
+    // TODO: make validation-time configurable
     if(MisakiRoot::jwt->create_HS256_Token(jwtToken, userData, 3600, error) == false)
     {
         error.addMeesage("Failed to create JWT-Token");

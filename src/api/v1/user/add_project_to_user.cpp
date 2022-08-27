@@ -1,5 +1,5 @@
 /**
- * @file        create_user.cpp
+ * @file        add_project_to_user.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include "create_user.h"
+#include "add_project_to_user.h"
 
 #include <misaki_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
@@ -35,41 +35,42 @@ using namespace Kitsunemimi::Sakura;
 /**
  * @brief constructor
  */
-CreateUser::CreateUser()
-    : Kitsunemimi::Sakura::Blossom("Register a new user within Misaki.")
+AddProjectToUser::AddProjectToUser()
+    : Kitsunemimi::Sakura::Blossom("Add a project to a specific user.")
 {
     //----------------------------------------------------------------------------------------------
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("id",
+    registerInputField("user_id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "ID of the new user.");
+                       "ID of the user.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
     assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
-    registerInputField("name",
+    registerInputField("project_id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Name of the new user.");
+                       "ID of the project, which has to be added to the user.");
     // column in database is limited to 256 characters size
-    assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldBorder("project_id", 4, 256));
+    assert(addFieldRegex("project_id", "[a-zA-Z][a-zA-Z_0-9]*"));
 
-    registerInputField("password",
+    registerInputField("roles",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Passphrase of the user.");
-    assert(addFieldBorder("password", 8, 4096));
-    assert(addFieldRegex("password", "[^=]*"));  // no '=' allowed
+                       "Roles, which has to be assigned to the user within the project");
+    assert(addFieldBorder("roles", 4, 4096));
+    assert(addFieldRegex("roles", "[a-zA-Z][a-zA-Z_0-9]*"));
 
-    registerInputField("is_admin",
+    registerInputField("is_project_admin",
                        SAKURA_BOOL_TYPE,
                        false,
-                       "Set this to 1 to register the new user as admin.");
-    assert(addFieldDefault("is_admin", new Kitsunemimi::DataValue(false)));
+                       "Set this to true, if the user should be an admin "
+                       "within the assigned project.");
+    assert(addFieldDefault("is_project_admin", new Kitsunemimi::DataValue(false)));
 
     //----------------------------------------------------------------------------------------------
     // output
@@ -77,10 +78,10 @@ CreateUser::CreateUser()
 
     registerOutputField("id",
                         SAKURA_STRING_TYPE,
-                        "ID of the new user.");
+                        "ID of the user.");
     registerOutputField("name",
                         SAKURA_STRING_TYPE,
-                        "Name of the new user.");
+                        "Name of the user.");
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "True, if user is an admin.");
@@ -89,7 +90,8 @@ CreateUser::CreateUser()
                         "Id of the creator of the user.");
     registerOutputField("projects",
                         SAKURA_STRING_TYPE,
-                        "List of all projects together with roles and project-admin-status.");
+                        "Json-formated string with all assigned projects "
+                        "together with roles and project-admin-status.");
 
     //----------------------------------------------------------------------------------------------
     //
@@ -100,10 +102,10 @@ CreateUser::CreateUser()
  * @brief runTask
  */
 bool
-CreateUser::runTask(BlossomLeaf &blossomLeaf,
-                    const Kitsunemimi::DataMap &context,
-                    BlossomStatus &status,
-                    Kitsunemimi::ErrorContainer &error)
+AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
+                          const Kitsunemimi::DataMap &context,
+                          BlossomStatus &status,
+                          Kitsunemimi::ErrorContainer &error)
 {
     // check if admin
     if(context.getBoolByKey("is_admin") == false)
@@ -112,45 +114,68 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    const std::string newUserId = blossomLeaf.input.get("id").getString();
+    const std::string userId = blossomLeaf.input.get("id").getString();
+    const std::string projectId = blossomLeaf.input.get("project_id").getString();
+    const std::string roles = blossomLeaf.input.get("roles").getString();
+    const bool isProjectAdmin = blossomLeaf.input.get("is_project_admin").getBool();
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakiRoot::usersTable->getUser(getResult, newUserId, error, false))
+    if(MisakiRoot::usersTable->getUser(getResult, userId, error, false))
     {
-        status.errorMessage = "User with id '" + newUserId + "' already exist.";
+        status.errorMessage = "User with id '" + userId + "' already exist.";
         status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
         return false;
     }
 
-    // genreate hash from password and random salt
-    std::string pwHash;
-    const std::string salt = Kitsunemimi::Hanami::generateUuid().toString();
-    const std::string saltedPw = blossomLeaf.input.get("password").getString() + salt;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
-
-    // convert values
-    Kitsunemimi::Json::JsonItem userData;
-    userData.insert("id", newUserId);
-    userData.insert("name", blossomLeaf.input.get("name").getString());
-    userData.insert("projects", new Kitsunemimi::DataArray());
-    userData.insert("pw_hash", pwHash);
-    userData.insert("is_admin", blossomLeaf.input.get("is_admin").getBool());
-    userData.insert("creator_id", creatorId);
-    userData.insert("salt", salt);
-
-    // add new user to table
-    if(MisakiRoot::usersTable->addUser(userData, error) == false)
+    // parse projects from result
+    Kitsunemimi::Json::JsonItem parsedProjects;
+    if(parsedProjects.parse(getResult.get("projects").getString(), error) == false)
     {
-        status.errorMessage = error.toString();
+        error.addMeesage("Failed to parse projects of user with id '" + userId + "'");
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        return false;
+    }
+
+    // check if project is already assigned to user
+    for(uint64_t i = 0; i < parsedProjects.size(); i++)
+    {
+        if(parsedProjects.get(i).get("project_id").getString() == projectId)
+        {
+            status.errorMessage = "Project with ID '"
+                                  + projectId
+                                  + "' is already assigned to user with id '"
+                                  + userId
+                                  + "'.";
+            error.addMeesage(status.errorMessage);
+            status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
+            return false;
+        }
+    }
+
+    // create new entry
+    Kitsunemimi::Json::JsonItem newEntry;
+    newEntry.insert("project_id", projectId);
+    newEntry.insert("roles", roles);
+    newEntry.insert("is_project_admin", isProjectAdmin);
+    parsedProjects.append(newEntry);
+
+    // updated projects of user in database
+    if(MisakiRoot::usersTable->updateProjectsOfUser(userId,
+                                                    parsedProjects.toString(),
+                                                    error) == false)
+    {
+        error.addMeesage("Failed to update projects of user with id '"
+                         + userId
+                         + "'.");
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
     // get new created user from database
     if(MisakiRoot::usersTable->getUser(blossomLeaf.output,
-                                       newUserId,
+                                       userId,
                                        error,
                                        false) == false)
     {

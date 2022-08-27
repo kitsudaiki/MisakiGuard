@@ -64,12 +64,9 @@ GetUser::GetUser()
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Set this to true to register the new user as admin.");
-    registerOutputField("roles",
-                        SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all roles of the user.");
     registerOutputField("projects",
                         SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all projects of the user.");
+                        "List of all projects together with roles and project-admin-status.");
 
     //----------------------------------------------------------------------------------------------
     //
