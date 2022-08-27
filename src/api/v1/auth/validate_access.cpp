@@ -93,12 +93,15 @@ ValidateAccess::ValidateAccess()
     registerOutputField("is_admin",
                         SAKURA_BOOL_TYPE,
                         "Show if the user is an admin or not.");
+    registerOutputField("project_id",
+                        SAKURA_STRING_TYPE,
+                        "Selected project of the user.");
     registerOutputField("roles",
                         SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all roles of the user.");
-    registerOutputField("projects",
-                        SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all projects of the user.");
+                        "Comma-separated liste of all roles of the user within the project.");
+    registerOutputField("is_project_admin",
+                        SAKURA_BOOL_TYPE,
+                        "True, if the user is admin within the selected project.");
 
     //----------------------------------------------------------------------------------------------
     //

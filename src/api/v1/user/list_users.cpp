@@ -44,7 +44,6 @@ ListUsers::ListUsers()
     assert(addFieldMatch("header", new Kitsunemimi::DataValue("[\"id\","
                                                               "\"name\","
                                                               "\"creator_id\","
-                                                              "\"roles\","
                                                               "\"projects\","
                                                               "\"is_admin\"]")));
     registerOutputField("body",

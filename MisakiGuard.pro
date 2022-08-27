@@ -118,11 +118,13 @@ SOURCES += src/main.cpp \
     src/api/v1/project/delete_project.cpp \
     src/api/v1/project/get_project.cpp \
     src/api/v1/project/list_projects.cpp \
+    src/api/v1/user/add_project_to_user.cpp \
     src/api/v1/user/create_user.cpp \
     src/api/v1/user/delete_user.cpp \
     src/api/v1/user/get_user.cpp \
     src/api/v1/user/list_users.cpp \
     src/api/v1/documentation/generate_rest_api_docu.cpp \
+    src/api/v1/user/remove_project_from_user.cpp \
     src/database/projects_table.cpp \
     src/misaki_root.cpp \
     src/database/users_table.cpp
@@ -136,10 +138,12 @@ HEADERS += \
     src/api/v1/project/delete_project.h \
     src/api/v1/project/get_project.h \
     src/api/v1/project/list_projects.h \
+    src/api/v1/user/add_project_to_user.h \
     src/api/v1/user/create_user.h \
     src/api/v1/user/delete_user.h \
     src/api/v1/user/get_user.h \
     src/api/v1/user/list_users.h \
+    src/api/v1/user/remove_project_from_user.h \
     src/args.h \
     src/callbacks.h \
     src/config.h \

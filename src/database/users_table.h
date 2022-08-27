@@ -48,8 +48,11 @@ public:
                  const bool showHiddenValues);
     bool getAllUser(Kitsunemimi::TableItem &result,
                     Kitsunemimi::ErrorContainer &error);
-    bool deleteUser(const std::string &userName,
+    bool deleteUser(const std::string &userId,
                     Kitsunemimi::ErrorContainer &error);
+    bool updateProjectsOfUser(const std::string &userId,
+                              const std::string &newProjects,
+                              Kitsunemimi::ErrorContainer &error);
 
 private:
     bool getEnvVar(std::string &content, const std::string &key) const;
