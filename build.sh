@@ -93,7 +93,7 @@ get_required_private_repo_github "libKitsunemimiHanamiCommon" "develop" 8
 get_required_private_repo_github "libKitsunemimiHanamiEndpoints" "develop" 1
 get_required_private_repo_github "libKitsunemimiHanamiDatabase" "feature/rework-user-and-project-handling" 8
 get_required_private_repo_github "libKitsunemimiHanamiPolicies" "develop" 1
-get_required_private_repo_github "libKitsunemimiHanamiMessaging" "develop" 8
+get_required_private_repo_github "libKitsunemimiHanamiNetwork" "develop" 8
 echo ""
 echo "###########################################################################################################"
 echo ""
