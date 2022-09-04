@@ -30,7 +30,7 @@
 #include <libKitsunemimiCommon/logger.h>
 
 #include <libKitsunemimiHanamiCommon/generic_main.h>
-#include <libKitsunemimiHanamiMessaging/hanami_messaging.h>
+#include <libKitsunemimiHanamiNetwork/hanami_messaging.h>
 
 #include <libAzukiHeart/azuki_input.h>
 #include <libMisakiGuard/misaki_input.h>
