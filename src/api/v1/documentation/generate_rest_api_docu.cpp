@@ -193,9 +193,18 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
 
     // create header of the final document
     std::string completeDocumentation = "";
-    completeDocumentation.append("*****************\n");
-    completeDocumentation.append("API documentation\n");
-    completeDocumentation.append("*****************\n\n");
+
+    if(type == "pdf"
+            || type == "rst")
+    {
+        completeDocumentation.append("*****************\n");
+        completeDocumentation.append("API documentation\n");
+        completeDocumentation.append("*****************\n\n");
+    }
+    else if(type == "md")
+    {
+        completeDocumentation.append("# API documentation\n");
+    }
 
     SupportedComponents* scomp = SupportedComponents::getInstance();
 
@@ -243,6 +252,12 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
             error.addMeesage("Failed to convert documentation from 'rst' to 'pdf'");
             return false;
         }
+    }
+    else
+    {
+        Kitsunemimi::Crypto::encodeBase64(output,
+                                          completeDocumentation.c_str(),
+                                          completeDocumentation.size());
     }
 
     blossomLeaf.output.insert("documentation", output);
