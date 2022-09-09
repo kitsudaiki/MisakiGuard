@@ -52,6 +52,16 @@ GenerateRestApiDocu::GenerateRestApiDocu()
                                    "of all available components.")
 {
     //----------------------------------------------------------------------------------------------
+    // input
+    //----------------------------------------------------------------------------------------------
+
+    registerInputField("type",
+                       SAKURA_STRING_TYPE,
+                       false,
+                       "Output-type of the document (pdf, rst, md).");
+    assert(addFieldDefault("type", new Kitsunemimi::DataValue("pdf")));
+
+    //----------------------------------------------------------------------------------------------
     // output
     //----------------------------------------------------------------------------------------------
 
@@ -138,17 +148,21 @@ requestComponent(std::string &completeDocumentation,
  * @param completeDocumentation reference for the final document to attach new content
  */
 bool
-makeInternalRequest(std::string &completeDocumentation)
+makeInternalRequest(std::string &completeDocumentation,
+                    const std::string &type)
 {
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
     Kitsunemimi::DataMap result;
     Kitsunemimi::ErrorContainer error;
     Kitsunemimi::Sakura::BlossomStatus status;
+    Kitsunemimi::DataMap values;
+    values.insert("type", new Kitsunemimi::DataValue(type));
+
     const bool ret = interface->triggerBlossom(result,
                                                "get_api_documentation",
                                                "-",
                                                Kitsunemimi::DataMap(),
-                                               Kitsunemimi::DataMap(),
+                                               values,
                                                status,
                                                error);
     if(ret == false) {
@@ -175,7 +189,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     Kitsunemimi::Hanami::RequestMessage request;
     request.id = "v1/documentation/api";
     request.httpType = Kitsunemimi::Hanami::GET_TYPE;
-    request.inputValues = "{\"token\":\"" + token + "\"}";
+    request.inputValues = "{\"token\":\"" + token + "\",\"type\":\"" + type + "\"}";
 
     // create header of the final document
     std::string completeDocumentation = "";
@@ -186,7 +200,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     SupportedComponents* scomp = SupportedComponents::getInstance();
 
     //----------------------------------------------------------------------------------------------
-    makeInternalRequest(completeDocumentation);
+    makeInternalRequest(completeDocumentation, type);
     //----------------------------------------------------------------------------------------------
     if(scomp->support[Kitsunemimi::Hanami::KYOUKO]
             && requestComponent(completeDocumentation, "kyouko", request, error) == false)
@@ -220,11 +234,15 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     //----------------------------------------------------------------------------------------------
 
     std::string output;
-    if(convertRstToPdf(output, completeDocumentation, error) == false)
+
+    if(type == "pdf")
     {
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        error.addMeesage("Failed to convert documentation from 'rst' to 'pdf'");
-        return false;
+        if(convertRstToPdf(output, completeDocumentation, error) == false)
+        {
+            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+            error.addMeesage("Failed to convert documentation from 'rst' to 'pdf'");
+            return false;
+        }
     }
 
     blossomLeaf.output.insert("documentation", output);
