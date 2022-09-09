@@ -52,6 +52,16 @@ GenerateRestApiDocu::GenerateRestApiDocu()
                                    "of all available components.")
 {
     //----------------------------------------------------------------------------------------------
+    // input
+    //----------------------------------------------------------------------------------------------
+
+    registerInputField("type",
+                       SAKURA_STRING_TYPE,
+                       false,
+                       "Output-type of the document (pdf, rst, md).");
+    assert(addFieldDefault("type", new Kitsunemimi::DataValue("pdf")));
+
+    //----------------------------------------------------------------------------------------------
     // output
     //----------------------------------------------------------------------------------------------
 
@@ -138,17 +148,21 @@ requestComponent(std::string &completeDocumentation,
  * @param completeDocumentation reference for the final document to attach new content
  */
 bool
-makeInternalRequest(std::string &completeDocumentation)
+makeInternalRequest(std::string &completeDocumentation,
+                    const std::string &type)
 {
     SakuraLangInterface* interface = SakuraLangInterface::getInstance();
     Kitsunemimi::DataMap result;
     Kitsunemimi::ErrorContainer error;
     Kitsunemimi::Sakura::BlossomStatus status;
+    Kitsunemimi::DataMap values;
+    values.insert("type", new Kitsunemimi::DataValue(type));
+
     const bool ret = interface->triggerBlossom(result,
                                                "get_api_documentation",
                                                "-",
                                                Kitsunemimi::DataMap(),
-                                               Kitsunemimi::DataMap(),
+                                               values,
                                                status,
                                                error);
     if(ret == false) {
@@ -168,23 +182,34 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
                              Kitsunemimi::ErrorContainer &error)
 {
     const std::string roles = context.getStringByKey("roles");
+    const std::string type = blossomLeaf.input.get("type").getString();
+    const std::string token = context.getStringByKey("token");
 
     // create request for remote-calls
     Kitsunemimi::Hanami::RequestMessage request;
     request.id = "v1/documentation/api";
     request.httpType = Kitsunemimi::Hanami::GET_TYPE;
-    request.inputValues = "{ \"token\" : \"" + context.getStringByKey("token") + "\"}";
+    request.inputValues = "{\"token\":\"" + token + "\",\"type\":\"" + type + "\"}";
 
     // create header of the final document
     std::string completeDocumentation = "";
-    completeDocumentation.append("*****************\n");
-    completeDocumentation.append("API documentation\n");
-    completeDocumentation.append("*****************\n\n");
+
+    if(type == "pdf"
+            || type == "rst")
+    {
+        completeDocumentation.append("*****************\n");
+        completeDocumentation.append("API documentation\n");
+        completeDocumentation.append("*****************\n\n");
+    }
+    else if(type == "md")
+    {
+        completeDocumentation.append("# API documentation\n");
+    }
 
     SupportedComponents* scomp = SupportedComponents::getInstance();
 
     //----------------------------------------------------------------------------------------------
-    makeInternalRequest(completeDocumentation);
+    makeInternalRequest(completeDocumentation, type);
     //----------------------------------------------------------------------------------------------
     if(scomp->support[Kitsunemimi::Hanami::KYOUKO]
             && requestComponent(completeDocumentation, "kyouko", request, error) == false)
@@ -217,51 +242,106 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
     }
     //----------------------------------------------------------------------------------------------
 
-    // create unique temporary directory
-    const std::string uuid = Kitsunemimi::Hanami::generateUuid().toString();
-    if(Kitsunemimi::createDirectory("/tmp/" + uuid, error) == false)
-    {
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        // TODO: make error-message better
-        status.errorMessage = "directory";
-        return false;
-    }
-
-    // define file-paths
-    const std::string rstPath = "/tmp/" + uuid + "/rest_api_docu.rst";
-    const std::string pdfPath = "/tmp/" + uuid + "/output.pdf";
-
-    // write complete rst-content to the source-file
-    if(Kitsunemimi::writeFile(rstPath, completeDocumentation, error) == false)
-    {
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        // TODO: make error-message better
-        status.errorMessage = "files";
-        return false;
-    }
-
-    // run rst2pdf to convert the rst-document into a pdf-document
-    std::vector<std::string> args;
-    args.reserve(2);
-    args.emplace_back(rstPath);
-    args.emplace_back(pdfPath);
-    Kitsunemimi::runSyncProcess("rst2pdf", args);
-
-    // read pdf-document into a byte-buffer
-    Kitsunemimi::DataBuffer pdfContent;
-    Kitsunemimi::BinaryFile pdfFile(pdfPath);
-
-    // TODO: handle error-response
-    pdfFile.readCompleteFile(pdfContent, error);
-    pdfFile.closeFile(error);
-
-    // create output for the client
     std::string output;
-    Kitsunemimi::Crypto::encodeBase64(output, pdfContent.data, pdfContent.usedBufferSize);
+
+    if(type == "pdf")
+    {
+        if(convertRstToPdf(output, completeDocumentation, error) == false)
+        {
+            status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+            error.addMeesage("Failed to convert documentation from 'rst' to 'pdf'");
+            return false;
+        }
+    }
+    else
+    {
+        Kitsunemimi::Crypto::encodeBase64(output,
+                                          completeDocumentation.c_str(),
+                                          completeDocumentation.size());
+    }
+
     blossomLeaf.output.insert("documentation", output);
 
-    // delete temporary directory again
-    Kitsunemimi::deleteFileOrDir("/tmp/" + uuid, error);
-
     return true;
+}
+
+/**
+ * @brief GenerateRestApiDocu::convertRstToPdf
+ * @param pdfOutput
+ * @param rstInpuptm
+ * @param error
+ * @return
+ */
+bool
+GenerateRestApiDocu::convertRstToPdf(std::string &pdfOutput,
+                                     const std::string &rstInpuptm,
+                                     Kitsunemimi::ErrorContainer &error)
+{
+    bool result = false;
+    const std::string uuid = Kitsunemimi::Hanami::generateUuid().toString();
+    const std::string tempDir = "/tmp/" + uuid;
+
+    do
+    {
+        // create unique temporary directory
+        if(Kitsunemimi::createDirectory(tempDir, error) == false)
+        {
+            error.addMeesage("Failed to create temporary rst-directory to path '" + tempDir + "'");
+            break;
+        }
+
+        // define file-paths
+        const std::string rstPath = "/tmp/" + uuid + "/rest_api_docu.rst";
+        const std::string pdfPath = "/tmp/" + uuid + "/output.pdf";
+
+        // write complete rst-content to the source-file
+        if(Kitsunemimi::writeFile(rstPath, rstInpuptm, error) == false)
+        {
+            error.addMeesage("Failed to write temporary rst-file to path '" + rstPath + "'");
+            break;
+        }
+
+        // run rst2pdf to convert the rst-document into a pdf-document
+        std::vector<std::string> args;
+        args.reserve(2);
+        args.emplace_back(rstPath);
+        args.emplace_back(pdfPath);
+        Kitsunemimi::ProcessResult ret = Kitsunemimi::runSyncProcess("rst2pdf", args);
+        if(ret.success == false)
+        {
+            error.addMeesage("Failed execute 'rst2pdf' to convert rst-file '"
+                             + rstPath
+                             + "' to pdf-file '"
+                             + pdfPath
+                             + "'");
+            error.addSolution("Check if tool 'rst2pdf' is installed.");
+            error.addSolution("Check if tool 'rst2pdf' is executable "
+                              "and if not fix this with 'chmod +x /PATH/TO/BINARY'.");
+            error.addSolution("Check if enough memory and storage is available.");
+            break;
+        }
+
+        // read pdf-document into a byte-buffer
+        Kitsunemimi::DataBuffer pdfContent;
+        Kitsunemimi::BinaryFile pdfFile(pdfPath);
+
+        if(pdfFile.readCompleteFile(pdfContent, error) == false)
+        {
+            error.addMeesage("Failed to read pdf-file on path '" + pdfPath + "'");
+            break;
+        }
+        pdfFile.closeFile(error);
+
+        // create output for the client
+        Kitsunemimi::Crypto::encodeBase64(pdfOutput, pdfContent.data, pdfContent.usedBufferSize);
+
+        result = true;
+        break;
+    }
+    while(true);
+
+    // HINT: ignore result here, because it is only for cleanup
+    Kitsunemimi::deleteFileOrDir(tempDir, error);
+
+    return result;
 }

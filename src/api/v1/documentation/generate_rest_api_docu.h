@@ -36,6 +36,11 @@ protected:
                  const Kitsunemimi::DataMap &context,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
+
+private:
+    bool convertRstToPdf(std::string &pdfOutput,
+                         const std::string &rstInpupt,
+                         Kitsunemimi::ErrorContainer &error);
 };
 
 #endif // MISAKIGUARD_GENERATERESTAPIDOCU_H
