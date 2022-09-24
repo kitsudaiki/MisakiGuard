@@ -39,7 +39,7 @@ protected:
 
 private:
     bool convertRstToPdf(std::string &pdfOutput,
-                         const std::string &rstInpupt,
+                         const std::string &rstInput,
                          Kitsunemimi::ErrorContainer &error);
 };
 

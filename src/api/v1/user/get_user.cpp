@@ -27,6 +27,7 @@
 #include <libKitsunemimiJson/json_item.h>
 
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -34,7 +35,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 GetUser::GetUser()
-    : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
+    : Blossom("Show information of a specific user.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -44,9 +45,8 @@ GetUser::GetUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "Id of the user.");
-    // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_EXT_REGEX));
 
     //----------------------------------------------------------------------------------------------
     // output

@@ -25,6 +25,7 @@
 #include <misaki_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiCommon/methods/string_methods.h>
@@ -36,7 +37,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 RemoveProjectFromUser::RemoveProjectFromUser()
-    : Kitsunemimi::Sakura::Blossom("Remove a project from a specific user")
+    : Blossom("Remove a project from a specific user")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -46,9 +47,8 @@ RemoveProjectFromUser::RemoveProjectFromUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "ID of the user.");
-    // column in database is limited to 256 characters size
     assert(addFieldBorder("user_id", 4, 256));
-    assert(addFieldRegex("user_id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("user_id", ID_EXT_REGEX));
 
     registerInputField("project_id",
                        SAKURA_STRING_TYPE,
@@ -56,7 +56,7 @@ RemoveProjectFromUser::RemoveProjectFromUser()
                        "ID of the project, which has to be removed from the user.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("project_id", 4, 256));
-    assert(addFieldRegex("project_id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("project_id", ID_REGEX));
 
     //----------------------------------------------------------------------------------------------
     // output

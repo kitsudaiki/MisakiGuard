@@ -36,7 +36,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 CreateProject::CreateProject()
-    : Kitsunemimi::Sakura::Blossom("Register a new project within Misaki.")
+    : Blossom("Register a new project within Misaki.")
 {
     //----------------------------------------------------------------------------------------------
     // input
