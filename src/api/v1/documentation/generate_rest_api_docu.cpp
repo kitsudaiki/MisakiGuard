@@ -223,8 +223,8 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
     //----------------------------------------------------------------------------------------------
-    if(scomp->support[Kitsunemimi::Hanami::SAGIRI]
-            && requestComponent(completeDocumentation, "sagiri", request, error) == false)
+    if(scomp->support[Kitsunemimi::Hanami::SHIORI]
+            && requestComponent(completeDocumentation, "shiori", request, error) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
     }
