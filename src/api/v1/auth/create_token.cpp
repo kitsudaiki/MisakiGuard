@@ -59,6 +59,15 @@ CreateToken::CreateToken()
     // output
     //----------------------------------------------------------------------------------------------
 
+    registerOutputField("id",
+                        SAKURA_STRING_TYPE,
+                        "ID of the user.");
+    registerOutputField("name",
+                        SAKURA_STRING_TYPE,
+                        "Name of the user.");
+    registerOutputField("is_admin",
+                        SAKURA_BOOL_TYPE,
+                        "Set this to true to register the new user as admin.");
     registerOutputField("token",
                         SAKURA_STRING_TYPE,
                         "New JWT-access-token for the user.");
@@ -157,6 +166,9 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
+    blossomLeaf.output.insert("id", userId);
+    blossomLeaf.output.insert("is_admin", isAdmin);
+    blossomLeaf.output.insert("name", userData.get("name").getString());
     blossomLeaf.output.insert("token", jwtToken);
 
     return true;

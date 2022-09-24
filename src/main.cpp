@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     Misaki::initMisakiBlossoms();
 
     // initialize server and connections based on the config-file
-    const std::vector<std::string> groupNames = {"kyouko", "azuki", "sagiri"};
+    const std::vector<std::string> groupNames = {"kyouko", "azuki", "shiori"};
     if(HanamiMessaging::getInstance()->initialize("misaki",
                                                   groupNames,
                                                   nullptr,
