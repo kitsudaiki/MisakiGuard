@@ -34,7 +34,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 GetProject::GetProject()
-    : Kitsunemimi::Sakura::Blossom("Show information of a specific registered user.")
+    : Blossom("Show information of a specific registered user.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -61,6 +61,7 @@ GetProject::GetProject()
     registerOutputField("creator_id",
                         SAKURA_STRING_TYPE,
                         "Id of the creator of the user.");
+
     //----------------------------------------------------------------------------------------------
     //
     //----------------------------------------------------------------------------------------------

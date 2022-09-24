@@ -44,9 +44,9 @@ using Kitsunemimi::Hanami::HanamiMessagingClient;
  * @brief constructor
  */
 ValidateAccess::ValidateAccess()
-    : Kitsunemimi::Sakura::Blossom("Checks if a JWT-access-token of a user is valid or not "
-                                   "and optional check if the user is allowed by its roles "
-                                   "and the policy to access a specific endpoint.")
+    : Blossom("Checks if a JWT-access-token of a user is valid or not "
+              "and optional check if the user is allowed by its roles "
+              "and the policy to access a specific endpoint.")
 {
     //----------------------------------------------------------------------------------------------
     // input

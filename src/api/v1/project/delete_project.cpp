@@ -34,7 +34,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 DeleteProject::DeleteProject()
-    : Kitsunemimi::Sakura::Blossom("Delete a specific user from the database.")
+    : Blossom("Delete a specific user from the database.")
 {
     //----------------------------------------------------------------------------------------------
     // input

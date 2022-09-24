@@ -27,7 +27,9 @@
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiJwt/jwt.h>
 #include <libKitsunemimiJson/json_item.h>
+
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -35,7 +37,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 CreateToken::CreateToken()
-    : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a specific user.")
+    : Blossom("Create a JWT-access-token for a specific user.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -46,14 +48,13 @@ CreateToken::CreateToken()
                        true,
                        "ID of the user.");
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_EXT_REGEX));
 
     registerInputField("password",
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user, to verify the access.");
-    assert(addFieldBorder("password", 6, 4096));
-    assert(addFieldRegex("password", "[^=]*"));  // no '=' allowed
+    assert(addFieldBorder("password", 8, 4096));
 
     //----------------------------------------------------------------------------------------------
     // output
@@ -137,9 +138,9 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
     {
         // admin user get alway the admin-project per default
         userData.remove("projects");
-        userData.insert("project_id", "-");
+        userData.insert("project_id", "admin");
         userData.insert("roles", "admin");
-        userData.insert("is_project_admin", false);
+        userData.insert("is_project_admin", true);
     }
     else if(parsedProjects.size() != 0)
     {

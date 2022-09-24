@@ -27,6 +27,7 @@
 #include <libKitsunemimiJson/json_item.h>
 
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -34,7 +35,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 DeleteUser::DeleteUser()
-    : Kitsunemimi::Sakura::Blossom("Delete a specific user from the database.")
+    : Blossom("Delete a specific user from the database.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -46,7 +47,7 @@ DeleteUser::DeleteUser()
                        "ID of the user.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_EXT_REGEX));
 
     //----------------------------------------------------------------------------------------------
     //

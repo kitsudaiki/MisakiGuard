@@ -30,6 +30,7 @@
 #include <libKitsunemimiJson/json_item.h>
 
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -37,8 +38,8 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 CreateInternalToken::CreateInternalToken()
-    : Kitsunemimi::Sakura::Blossom("Create a JWT-access-token for a internal services, "
-                                   "which can not be used from the outside.")
+    : Blossom("Create a JWT-access-token for a internal services, "
+              "which can not be used from the outside.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -49,7 +50,7 @@ CreateInternalToken::CreateInternalToken()
                        true,
                        "Name of the service.");
     assert(addFieldBorder("service_name", 4, 256));
-    assert(addFieldRegex("service_name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("service_name", ID_REGEX));
 
     //----------------------------------------------------------------------------------------------
     // output

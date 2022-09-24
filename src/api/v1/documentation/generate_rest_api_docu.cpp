@@ -48,8 +48,7 @@ using Kitsunemimi::Sakura::SakuraLangInterface;
  * @brief constructor
  */
 GenerateRestApiDocu::GenerateRestApiDocu()
-    : Kitsunemimi::Sakura::Blossom("Generate a user-specific documentation for the REST-API "
-                                   "of all available components.")
+    : Blossom("Generate a documentation for the REST-API of all available components.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -60,6 +59,7 @@ GenerateRestApiDocu::GenerateRestApiDocu()
                        false,
                        "Output-type of the document (pdf, rst, md).");
     assert(addFieldDefault("type", new Kitsunemimi::DataValue("pdf")));
+    assert(addFieldRegex("type", "^(pdf|rst|md)$"));
 
     //----------------------------------------------------------------------------------------------
     // output
@@ -266,15 +266,17 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
 }
 
 /**
- * @brief GenerateRestApiDocu::convertRstToPdf
- * @param pdfOutput
- * @param rstInpuptm
- * @param error
- * @return
+ * @brief convert rst-document into a pdf-document
+ *
+ * @param pdfOutput reference to return the resulting pdf-document as base64 converted string
+ * @param rstInput string with rst-formated document
+ * @param error reference for error-output
+ *
+ * @return true, if conversion was successful, else false
  */
 bool
 GenerateRestApiDocu::convertRstToPdf(std::string &pdfOutput,
-                                     const std::string &rstInpuptm,
+                                     const std::string &rstInput,
                                      Kitsunemimi::ErrorContainer &error)
 {
     bool result = false;
@@ -295,7 +297,7 @@ GenerateRestApiDocu::convertRstToPdf(std::string &pdfOutput,
         const std::string pdfPath = "/tmp/" + uuid + "/output.pdf";
 
         // write complete rst-content to the source-file
-        if(Kitsunemimi::writeFile(rstPath, rstInpuptm, error) == false)
+        if(Kitsunemimi::writeFile(rstPath, rstInput, error) == false)
         {
             error.addMeesage("Failed to write temporary rst-file to path '" + rstPath + "'");
             break;
@@ -340,7 +342,7 @@ GenerateRestApiDocu::convertRstToPdf(std::string &pdfOutput,
     }
     while(true);
 
-    // HINT: ignore result here, because it is only for cleanup
+    // HINT(kitsudaiki): ignore result here, because it is only for cleanup
     Kitsunemimi::deleteFileOrDir(tempDir, error);
 
     return result;

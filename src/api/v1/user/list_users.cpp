@@ -32,7 +32,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 ListUsers::ListUsers()
-    : Kitsunemimi::Sakura::Blossom("Get information of all registered user as table.")
+    : Blossom("Get information of all registered users.")
 {
     //----------------------------------------------------------------------------------------------
     // output

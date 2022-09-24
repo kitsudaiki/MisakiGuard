@@ -25,6 +25,7 @@
 #include <misaki_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiCommon/methods/string_methods.h>
@@ -36,7 +37,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 AddProjectToUser::AddProjectToUser()
-    : Kitsunemimi::Sakura::Blossom("Add a project to a specific user.")
+    : Blossom("Add a project to a specific user.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -46,24 +47,22 @@ AddProjectToUser::AddProjectToUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "ID of the user.");
-    // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_EXT_REGEX));
 
     registerInputField("project_id",
                        SAKURA_STRING_TYPE,
                        true,
                        "ID of the project, which has to be added to the user.");
-    // column in database is limited to 256 characters size
     assert(addFieldBorder("project_id", 4, 256));
-    assert(addFieldRegex("project_id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("project_id", ID_REGEX));
 
     registerInputField("roles",
                        SAKURA_STRING_TYPE,
                        true,
-                       "Roles, which has to be assigned to the user within the project");
-    assert(addFieldBorder("roles", 4, 4096));
-    assert(addFieldRegex("roles", "[a-zA-Z][a-zA-Z_0-9]*"));
+                       "Role, which has to be assigned to the user within the project");
+    assert(addFieldBorder("roles", 4, 256));
+    assert(addFieldRegex("roles", ID_REGEX));
 
     registerInputField("is_project_admin",
                        SAKURA_BOOL_TYPE,
@@ -166,9 +165,7 @@ AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
                                                     parsedProjects.toString(),
                                                     error) == false)
     {
-        error.addMeesage("Failed to update projects of user with id '"
-                         + userId
-                         + "'.");
+        error.addMeesage("Failed to update projects of user with id '" + userId + "'.");
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }

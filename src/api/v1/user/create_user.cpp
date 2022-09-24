@@ -25,6 +25,7 @@
 #include <misaki_root.h>
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiCommon/methods/string_methods.h>
@@ -36,7 +37,7 @@ using namespace Kitsunemimi::Sakura;
  * @brief constructor
  */
 CreateUser::CreateUser()
-    : Kitsunemimi::Sakura::Blossom("Register a new user within Misaki.")
+    : Blossom("Register a new user within Misaki.")
 {
     //----------------------------------------------------------------------------------------------
     // input
@@ -46,24 +47,21 @@ CreateUser::CreateUser()
                        SAKURA_STRING_TYPE,
                        true,
                        "ID of the new user.");
-    // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_EXT_REGEX));
 
     registerInputField("name",
                        SAKURA_STRING_TYPE,
                        true,
                        "Name of the new user.");
-    // column in database is limited to 256 characters size
     assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("name", NAME_REGEX));
 
     registerInputField("password",
                        SAKURA_STRING_TYPE,
                        true,
                        "Passphrase of the user.");
     assert(addFieldBorder("password", 8, 4096));
-    assert(addFieldRegex("password", "[^=]*"));  // no '=' allowed
 
     registerInputField("is_admin",
                        SAKURA_BOOL_TYPE,
