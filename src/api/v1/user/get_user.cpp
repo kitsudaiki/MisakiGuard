@@ -65,8 +65,9 @@ GetUser::GetUser()
                         SAKURA_BOOL_TYPE,
                         "Set this to true to register the new user as admin.");
     registerOutputField("projects",
-                        SAKURA_STRING_TYPE,
-                        "List of all projects together with roles and project-admin-status.");
+                        SAKURA_ARRAY_TYPE,
+                        "Json-array with all assigned projects "
+                        "together with role and project-admin-status.");
 
     //----------------------------------------------------------------------------------------------
     //

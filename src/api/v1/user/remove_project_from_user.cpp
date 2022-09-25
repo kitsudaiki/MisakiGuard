@@ -43,12 +43,12 @@ RemoveProjectFromUser::RemoveProjectFromUser()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("user_id",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
                        "ID of the user.");
-    assert(addFieldBorder("user_id", 4, 256));
-    assert(addFieldRegex("user_id", ID_EXT_REGEX));
+    assert(addFieldBorder("id", 4, 256));
+    assert(addFieldRegex("id", ID_EXT_REGEX));
 
     registerInputField("project_id",
                        SAKURA_STRING_TYPE,
@@ -75,8 +75,9 @@ RemoveProjectFromUser::RemoveProjectFromUser()
                         SAKURA_STRING_TYPE,
                         "Id of the creator of the user.");
     registerOutputField("projects",
-                        SAKURA_STRING_TYPE,
-                        "List of all projects together with roles and project-admin-status.");
+                        SAKURA_ARRAY_TYPE,
+                        "Json-array with all assigned projects "
+                        "together with role and project-admin-status.");
 
     //----------------------------------------------------------------------------------------------
     //
@@ -105,24 +106,16 @@ RemoveProjectFromUser::runTask(BlossomLeaf &blossomLeaf,
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakiRoot::usersTable->getUser(getResult, userId, error, false))
+    if(MisakiRoot::usersTable->getUser(getResult, userId, error, false) == false)
     {
-        status.errorMessage = "User with id '" + userId + "' already exist.";
-        status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
-        return false;
-    }
-
-    // parse projects from result
-    Kitsunemimi::Json::JsonItem parsedProjects;
-    if(parsedProjects.parse(getResult.get("projects").getString(), error) == false)
-    {
-        error.addMeesage("Failed to parse projects of user with id '" + userId + "'");
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        status.errorMessage = "User with id '" + userId + "' not found.";
+        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
 
     // check if project is assigned to user and remove it if found
     bool found = false;
+    Kitsunemimi::Json::JsonItem parsedProjects = getResult.get("projects");
     for(uint64_t i = 0; i < parsedProjects.size(); i++)
     {
         if(parsedProjects.get(i).get("project_id").getString() == projectId)

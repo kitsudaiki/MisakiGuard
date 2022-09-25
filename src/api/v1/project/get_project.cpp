@@ -27,6 +27,7 @@
 #include <libKitsunemimiJson/json_item.h>
 
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 using namespace Kitsunemimi::Sakura;
 
@@ -46,7 +47,7 @@ GetProject::GetProject()
                        "Id of the user.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_REGEX));
 
     //----------------------------------------------------------------------------------------------
     // output

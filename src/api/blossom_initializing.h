@@ -32,6 +32,8 @@
 #include <api/v1/user/get_user.h>
 #include <api/v1/user/list_users.h>
 #include <api/v1/user/delete_user.h>
+#include <api/v1/user/add_project_to_user.h>
+#include <api/v1/user/remove_project_from_user.h>
 
 #include <api/v1/project/create_project.h>
 #include <api/v1/project/get_project.h>
@@ -43,6 +45,8 @@
 #include <api/v1/auth/create_internal_token.h>
 #include <api/v1/auth/create_token.h>
 #include <api/v1/auth/validate_access.h>
+#include <api/v1/auth/list_user_projects.h>
+#include <api/v1/auth/renew_token.h>
 
 using Kitsunemimi::Sakura::SakuraLangInterface;
 
@@ -62,6 +66,13 @@ tokenBlossomes()
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
+
+    assert(interface->addBlossom(group, "renew", new RenewToken()));
+    endpoints->addEndpoint("v1/token",
+                           Kitsunemimi::Hanami::PUT_TYPE,
+                           Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                           group,
+                           "renew");
 
     assert(interface->addBlossom(group, "create_internal", new CreateInternalToken()));
     endpoints->addEndpoint("v1/token/internal",
@@ -133,6 +144,20 @@ userBlossomes()
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "delete");
+
+    assert(interface->addBlossom(group, "add_project", new AddProjectToUser()));
+    endpoints->addEndpoint("v1/user/project",
+                           Kitsunemimi::Hanami::POST_TYPE,
+                           Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                           group,
+                           "add_project");
+
+    assert(interface->addBlossom(group, "remove_project", new RemoveProjectFromUser()));
+    endpoints->addEndpoint("v1/user/project",
+                           Kitsunemimi::Hanami::DELETE_TYPE,
+                           Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                           group,
+                           "remove_project");
 }
 
 /**
@@ -165,6 +190,13 @@ projectBlossomes()
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "list");
+
+    assert(interface->addBlossom(group, "list_user", new ListUserProjects()));
+    endpoints->addEndpoint("v1/project/user",
+                           Kitsunemimi::Hanami::GET_TYPE,
+                           Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                           group,
+                           "list_user");
 
     assert(interface->addBlossom(group, "delete", new DeleteProject()));
     endpoints->addEndpoint("v1/project",

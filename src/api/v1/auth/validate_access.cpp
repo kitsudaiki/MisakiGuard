@@ -96,9 +96,9 @@ ValidateAccess::ValidateAccess()
     registerOutputField("project_id",
                         SAKURA_STRING_TYPE,
                         "Selected project of the user.");
-    registerOutputField("roles",
+    registerOutputField("role",
                         SAKURA_STRING_TYPE,
-                        "Comma-separated liste of all roles of the user within the project.");
+                        "Role of the user within the project.");
     registerOutputField("is_project_admin",
                         SAKURA_BOOL_TYPE,
                         "True, if the user is admin within the selected project.");
@@ -146,18 +146,13 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
         const uint32_t httpTypeValue = blossomLeaf.input.get("http_type").getInt();
         const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
-        // process payload to get roles of user
-        std::vector<std::string> roles;
-        const std::string rolestring = blossomLeaf.output.get("roles").getString();
-        Kitsunemimi::splitStringByDelimiter(roles, rolestring, ',');
+        // process payload to get role of user
+        const std::string role = blossomLeaf.output.get("role").getString();
 
         // check policy
         bool foundPolicy = false;
-        for(const std::string &role : roles)
-        {
-            if(MisakiRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, role)) {
-                foundPolicy = true;
-            }
+        if(MisakiRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, role)) {
+            foundPolicy = true;
         }
 
         // if no matching policy was found, then deny access
