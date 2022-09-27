@@ -181,7 +181,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
                              BlossomStatus &status,
                              Kitsunemimi::ErrorContainer &error)
 {
-    const std::string roles = context.getStringByKey("roles");
+    const std::string role = context.getStringByKey("role");
     const std::string type = blossomLeaf.input.get("type").getString();
     const std::string token = context.getStringByKey("token");
 

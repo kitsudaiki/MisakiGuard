@@ -43,7 +43,7 @@ AddProjectToUser::AddProjectToUser()
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("user_id",
+    registerInputField("id",
                        SAKURA_STRING_TYPE,
                        true,
                        "ID of the user.");
@@ -57,12 +57,12 @@ AddProjectToUser::AddProjectToUser()
     assert(addFieldBorder("project_id", 4, 256));
     assert(addFieldRegex("project_id", ID_REGEX));
 
-    registerInputField("roles",
+    registerInputField("role",
                        SAKURA_STRING_TYPE,
                        true,
                        "Role, which has to be assigned to the user within the project");
-    assert(addFieldBorder("roles", 4, 256));
-    assert(addFieldRegex("roles", ID_REGEX));
+    assert(addFieldBorder("role", 4, 256));
+    assert(addFieldRegex("role", ID_REGEX));
 
     registerInputField("is_project_admin",
                        SAKURA_BOOL_TYPE,
@@ -88,9 +88,9 @@ AddProjectToUser::AddProjectToUser()
                         SAKURA_STRING_TYPE,
                         "Id of the creator of the user.");
     registerOutputField("projects",
-                        SAKURA_STRING_TYPE,
-                        "Json-formated string with all assigned projects "
-                        "together with roles and project-admin-status.");
+                        SAKURA_ARRAY_TYPE,
+                        "Json-array with all assigned projects "
+                        "together with role and project-admin-status.");
 
     //----------------------------------------------------------------------------------------------
     //
@@ -115,29 +115,21 @@ AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
 
     const std::string userId = blossomLeaf.input.get("id").getString();
     const std::string projectId = blossomLeaf.input.get("project_id").getString();
-    const std::string roles = blossomLeaf.input.get("roles").getString();
+    const std::string role = blossomLeaf.input.get("role").getString();
     const bool isProjectAdmin = blossomLeaf.input.get("is_project_admin").getBool();
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
     Kitsunemimi::Json::JsonItem getResult;
-    if(MisakiRoot::usersTable->getUser(getResult, userId, error, false))
+    if(MisakiRoot::usersTable->getUser(getResult, userId, error, false) == false)
     {
-        status.errorMessage = "User with id '" + userId + "' already exist.";
-        status.statusCode = Kitsunemimi::Hanami::CONFLICT_RTYPE;
-        return false;
-    }
-
-    // parse projects from result
-    Kitsunemimi::Json::JsonItem parsedProjects;
-    if(parsedProjects.parse(getResult.get("projects").getString(), error) == false)
-    {
-        error.addMeesage("Failed to parse projects of user with id '" + userId + "'");
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
+        status.errorMessage = "User with id '" + userId + "' not found.";
+        status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;
         return false;
     }
 
     // check if project is already assigned to user
+    Kitsunemimi::Json::JsonItem parsedProjects = getResult.get("projects");
     for(uint64_t i = 0; i < parsedProjects.size(); i++)
     {
         if(parsedProjects.get(i).get("project_id").getString() == projectId)
@@ -156,9 +148,11 @@ AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
     // create new entry
     Kitsunemimi::Json::JsonItem newEntry;
     newEntry.insert("project_id", projectId);
-    newEntry.insert("roles", roles);
+    newEntry.insert("role", role);
     newEntry.insert("is_project_admin", isProjectAdmin);
     parsedProjects.append(newEntry);
+
+    std::cout<<"parsedProjects: "<<parsedProjects.toString()<<std::endl;
 
     // updated projects of user in database
     if(MisakiRoot::usersTable->updateProjectsOfUser(userId,

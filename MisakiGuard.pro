@@ -113,6 +113,8 @@ INCLUDEPATH += $$PWD \
 SOURCES += src/main.cpp \
     src/api/v1/auth/create_internal_token.cpp \
     src/api/v1/auth/create_token.cpp \
+    src/api/v1/auth/list_user_projects.cpp \
+    src/api/v1/auth/renew_token.cpp \
     src/api/v1/auth/validate_access.cpp \
     src/api/v1/project/create_project.cpp \
     src/api/v1/project/delete_project.cpp \
@@ -132,6 +134,8 @@ SOURCES += src/main.cpp \
 HEADERS += \
     src/api/v1/auth/create_internal_token.h \
     src/api/v1/auth/create_token.h \
+    src/api/v1/auth/list_user_projects.h \
+    src/api/v1/auth/renew_token.h \
     src/api/v1/auth/validate_access.h \
     src/api/blossom_initializing.h \
     src/api/v1/project/create_project.h \

@@ -23,8 +23,10 @@
 #include "create_project.h"
 
 #include <misaki_root.h>
+
 #include <libKitsunemimiHanamiCommon/uuid.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
+#include <libKitsunemimiHanamiCommon/defines.h>
 
 #include <libKitsunemimiCrypto/hashes.h>
 #include <libKitsunemimiCommon/methods/string_methods.h>
@@ -48,7 +50,7 @@ CreateProject::CreateProject()
                        "ID of the new project.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("id", ID_REGEX));
 
     registerInputField("name",
                        SAKURA_STRING_TYPE,
@@ -56,7 +58,7 @@ CreateProject::CreateProject()
                        "Name of the new project.");
     // column in database is limited to 256 characters size
     assert(addFieldBorder("name", 4, 256));
-    assert(addFieldRegex("name", "[a-zA-Z][a-zA-Z_0-9]*"));
+    assert(addFieldRegex("name", NAME_REGEX));
 
     //----------------------------------------------------------------------------------------------
     // output

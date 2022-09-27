@@ -1,5 +1,5 @@
 ﻿/**
- * @file        create_token.cpp
+ * @file        renew_token.cpp
  *
  * @author      Tobias Anker <tobias.anker@kitsunemimi.moe>
  *
@@ -20,7 +20,7 @@
  *      limitations under the License.
  */
 
-#include "create_token.h"
+#include "renew_token.h"
 
 #include <misaki_root.h>
 
@@ -30,31 +30,26 @@
 
 #include <libKitsunemimiHanamiCommon/enums.h>
 #include <libKitsunemimiHanamiCommon/defines.h>
+#include <libKitsunemimiHanamiCommon/structs.h>
 
 using namespace Kitsunemimi::Sakura;
 
 /**
  * @brief constructor
  */
-CreateToken::CreateToken()
+RenewToken::RenewToken()
     : Blossom("Create a JWT-access-token for a specific user.")
 {
     //----------------------------------------------------------------------------------------------
     // input
     //----------------------------------------------------------------------------------------------
 
-    registerInputField("id",
+    registerInputField("project_id",
                        SAKURA_STRING_TYPE,
                        true,
-                       "ID of the user.");
-    assert(addFieldBorder("id", 4, 256));
-    assert(addFieldRegex("id", ID_EXT_REGEX));
-
-    registerInputField("password",
-                       SAKURA_STRING_TYPE,
-                       true,
-                       "Passphrase of the user, to verify the access.");
-    assert(addFieldBorder("password", 8, 4096));
+                       "ID of the project, which has to be used for the new token.");
+    assert(addFieldBorder("project_id", 4, 256));
+    assert(addFieldRegex("project_id", ID_REGEX));
 
     //----------------------------------------------------------------------------------------------
     // output
@@ -82,77 +77,50 @@ CreateToken::CreateToken()
  * @brief runTask
  */
 bool
-CreateToken::runTask(BlossomLeaf &blossomLeaf,
-                     const Kitsunemimi::DataMap &,
-                     BlossomStatus &status,
-                     Kitsunemimi::ErrorContainer &error)
+RenewToken::runTask(BlossomLeaf &blossomLeaf,
+                    const Kitsunemimi::DataMap &context,
+                    BlossomStatus &status,
+                    Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userId = blossomLeaf.input.get("id").getString();
+    const Kitsunemimi::Hanami::UserContext userContext(context);
+    const std::string projectId = blossomLeaf.input.get("project_id").getString();
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
-    if(MisakiRoot::usersTable->getUser(userData, userId, error, true) == false)
+    if(MisakiRoot::usersTable->getUser(userData, userContext.userId, error, false) == false)
     {
-        status.errorMessage = "ACCESS DENIED!\n"
-                              "User or password is incorrect.";
-        error.addMeesage(status.errorMessage);
-        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
-
-    // regenerate password-hash for comparism
-    std::string compareHash = "";
-    const std::string saltedPw = blossomLeaf.input.get("password").getString()
-                                 + userData.get("salt").getString();
-    Kitsunemimi::Crypto::generate_SHA_256(compareHash, saltedPw);
-
-    // check password
-    const std::string pwHash = userData.get("pw_hash").getString();
-    if(pwHash.size() != compareHash.size()
-            || memcmp(pwHash.c_str(), compareHash.c_str(), pwHash.size()) != 0)
-    {
-        status.errorMessage = "ACCESS DENIED!\n"
-                              "User or password is incorrect.";
-        error.addMeesage(status.errorMessage);
-        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
-        return false;
-    }
-
-    // remove entries, which are NOT allowed to be part of the token
-    std::string jwtToken;
-    userData.remove("pw_hash");
-    userData.remove("salt");
 
     // parse projects from result
     Kitsunemimi::Json::JsonItem parsedProjects;
     if(parsedProjects.parse(userData.get("projects").getString(), error) == false)
     {
-        error.addMeesage("Failed to parse projects of user with id '" + userId + "'");
+        error.addMeesage("Failed to parse projects of user with id '" + userContext.userId + "'");
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
-    // get project
+    // if user is global admin, add the admin-project to the list of choosable projects
     const bool isAdmin = userData.get("is_admin").getBool();
     if(isAdmin)
     {
-        // admin user get alway the admin-project per default
-        userData.remove("projects");
-        userData.insert("project_id", "admin");
-        userData.insert("role", "admin");
-        userData.insert("is_project_admin", true);
+        Kitsunemimi::DataMap* adminProject = new Kitsunemimi::DataMap();
+        adminProject->insert("project_id", new Kitsunemimi::DataValue("admin"));
+        adminProject->insert("role", new Kitsunemimi::DataValue("admin"));
+        adminProject->insert("is_project_admin", new Kitsunemimi::DataValue(true));
+        parsedProjects.append(adminProject);
     }
-    else if(parsedProjects.size() != 0)
+
+    // select project
+    if(chooseProject(userData, parsedProjects, projectId) == false)
     {
-        // normal user get assigned to first project in their project-list at beginning
-        userData.remove("projects");
-        userData.insert("project_id", parsedProjects.get(0).get("project_id"));
-        userData.insert("role", parsedProjects.get(0).get("role"));
-        userData.insert("is_project_admin", parsedProjects.get(0).get("is_project_admin"));
-    }
-    else
-    {
-        status.errorMessage = "User with id '" + userId + "' has no project assigned.";
+        status.errorMessage = "User with id '"
+                              + userContext.userId
+                              + "' is not assigned to the project with id '"
+                              + projectId
+                              + "'.";
         error.addMeesage(status.errorMessage);
         status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
         return false;
@@ -160,6 +128,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
 
     // create token
     // TODO: make validation-time configurable
+    std::string jwtToken;
     if(MisakiRoot::jwt->create_HS256_Token(jwtToken, userData, 3600, error) == false)
     {
         error.addMeesage("Failed to create JWT-Token");
@@ -167,10 +136,40 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    blossomLeaf.output.insert("id", userId);
+    blossomLeaf.output.insert("id", userContext.userId);
     blossomLeaf.output.insert("is_admin", isAdmin);
     blossomLeaf.output.insert("name", userData.get("name").getString());
     blossomLeaf.output.insert("token", jwtToken);
 
     return true;
+}
+
+/**
+ * @brief get project information for a new selected project from the user-assigned data
+ *
+ * @param userData user-data coming from database
+ * @param parsedProjects list of projects, which are assigned to the user
+ * @param selectedProjectId new desired project-id for the new token
+ *
+ * @return true, if selectedProjectId is available for the user, else false
+ */
+bool
+RenewToken::chooseProject(Kitsunemimi::Json::JsonItem &userData,
+                          Kitsunemimi::Json::JsonItem &parsedProjects,
+                          const std::string selectedProjectId)
+{
+    for(uint64_t i = 0; i < parsedProjects.size(); i++)
+    {
+        if(parsedProjects.get(i).get("project_id").getString() == selectedProjectId)
+        {
+            userData.remove("projects");
+            userData.insert("project_id", parsedProjects.get(i).get("project_id"));
+            userData.insert("role", parsedProjects.get(i).get("role"));
+            userData.insert("is_project_admin", parsedProjects.get(i).get("is_project_admin"));
+
+            return true;
+        }
+    }
+
+    return false;
 }
