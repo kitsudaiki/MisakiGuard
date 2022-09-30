@@ -72,7 +72,7 @@ GetProject::GetProject()
  * @brief runTask
  */
 bool
-GetProject::runTask(BlossomLeaf &blossomLeaf,
+GetProject::runTask(BlossomIO &blossomIO,
                     const Kitsunemimi::DataMap &context,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
@@ -85,10 +85,10 @@ GetProject::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get information from request
-    const std::string projectId = blossomLeaf.input.get("id").getString();
+    const std::string projectId = blossomIO.input.get("id").getString();
 
     // get data from table
-    if(MisakiRoot::projectsTable->getProject(blossomLeaf.output, projectId, error) == false)
+    if(MisakiRoot::projectsTable->getProject(blossomIO.output, projectId, error) == false)
     {
         status.errorMessage = "Project with id '" + projectId + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;

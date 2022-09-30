@@ -78,7 +78,7 @@ GetUser::GetUser()
  * @brief runTask
  */
 bool
-GetUser::runTask(BlossomLeaf &blossomLeaf,
+GetUser::runTask(BlossomIO &blossomIO,
                  const Kitsunemimi::DataMap &context,
                  BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error)
@@ -91,10 +91,10 @@ GetUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get information from request
-    const std::string userId = blossomLeaf.input.get("id").getString();
+    const std::string userId = blossomIO.input.get("id").getString();
 
     // get data from table
-    if(MisakiRoot::usersTable->getUser(blossomLeaf.output, userId, error, false) == false)
+    if(MisakiRoot::usersTable->getUser(blossomIO.output, userId, error, false) == false)
     {
         status.errorMessage = "User with id '" + userId + "' not found.";
         status.statusCode = Kitsunemimi::Hanami::NOT_FOUND_RTYPE;

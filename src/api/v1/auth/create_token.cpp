@@ -82,12 +82,12 @@ CreateToken::CreateToken()
  * @brief runTask
  */
 bool
-CreateToken::runTask(BlossomLeaf &blossomLeaf,
+CreateToken::runTask(BlossomIO &blossomIO,
                      const Kitsunemimi::DataMap &,
                      BlossomStatus &status,
                      Kitsunemimi::ErrorContainer &error)
 {
-    const std::string userId = blossomLeaf.input.get("id").getString();
+    const std::string userId = blossomIO.input.get("id").getString();
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
@@ -102,7 +102,7 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
 
     // regenerate password-hash for comparism
     std::string compareHash = "";
-    const std::string saltedPw = blossomLeaf.input.get("password").getString()
+    const std::string saltedPw = blossomIO.input.get("password").getString()
                                  + userData.get("salt").getString();
     Kitsunemimi::Crypto::generate_SHA_256(compareHash, saltedPw);
 
@@ -167,10 +167,10 @@ CreateToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    blossomLeaf.output.insert("id", userId);
-    blossomLeaf.output.insert("is_admin", isAdmin);
-    blossomLeaf.output.insert("name", userData.get("name").getString());
-    blossomLeaf.output.insert("token", jwtToken);
+    blossomIO.output.insert("id", userId);
+    blossomIO.output.insert("is_admin", isAdmin);
+    blossomIO.output.insert("name", userData.get("name").getString());
+    blossomIO.output.insert("token", jwtToken);
 
     return true;
 }

@@ -58,7 +58,7 @@ DeleteProject::DeleteProject()
  * @brief runTask
  */
 bool
-DeleteProject::runTask(BlossomLeaf &blossomLeaf,
+DeleteProject::runTask(BlossomIO &blossomIO,
                        const Kitsunemimi::DataMap &context,
                        BlossomStatus &status,
                        Kitsunemimi::ErrorContainer &error)
@@ -71,7 +71,7 @@ DeleteProject::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get information from request
-    const std::string projectId = blossomLeaf.input.get("id").getString();
+    const std::string projectId = blossomIO.input.get("id").getString();
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem result;

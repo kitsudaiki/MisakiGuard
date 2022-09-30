@@ -33,7 +33,7 @@ public:
     ValidateAccess();
 
 protected:
-    bool runTask(Kitsunemimi::Sakura::BlossomLeaf &blossomLeaf,
+    bool runTask(Kitsunemimi::Sakura::BlossomIO &blossomIO,
                  const Kitsunemimi::DataMap &,
                  Kitsunemimi::Sakura::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);

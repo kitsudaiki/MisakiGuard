@@ -101,7 +101,7 @@ AddProjectToUser::AddProjectToUser()
  * @brief runTask
  */
 bool
-AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
+AddProjectToUser::runTask(BlossomIO &blossomIO,
                           const Kitsunemimi::DataMap &context,
                           BlossomStatus &status,
                           Kitsunemimi::ErrorContainer &error)
@@ -113,10 +113,10 @@ AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    const std::string userId = blossomLeaf.input.get("id").getString();
-    const std::string projectId = blossomLeaf.input.get("project_id").getString();
-    const std::string role = blossomLeaf.input.get("role").getString();
-    const bool isProjectAdmin = blossomLeaf.input.get("is_project_admin").getBool();
+    const std::string userId = blossomIO.input.get("id").getString();
+    const std::string projectId = blossomIO.input.get("project_id").getString();
+    const std::string role = blossomIO.input.get("role").getString();
+    const bool isProjectAdmin = blossomIO.input.get("is_project_admin").getBool();
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
@@ -152,8 +152,6 @@ AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
     newEntry.insert("is_project_admin", isProjectAdmin);
     parsedProjects.append(newEntry);
 
-    std::cout<<"parsedProjects: "<<parsedProjects.toString()<<std::endl;
-
     // updated projects of user in database
     if(MisakiRoot::usersTable->updateProjectsOfUser(userId,
                                                     parsedProjects.toString(),
@@ -165,7 +163,7 @@ AddProjectToUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakiRoot::usersTable->getUser(blossomLeaf.output,
+    if(MisakiRoot::usersTable->getUser(blossomIO.output,
                                        userId,
                                        error,
                                        false) == false)

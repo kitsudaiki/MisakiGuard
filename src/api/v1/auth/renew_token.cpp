@@ -77,13 +77,13 @@ RenewToken::RenewToken()
  * @brief runTask
  */
 bool
-RenewToken::runTask(BlossomLeaf &blossomLeaf,
+RenewToken::runTask(BlossomIO &blossomIO,
                     const Kitsunemimi::DataMap &context,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
 {
     const Kitsunemimi::Hanami::UserContext userContext(context);
-    const std::string projectId = blossomLeaf.input.get("project_id").getString();
+    const std::string projectId = blossomIO.input.get("project_id").getString();
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
@@ -136,10 +136,10 @@ RenewToken::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    blossomLeaf.output.insert("id", userContext.userId);
-    blossomLeaf.output.insert("is_admin", isAdmin);
-    blossomLeaf.output.insert("name", userData.get("name").getString());
-    blossomLeaf.output.insert("token", jwtToken);
+    blossomIO.output.insert("id", userContext.userId);
+    blossomIO.output.insert("is_admin", isAdmin);
+    blossomIO.output.insert("name", userData.get("name").getString());
+    blossomIO.output.insert("token", jwtToken);
 
     return true;
 }
