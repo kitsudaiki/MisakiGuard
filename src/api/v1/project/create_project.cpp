@@ -85,7 +85,7 @@ CreateProject::CreateProject()
  * @brief runTask
  */
 bool
-CreateProject::runTask(BlossomLeaf &blossomLeaf,
+CreateProject::runTask(BlossomIO &blossomIO,
                        const Kitsunemimi::DataMap &context,
                        BlossomStatus &status,
                        Kitsunemimi::ErrorContainer &error)
@@ -98,8 +98,8 @@ CreateProject::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get information from request
-    const std::string projectId = blossomLeaf.input.get("id").getString();
-    const std::string projectName = blossomLeaf.input.get("name").getString();
+    const std::string projectId = blossomIO.input.get("id").getString();
+    const std::string projectName = blossomIO.input.get("name").getString();
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
@@ -126,7 +126,7 @@ CreateProject::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakiRoot::projectsTable->getProject(blossomLeaf.output,
+    if(MisakiRoot::projectsTable->getProject(blossomIO.output,
                                                    projectId,
                                                    error) == false)
     {

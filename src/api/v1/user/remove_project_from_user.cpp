@@ -88,7 +88,7 @@ RemoveProjectFromUser::RemoveProjectFromUser()
  * @brief runTask
  */
 bool
-RemoveProjectFromUser::runTask(BlossomLeaf &blossomLeaf,
+RemoveProjectFromUser::runTask(BlossomIO &blossomIO,
                                const Kitsunemimi::DataMap &context,
                                BlossomStatus &status,
                                Kitsunemimi::ErrorContainer &error)
@@ -100,8 +100,8 @@ RemoveProjectFromUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    const std::string userId = blossomLeaf.input.get("id").getString();
-    const std::string projectId = blossomLeaf.input.get("project_id").getString();
+    const std::string userId = blossomIO.input.get("id").getString();
+    const std::string projectId = blossomIO.input.get("project_id").getString();
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
@@ -152,7 +152,7 @@ RemoveProjectFromUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakiRoot::usersTable->getUser(blossomLeaf.output,
+    if(MisakiRoot::usersTable->getUser(blossomIO.output,
                                        userId,
                                        error,
                                        false) == false)

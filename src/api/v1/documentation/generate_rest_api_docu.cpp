@@ -176,13 +176,13 @@ makeInternalRequest(std::string &completeDocumentation,
  * @brief runTask
  */
 bool
-GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
+GenerateRestApiDocu::runTask(BlossomIO &blossomIO,
                              const Kitsunemimi::DataMap &context,
                              BlossomStatus &status,
                              Kitsunemimi::ErrorContainer &error)
 {
     const std::string role = context.getStringByKey("role");
-    const std::string type = blossomLeaf.input.get("type").getString();
+    const std::string type = blossomIO.input.get("type").getString();
     const std::string token = context.getStringByKey("token");
 
     // create request for remote-calls
@@ -260,7 +260,7 @@ GenerateRestApiDocu::runTask(BlossomLeaf &blossomLeaf,
                                           completeDocumentation.size());
     }
 
-    blossomLeaf.output.insert("documentation", output);
+    blossomIO.output.insert("documentation", output);
 
     return true;
 }

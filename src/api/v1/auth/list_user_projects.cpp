@@ -59,7 +59,7 @@ ListUserProjects::ListUserProjects()
  * @brief runTask
  */
 bool
-ListUserProjects::runTask(BlossomLeaf &blossomLeaf,
+ListUserProjects::runTask(BlossomIO &blossomIO,
                           const Kitsunemimi::DataMap &context,
                           BlossomStatus &status,
                           Kitsunemimi::ErrorContainer &error)
@@ -86,7 +86,7 @@ ListUserProjects::runTask(BlossomLeaf &blossomLeaf,
         userData.get("projects").append(adminProject);
     }
 
-    blossomLeaf.output.insert("projects", userData.get("projects").stealItemContent());
+    blossomIO.output.insert("projects", userData.get("projects").stealItemContent());
 
     return true;
 }

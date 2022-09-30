@@ -112,19 +112,19 @@ ValidateAccess::ValidateAccess()
  * @brief runTask
  */
 bool
-ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
+ValidateAccess::runTask(BlossomIO &blossomIO,
                         const Kitsunemimi::DataMap &,
                         BlossomStatus &status,
                         Kitsunemimi::ErrorContainer &error)
 {
     // collect information from the input
-    const std::string token = blossomLeaf.input.get("token").getString();
-    const std::string component = blossomLeaf.input.get("component").getString();
-    const std::string endpoint = blossomLeaf.input.get("endpoint").getString();
+    const std::string token = blossomIO.input.get("token").getString();
+    const std::string component = blossomIO.input.get("component").getString();
+    const std::string endpoint = blossomIO.input.get("endpoint").getString();
 
     // validate token
     std::string publicError;
-    if(MisakiRoot::jwt->validateToken(blossomLeaf.output, token, publicError, error) == false)
+    if(MisakiRoot::jwt->validateToken(blossomIO.output, token, publicError, error) == false)
     {
         error.addMeesage("Misaki failed to validate JWT-Token");
         status.errorMessage = publicError;
@@ -136,18 +136,18 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     // TODO: find better solution to make a difference, if policy should be checked or not
     if(component != "")
     {
-        if(blossomLeaf.input.contains("http_type") == false)
+        if(blossomIO.input.contains("http_type") == false)
         {
             error.addMeesage("http_type is missing in token-request");
             status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
             return false;
         }
 
-        const uint32_t httpTypeValue = blossomLeaf.input.get("http_type").getInt();
+        const uint32_t httpTypeValue = blossomIO.input.get("http_type").getInt();
         const HttpRequestType httpType = static_cast<HttpRequestType>(httpTypeValue);
 
         // process payload to get role of user
-        const std::string role = blossomLeaf.output.get("role").getString();
+        const std::string role = blossomIO.output.get("role").getString();
 
         // check policy
         bool foundPolicy = false;
@@ -166,11 +166,11 @@ ValidateAccess::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // remove irrelevant fields
-    blossomLeaf.output.remove("pw_hash");
-    blossomLeaf.output.remove("creator_id");
-    blossomLeaf.output.remove("exp");
-    blossomLeaf.output.remove("iat");
-    blossomLeaf.output.remove("nbf");
+    blossomIO.output.remove("pw_hash");
+    blossomIO.output.remove("creator_id");
+    blossomIO.output.remove("exp");
+    blossomIO.output.remove("iat");
+    blossomIO.output.remove("nbf");
 
     return true;
 }

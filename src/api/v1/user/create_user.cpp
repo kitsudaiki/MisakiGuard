@@ -99,7 +99,7 @@ CreateUser::CreateUser()
  * @brief runTask
  */
 bool
-CreateUser::runTask(BlossomLeaf &blossomLeaf,
+CreateUser::runTask(BlossomIO &blossomIO,
                     const Kitsunemimi::DataMap &context,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
@@ -111,7 +111,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
         return false;
     }
 
-    const std::string newUserId = blossomLeaf.input.get("id").getString();
+    const std::string newUserId = blossomIO.input.get("id").getString();
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
@@ -126,16 +126,16 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     // genreate hash from password and random salt
     std::string pwHash;
     const std::string salt = Kitsunemimi::Hanami::generateUuid().toString();
-    const std::string saltedPw = blossomLeaf.input.get("password").getString() + salt;
+    const std::string saltedPw = blossomIO.input.get("password").getString() + salt;
     Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
 
     // convert values
     Kitsunemimi::Json::JsonItem userData;
     userData.insert("id", newUserId);
-    userData.insert("name", blossomLeaf.input.get("name").getString());
+    userData.insert("name", blossomIO.input.get("name").getString());
     userData.insert("projects", new Kitsunemimi::DataArray());
     userData.insert("pw_hash", pwHash);
-    userData.insert("is_admin", blossomLeaf.input.get("is_admin").getBool());
+    userData.insert("is_admin", blossomIO.input.get("is_admin").getBool());
     userData.insert("creator_id", creatorId);
     userData.insert("salt", salt);
 
@@ -148,7 +148,7 @@ CreateUser::runTask(BlossomLeaf &blossomLeaf,
     }
 
     // get new created user from database
-    if(MisakiRoot::usersTable->getUser(blossomLeaf.output,
+    if(MisakiRoot::usersTable->getUser(blossomIO.output,
                                        newUserId,
                                        error,
                                        false) == false)

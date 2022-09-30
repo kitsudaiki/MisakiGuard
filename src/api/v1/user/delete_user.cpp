@@ -58,7 +58,7 @@ DeleteUser::DeleteUser()
  * @brief runTask
  */
 bool
-DeleteUser::runTask(BlossomLeaf &blossomLeaf,
+DeleteUser::runTask(BlossomIO &blossomIO,
                     const Kitsunemimi::DataMap &context,
                     BlossomStatus &status,
                     Kitsunemimi::ErrorContainer &error)
@@ -72,7 +72,7 @@ DeleteUser::runTask(BlossomLeaf &blossomLeaf,
 
     // get information from request
     const std::string deleterId = context.getStringByKey("id");
-    const std::string userId = blossomLeaf.input.get("id").getString();
+    const std::string userId = blossomIO.input.get("id").getString();
 
     // check if user exist within the table
     Kitsunemimi::Json::JsonItem result;
