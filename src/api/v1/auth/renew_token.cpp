@@ -93,14 +93,7 @@ RenewToken::runTask(BlossomIO &blossomIO,
         return false;
     }
 
-    // parse projects from result
-    Kitsunemimi::Json::JsonItem parsedProjects;
-    if(parsedProjects.parse(userData.get("projects").getString(), error) == false)
-    {
-        error.addMeesage("Failed to parse projects of user with id '" + userContext.userId + "'");
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        return false;
-    }
+    Kitsunemimi::Json::JsonItem parsedProjects = userData.get("projects");
 
     // if user is global admin, add the admin-project to the list of choosable projects
     const bool isAdmin = userData.get("is_admin").getBool();
@@ -162,10 +155,10 @@ RenewToken::chooseProject(Kitsunemimi::Json::JsonItem &userData,
     {
         if(parsedProjects.get(i).get("project_id").getString() == selectedProjectId)
         {
-            userData.remove("projects");
             userData.insert("project_id", parsedProjects.get(i).get("project_id"));
             userData.insert("role", parsedProjects.get(i).get("role"));
             userData.insert("is_project_admin", parsedProjects.get(i).get("is_project_admin"));
+            userData.remove("projects");
 
             return true;
         }
