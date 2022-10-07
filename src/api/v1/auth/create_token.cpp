@@ -123,32 +123,25 @@ CreateToken::runTask(BlossomIO &blossomIO,
     userData.remove("pw_hash");
     userData.remove("salt");
 
-    // parse projects from result
-    Kitsunemimi::Json::JsonItem parsedProjects;
-    if(parsedProjects.parse(userData.get("projects").getString(), error) == false)
-    {
-        error.addMeesage("Failed to parse projects of user with id '" + userId + "'");
-        status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
-        return false;
-    }
+    Kitsunemimi::Json::JsonItem parsedProjects = userData.get("projects");
 
     // get project
     const bool isAdmin = userData.get("is_admin").getBool();
     if(isAdmin)
     {
         // admin user get alway the admin-project per default
-        userData.remove("projects");
         userData.insert("project_id", "admin");
         userData.insert("role", "admin");
         userData.insert("is_project_admin", true);
+        userData.remove("projects");
     }
     else if(parsedProjects.size() != 0)
     {
         // normal user get assigned to first project in their project-list at beginning
-        userData.remove("projects");
         userData.insert("project_id", parsedProjects.get(0).get("project_id"));
         userData.insert("role", parsedProjects.get(0).get("role"));
         userData.insert("is_project_admin", parsedProjects.get(0).get("is_project_admin"));
+        userData.remove("projects");
     }
     else
     {
