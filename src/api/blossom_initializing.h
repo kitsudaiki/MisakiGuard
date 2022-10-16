@@ -158,6 +158,14 @@ userBlossomes()
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "remove_project");
+
+    // TODO: move ListUserProjects-class in user-directory
+    assert(interface->addBlossom(group, "list_user_projects", new ListUserProjects()));
+    endpoints->addEndpoint("v1/user/project",
+                           Kitsunemimi::Hanami::GET_TYPE,
+                           Kitsunemimi::Hanami::BLOSSOM_TYPE,
+                           group,
+                           "list_user_projects");
 }
 
 /**
@@ -190,13 +198,6 @@ projectBlossomes()
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "list");
-
-    assert(interface->addBlossom(group, "list_user", new ListUserProjects()));
-    endpoints->addEndpoint("v1/project/user",
-                           Kitsunemimi::Hanami::GET_TYPE,
-                           Kitsunemimi::Hanami::BLOSSOM_TYPE,
-                           group,
-                           "list_user");
 
     assert(interface->addBlossom(group, "delete", new DeleteProject()));
     endpoints->addEndpoint("v1/project",

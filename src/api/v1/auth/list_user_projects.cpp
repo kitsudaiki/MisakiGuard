@@ -42,6 +42,17 @@ ListUserProjects::ListUserProjects()
     : Blossom("List all available projects of the user, who made the request.")
 {
     //----------------------------------------------------------------------------------------------
+    // input
+    //----------------------------------------------------------------------------------------------
+
+    registerInputField("user_id",
+                       SAKURA_STRING_TYPE,
+                       false,
+                       "ID of the user.");
+    assert(addFieldBorder("user_id", 4, 256));
+    assert(addFieldRegex("user_id", ID_EXT_REGEX));
+
+    //----------------------------------------------------------------------------------------------
     // output
     //----------------------------------------------------------------------------------------------
 
@@ -65,11 +76,24 @@ ListUserProjects::runTask(BlossomIO &blossomIO,
                           Kitsunemimi::ErrorContainer &error)
 {
     const Kitsunemimi::Hanami::UserContext userContext(context);
+    std::string userId = blossomIO.input.get("user_id").getString();
 
+    // only admin is allowed to request the project-list of other users
+    if(userId != ""
+            && userContext.isAdmin == false)
+    {
+        status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;
+        return false;
+    }
+
+    // if no other user defined, use the user, who made this request
+    if(userId == "") {
+        userId = userContext.userId;
+    }
 
     // get data from table
     Kitsunemimi::Json::JsonItem userData;
-    if(MisakiRoot::usersTable->getUser(userData, userContext.userId, error, false) == false)
+    if(MisakiRoot::usersTable->getUser(userData, userId, error, false) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
