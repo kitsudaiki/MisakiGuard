@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.3.0] - 2022-10-17
+
+### Added
+- project-table with endpoints
+- assign and unassign projects to user
+- switch of project-scope
+- add rst- and markdown-output for api-docu-generation
+
+
+### Chnaged
+- pack user-information into structs
+- renamings coming from dependencies
+- change visibility-identification in database form int to string
+- rename component
+- rework project-handling
+
+
 ## [0.2.0] - 2022-07-02
 
 ### Added
