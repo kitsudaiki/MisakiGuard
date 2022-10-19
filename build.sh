@@ -75,7 +75,7 @@ get_required_kitsune_lib_repo "libKitsunemimiHanamiCommon" "v0.3.0" 8
 get_required_kitsune_lib_repo "libKitsunemimiHanamiEndpoints" "v0.2.0" 1
 get_required_kitsune_lib_repo "libKitsunemimiHanamiNetwork" "v0.5.0" 8
 get_required_kitsune_lib_repo "libKitsunemimiHanamiDatabase" "v0.4.0" 8
-get_required_kitsune_lib_repo "libKitsunemimiHanamiPolicies" "v0.2.0" 8
+get_required_kitsune_lib_repo "libKitsunemimiHanamiPolicies" "v0.2.0" 1
 echo ""
 echo "###########################################################################################################"
 echo ""
