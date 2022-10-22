@@ -14,9 +14,9 @@ LIBS += -L../libMisakiGuard/src/debug -lMisakiGuard
 LIBS += -L../libMisakiGuard/src/release -lMisakiGuard
 INCLUDEPATH += ../libMisakiGuard/include
 
-LIBS += -L../libKitsunemimiHanamiNetwork/src -lKitsunemimiHanamiMessaging
-LIBS += -L../libKitsunemimiHanamiNetwork/src/debug -lKitsunemimiHanamiMessaging
-LIBS += -L../libKitsunemimiHanamiNetwork/src/release -lKitsunemimiHanamiMessaging
+LIBS += -L../libKitsunemimiHanamiNetwork/src -lKitsunemimiHanamiNetwork
+LIBS += -L../libKitsunemimiHanamiNetwork/src/debug -lKitsunemimiHanamiNetwork
+LIBS += -L../libKitsunemimiHanamiNetwork/src/release -lKitsunemimiHanamiNetwork
 INCLUDEPATH += ../libKitsunemimiHanamiNetwork/include
 
 LIBS += -L../libKitsunemimiHanamiEndpoints/src -lKitsunemimiHanamiEndpoints
@@ -105,7 +105,7 @@ LIBS += -L../libKitsunemimiCrypto/src/release -lKitsunemimiCrypto
 INCLUDEPATH += ../libKitsunemimiCrypto/include
 
 
-LIBS += -lcryptopp -lssl -lsqlite3 -luuid -lcrypto
+LIBS += -lcryptopp -lssl -lsqlite3 -luuid -lcrypto -pthread -lprotobuf
 
 INCLUDEPATH += $$PWD \
                src
@@ -155,3 +155,23 @@ HEADERS += \
     src/database/projects_table.h \
     src/misaki_root.h \
     src/database/users_table.h
+
+AZUKI_PROTO_BUFFER = ../libKitsunemimiHanamiMessages/protobuffers/azuki_messages.proto3
+
+OTHER_FILES += $$AZUKI_PROTO_BUFFER
+
+protobuf_decl.name = protobuf headers
+protobuf_decl.name = protobuf headers
+protobuf_decl.input = KYOUKO_PROTO_BUFFER
+protobuf_decl.output = ${QMAKE_FILE_IN_PATH}/${QMAKE_FILE_BASE}.proto3.pb.h
+protobuf_decl.commands = protoc --cpp_out=${QMAKE_FILE_IN_PATH} --proto_path=${QMAKE_FILE_IN_PATH} ${QMAKE_FILE_NAME}
+protobuf_decl.variable_out = HEADERS
+QMAKE_EXTRA_COMPILERS += protobuf_decl
+
+protobuf_impl.name = protobuf sources
+protobuf_impl.input = KYOUKO_PROTO_BUFFER
+protobuf_impl.output = ${QMAKE_FILE_IN_PATH}/${QMAKE_FILE_BASE}.proto3.pb.cc
+protobuf_impl.depends = ${QMAKE_FILE_IN_PATH}/${QMAKE_FILE_BASE}.proto3.pb.h
+protobuf_impl.commands = $$escape_expand(\n)
+protobuf_impl.variable_out = SOURCES
+QMAKE_EXTRA_COMPILERS += protobuf_impl
