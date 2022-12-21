@@ -150,13 +150,10 @@ ValidateAccess::runTask(BlossomIO &blossomIO,
         const std::string role = blossomIO.output.get("role").getString();
 
         // check policy
-        bool foundPolicy = false;
-        if(MisakiRoot::policies->checkUserAgainstPolicy(component, endpoint, httpType, role)) {
-            foundPolicy = true;
-        }
-
-        // if no matching policy was found, then deny access
-        if(foundPolicy == false)
+        if(MisakiRoot::policies->checkUserAgainstPolicy(component,
+                                                        endpoint,
+                                                        httpType,
+                                                        role) == false)
         {
             status.errorMessage = "Access denied by policy";
             status.statusCode = Kitsunemimi::Hanami::UNAUTHORIZED_RTYPE;

@@ -55,7 +55,7 @@ bool
 ProjectsTable::addProject(Kitsunemimi::Json::JsonItem &userData,
                           Kitsunemimi::ErrorContainer &error)
 {
-    if(add(userData, error) == false)
+    if(insertToDb(userData, error) == false)
     {
         error.addMeesage("Failed to add user to database");
         return false;
@@ -83,7 +83,7 @@ ProjectsTable::getProject(Kitsunemimi::Json::JsonItem &result,
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("id", projectId);
 
-    if(get(result, conditions, error, showHiddenValues) == false)
+    if(getFromDb(result, conditions, error, showHiddenValues) == false)
     {
         error.addMeesage("Failed to get user with id '"
                          + projectId
@@ -108,7 +108,7 @@ ProjectsTable::getAllProjects(Kitsunemimi::TableItem &result,
                               Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    if(getAll(result, conditions, error, false) == false)
+    if(getFromDb(result, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get all users from database");
         return false;
@@ -132,7 +132,7 @@ ProjectsTable::deleteProject(const std::string &projectId,
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("id", projectId);
 
-    if(del(conditions, error) == false)
+    if(deleteFromDb(conditions, error) == false)
     {
         error.addMeesage("Failed to delete user with id '"
                          + projectId

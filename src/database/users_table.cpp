@@ -100,7 +100,7 @@ UsersTable::getAllAdminUser(Kitsunemimi::ErrorContainer &error)
 
     // get admin-user from db
     Kitsunemimi::Json::JsonItem users;
-    if(get(users, conditions, error, false) == false)
+    if(getFromDb(users, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get admin-users from database");
         LOG_ERROR(error);
@@ -195,7 +195,7 @@ bool
 UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
                     Kitsunemimi::ErrorContainer &error)
 {
-    if(add(userData, error) == false)
+    if(insertToDb(userData, error) == false)
     {
         error.addMeesage("Failed to add user to database");
         return false;
@@ -224,7 +224,7 @@ UsersTable::getUser(Kitsunemimi::Json::JsonItem &result,
     conditions.emplace_back("id", userId);
 
     // get user from db
-    if(get(result, conditions, error, showHiddenValues) == false)
+    if(getFromDb(result, conditions, error, showHiddenValues) == false)
     {
         error.addMeesage("Failed to get user with id '"
                          + userId
@@ -249,7 +249,7 @@ UsersTable::getAllUser(Kitsunemimi::TableItem &result,
                        Kitsunemimi::ErrorContainer &error)
 {
     std::vector<RequestCondition> conditions;
-    if(getAll(result, conditions, error, false) == false)
+    if(getFromDb(result, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get all users from database");
         return false;
@@ -273,7 +273,7 @@ UsersTable::deleteUser(const std::string &userId,
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("id", userId);
 
-    if(del(conditions, error) == false)
+    if(deleteFromDb(conditions, error) == false)
     {
         error.addMeesage("Failed to delete user with id '"
                          + userId
@@ -304,7 +304,7 @@ UsersTable::updateProjectsOfUser(const std::string &userId,
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("id", userId);
 
-    if(update(newValues, conditions, error) == false)
+    if(updateInDb(conditions, newValues, error) == false)
     {
         error.addMeesage("Failed to update projects for user with id '"
                          + userId
