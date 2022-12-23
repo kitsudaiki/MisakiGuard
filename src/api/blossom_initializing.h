@@ -23,10 +23,9 @@
 #ifndef MISAKIGUARD_BLOSSOM_INITIALIZING_H
 #define MISAKIGUARD_BLOSSOM_INITIALIZING_H
 
-#include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
 #include <libKitsunemimiCommon/logger.h>
 
-#include <libKitsunemimiHanamiEndpoints/endpoint.h>
+#include <libKitsunemimiHanamiNetwork/hanami_messaging.h>
 
 #include <api/v1/user/create_user.h>
 #include <api/v1/user/get_user.h>
@@ -48,7 +47,7 @@
 #include <api/v1/auth/list_user_projects.h>
 #include <api/v1/auth/renew_token.h>
 
-using Kitsunemimi::Sakura::SakuraLangInterface;
+using Kitsunemimi::Hanami::HanamiMessaging;
 
 /**
  * @brief init token endpoints
@@ -56,33 +55,32 @@ using Kitsunemimi::Sakura::SakuraLangInterface;
 void
 tokenBlossomes()
 {
-    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
-    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    HanamiMessaging* interface = HanamiMessaging::getInstance();
     const std::string group = "token";
 
     assert(interface->addBlossom(group, "create", new CreateToken()));
-    endpoints->addEndpoint("v1/token",
+    interface->addEndpoint("v1/token",
                            Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
 
     assert(interface->addBlossom(group, "renew", new RenewToken()));
-    endpoints->addEndpoint("v1/token",
+    interface->addEndpoint("v1/token",
                            Kitsunemimi::Hanami::PUT_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "renew");
 
     assert(interface->addBlossom(group, "create_internal", new CreateInternalToken()));
-    endpoints->addEndpoint("v1/token/internal",
+    interface->addEndpoint("v1/token/internal",
                            Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create_internal");
 
     assert(interface->addBlossom(group, "validate", new ValidateAccess()));
-    endpoints->addEndpoint("v1/auth",
+    interface->addEndpoint("v1/auth",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
@@ -95,12 +93,11 @@ tokenBlossomes()
 void
 documentationBlossomes()
 {
-    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
-    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    HanamiMessaging* interface = HanamiMessaging::getInstance();
     const std::string group = "documentation";
 
     assert(interface->addBlossom(group, "generate_rest_api", new GenerateRestApiDocu()));
-    endpoints->addEndpoint("v1/documentation/api/rest",
+    interface->addEndpoint("v1/documentation/api/rest",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
@@ -113,47 +110,46 @@ documentationBlossomes()
 void
 userBlossomes()
 {
-    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
-    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    HanamiMessaging* interface = HanamiMessaging::getInstance();
     const std::string group = "user";
 
     assert(interface->addBlossom(group, "create", new CreateUser()));
-    endpoints->addEndpoint("v1/user",
+    interface->addEndpoint("v1/user",
                            Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
 
     assert(interface->addBlossom(group, "get", new GetUser()));
-    endpoints->addEndpoint("v1/user",
+    interface->addEndpoint("v1/user",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "get");
 
     assert(interface->addBlossom(group, "list", new ListUsers()));
-    endpoints->addEndpoint("v1/user/all",
+    interface->addEndpoint("v1/user/all",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "list");
 
     assert(interface->addBlossom(group, "delete", new DeleteUser()));
-    endpoints->addEndpoint("v1/user",
+    interface->addEndpoint("v1/user",
                            Kitsunemimi::Hanami::DELETE_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "delete");
 
     assert(interface->addBlossom(group, "add_project", new AddProjectToUser()));
-    endpoints->addEndpoint("v1/user/project",
+    interface->addEndpoint("v1/user/project",
                            Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "add_project");
 
     assert(interface->addBlossom(group, "remove_project", new RemoveProjectFromUser()));
-    endpoints->addEndpoint("v1/user/project",
+    interface->addEndpoint("v1/user/project",
                            Kitsunemimi::Hanami::DELETE_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
@@ -161,7 +157,7 @@ userBlossomes()
 
     // TODO: move ListUserProjects-class in user-directory
     assert(interface->addBlossom(group, "list_user_projects", new ListUserProjects()));
-    endpoints->addEndpoint("v1/user/project",
+    interface->addEndpoint("v1/user/project",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
@@ -174,33 +170,32 @@ userBlossomes()
 void
 projectBlossomes()
 {
-    Kitsunemimi::Hanami::Endpoint* endpoints = Kitsunemimi::Hanami::Endpoint::getInstance();
-    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    HanamiMessaging* interface = HanamiMessaging::getInstance();
     const std::string group = "project";
 
     assert(interface->addBlossom(group, "create", new CreateProject()));
-    endpoints->addEndpoint("v1/project",
+    interface->addEndpoint("v1/project",
                            Kitsunemimi::Hanami::POST_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "create");
 
     assert(interface->addBlossom(group, "get", new GetProject()));
-    endpoints->addEndpoint("v1/project",
+    interface->addEndpoint("v1/project",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "get");
 
     assert(interface->addBlossom(group, "list", new ListProjects()));
-    endpoints->addEndpoint("v1/project/all",
+    interface->addEndpoint("v1/project/all",
                            Kitsunemimi::Hanami::GET_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,
                            "list");
 
     assert(interface->addBlossom(group, "delete", new DeleteProject()));
-    endpoints->addEndpoint("v1/project",
+    interface->addEndpoint("v1/project",
                            Kitsunemimi::Hanami::DELETE_TYPE,
                            Kitsunemimi::Hanami::BLOSSOM_TYPE,
                            group,

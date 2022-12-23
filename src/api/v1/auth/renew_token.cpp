@@ -32,7 +32,7 @@
 #include <libKitsunemimiHanamiCommon/defines.h>
 #include <libKitsunemimiHanamiCommon/structs.h>
 
-using namespace Kitsunemimi::Sakura;
+using namespace Kitsunemimi::Hanami;
 
 /**
  * @brief constructor

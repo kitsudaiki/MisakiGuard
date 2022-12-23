@@ -26,7 +26,7 @@
 
 #include <libKitsunemimiHanamiCommon/enums.h>
 
-using namespace Kitsunemimi::Sakura;
+using namespace Kitsunemimi::Hanami;
 
 /**
  * @brief constructor

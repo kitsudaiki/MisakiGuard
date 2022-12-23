@@ -34,7 +34,7 @@
 
 #include <misaki_root.h>
 
-using namespace Kitsunemimi::Sakura;
+using namespace Kitsunemimi::Hanami;
 using Kitsunemimi::Hanami::HttpRequestType;
 using Kitsunemimi::Hanami::SupportedComponents;
 using Kitsunemimi::Hanami::HanamiMessaging;
