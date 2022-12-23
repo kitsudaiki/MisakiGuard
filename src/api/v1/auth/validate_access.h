@@ -23,19 +23,19 @@
 #ifndef MISAKIGUARD_VALIDATE_ACCESS_H
 #define MISAKIGUARD_VALIDATE_ACCESS_H
 
-#include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiNetwork/blossom.h>
 #include <libKitsunemimiHanamiCommon/enums.h>
 
 class ValidateAccess
-        : public Kitsunemimi::Sakura::Blossom
+        : public Kitsunemimi::Hanami::Blossom
 {
 public:
     ValidateAccess();
 
 protected:
-    bool runTask(Kitsunemimi::Sakura::BlossomIO &blossomIO,
+    bool runTask(Kitsunemimi::Hanami::BlossomIO &blossomIO,
                  const Kitsunemimi::DataMap &,
-                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::Hanami::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };
 

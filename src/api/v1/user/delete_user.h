@@ -23,18 +23,18 @@
 #ifndef MISAKIGUARD_DELETEUSER_H
 #define MISAKIGUARD_DELETEUSER_H
 
-#include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiNetwork/blossom.h>
 
 class DeleteUser
-        : public Kitsunemimi::Sakura::Blossom
+        : public Kitsunemimi::Hanami::Blossom
 {
 public:
     DeleteUser();
 
 protected:
-    bool runTask(Kitsunemimi::Sakura::BlossomIO &blossomIO,
+    bool runTask(Kitsunemimi::Hanami::BlossomIO &blossomIO,
                  const Kitsunemimi::DataMap &context,
-                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::Hanami::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };
 

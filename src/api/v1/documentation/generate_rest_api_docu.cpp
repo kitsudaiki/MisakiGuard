@@ -30,8 +30,6 @@
 #include <libKitsunemimiHanamiNetwork/hanami_messaging.h>
 #include <libKitsunemimiHanamiNetwork/hanami_messaging_client.h>
 
-#include <libKitsunemimiSakuraLang/sakura_lang_interface.h>
-
 #include <libKitsunemimiCrypto/common.h>
 #include <libKitsunemimiCommon/methods/string_methods.h>
 #include <libKitsunemimiCommon/methods/file_methods.h>
@@ -40,9 +38,9 @@
 #include <libKitsunemimiCommon/process_execution.h>
 #include <libKitsunemimiJson/json_item.h>
 
-using namespace Kitsunemimi::Sakura;
+using namespace Kitsunemimi::Hanami;
 using Kitsunemimi::Hanami::SupportedComponents;
-using Kitsunemimi::Sakura::SakuraLangInterface;
+using Kitsunemimi::Hanami::HanamiMessaging;
 
 /**
  * @brief constructor
@@ -151,10 +149,10 @@ bool
 makeInternalRequest(std::string &completeDocumentation,
                     const std::string &type)
 {
-    SakuraLangInterface* interface = SakuraLangInterface::getInstance();
+    HanamiMessaging* interface = HanamiMessaging::getInstance();
     Kitsunemimi::DataMap result;
     Kitsunemimi::ErrorContainer error;
-    Kitsunemimi::Sakura::BlossomStatus status;
+    Kitsunemimi::Hanami::BlossomStatus status;
     Kitsunemimi::DataMap values;
     values.insert("type", new Kitsunemimi::DataValue(type));
 

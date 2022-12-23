@@ -23,18 +23,18 @@
 #ifndef MISAKIGUARD_GETUSER_H
 #define MISAKIGUARD_GETUSER_H
 
-#include <libKitsunemimiSakuraLang/blossom.h>
+#include <libKitsunemimiHanamiNetwork/blossom.h>
 
 class GetUser
-        : public Kitsunemimi::Sakura::Blossom
+        : public Kitsunemimi::Hanami::Blossom
 {
 public:
     GetUser();
 
 protected:
-    bool runTask(Kitsunemimi::Sakura::BlossomIO &blossomIO,
+    bool runTask(Kitsunemimi::Hanami::BlossomIO &blossomIO,
                  const Kitsunemimi::DataMap &context,
-                 Kitsunemimi::Sakura::BlossomStatus &status,
+                 Kitsunemimi::Hanami::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 };
 
