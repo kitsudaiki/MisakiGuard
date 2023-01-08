@@ -105,7 +105,7 @@ RemoveProjectFromUser::runTask(BlossomIO &blossomIO,
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
-    Kitsunemimi::Json::JsonItem getResult;
+    Kitsunemimi::JsonItem getResult;
     if(MisakiRoot::usersTable->getUser(getResult, userId, error, false) == false)
     {
         status.errorMessage = "User with id '" + userId + "' not found.";
@@ -115,7 +115,7 @@ RemoveProjectFromUser::runTask(BlossomIO &blossomIO,
 
     // check if project is assigned to user and remove it if found
     bool found = false;
-    Kitsunemimi::Json::JsonItem parsedProjects = getResult.get("projects");
+    Kitsunemimi::JsonItem parsedProjects = getResult.get("projects");
     for(uint64_t i = 0; i < parsedProjects.size(); i++)
     {
         if(parsedProjects.get(i).get("project_id").getString() == projectId)

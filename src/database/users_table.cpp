@@ -99,7 +99,7 @@ UsersTable::getAllAdminUser(Kitsunemimi::ErrorContainer &error)
     conditions.emplace_back("is_admin", "true");
 
     // get admin-user from db
-    Kitsunemimi::Json::JsonItem users;
+    Kitsunemimi::JsonItem users;
     if(getFromDb(users, conditions, error, false) == false)
     {
         error.addMeesage("Failed to get admin-users from database");
@@ -161,9 +161,9 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
     std::string pwHash;
     const std::string salt = "e307bee0-9286-49bd-9273-6f644c12da1d";
     const std::string saltedPw = pw + salt;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
+    Kitsunemimi::generate_SHA_256(pwHash, saltedPw);
 
-    Kitsunemimi::Json::JsonItem userData;
+    Kitsunemimi::JsonItem userData;
     userData.insert("id", userId);
     userData.insert("name", userName);
     userData.insert("projects", "[]");
@@ -192,7 +192,7 @@ UsersTable::initNewAdminUser(Kitsunemimi::ErrorContainer &error)
  * @return true, if successful, else false
  */
 bool
-UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
+UsersTable::addUser(Kitsunemimi::JsonItem &userData,
                     Kitsunemimi::ErrorContainer &error)
 {
     if(insertToDb(userData, error) == false)
@@ -215,7 +215,7 @@ UsersTable::addUser(Kitsunemimi::Json::JsonItem &userData,
  * @return true, if successful, else false
  */
 bool
-UsersTable::getUser(Kitsunemimi::Json::JsonItem &result,
+UsersTable::getUser(Kitsunemimi::JsonItem &result,
                     const std::string &userId,
                     Kitsunemimi::ErrorContainer &error,
                     const bool showHiddenValues)
@@ -298,8 +298,8 @@ UsersTable::updateProjectsOfUser(const std::string &userId,
                                  const std::string &newProjects,
                                  Kitsunemimi::ErrorContainer &error)
 {
-    Kitsunemimi::Json::JsonItem newValues;
-    newValues.insert("projects", Kitsunemimi::Json::JsonItem(newProjects));
+    Kitsunemimi::JsonItem newValues;
+    newValues.insert("projects", Kitsunemimi::JsonItem(newProjects));
 
     std::vector<RequestCondition> conditions;
     conditions.emplace_back("id", userId);

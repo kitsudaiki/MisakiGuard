@@ -120,7 +120,7 @@ AddProjectToUser::runTask(BlossomIO &blossomIO,
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
-    Kitsunemimi::Json::JsonItem getResult;
+    Kitsunemimi::JsonItem getResult;
     if(MisakiRoot::usersTable->getUser(getResult, userId, error, false) == false)
     {
         status.errorMessage = "User with id '" + userId + "' not found.";
@@ -129,7 +129,7 @@ AddProjectToUser::runTask(BlossomIO &blossomIO,
     }
 
     // check if project is already assigned to user
-    Kitsunemimi::Json::JsonItem parsedProjects = getResult.get("projects");
+    Kitsunemimi::JsonItem parsedProjects = getResult.get("projects");
     for(uint64_t i = 0; i < parsedProjects.size(); i++)
     {
         if(parsedProjects.get(i).get("project_id").getString() == projectId)
@@ -146,7 +146,7 @@ AddProjectToUser::runTask(BlossomIO &blossomIO,
     }
 
     // create new entry
-    Kitsunemimi::Json::JsonItem newEntry;
+    Kitsunemimi::JsonItem newEntry;
     newEntry.insert("project_id", projectId);
     newEntry.insert("role", role);
     newEntry.insert("is_project_admin", isProjectAdmin);

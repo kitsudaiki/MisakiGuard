@@ -78,7 +78,7 @@ CreateInternalToken::runTask(BlossomIO &blossomIO,
     const std::string serviceName = blossomIO.input.get("service_name").getString();
 
     // create struct with the payload for the token
-    Kitsunemimi::Json::JsonItem serviceData;
+    Kitsunemimi::JsonItem serviceData;
     serviceData.insert("name", new Kitsunemimi::DataValue(serviceName));
 
     // TODO: make validation-time configurable

@@ -75,7 +75,7 @@ DeleteUser::runTask(BlossomIO &blossomIO,
     const std::string userId = blossomIO.input.get("id").getString();
 
     // check if user exist within the table
-    Kitsunemimi::Json::JsonItem result;
+    Kitsunemimi::JsonItem result;
     if(MisakiRoot::usersTable->getUser(result, userId, error, false) == false)
     {
         status.errorMessage = "User with id '" + userId + "' not found.";

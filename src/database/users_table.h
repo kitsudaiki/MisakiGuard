@@ -27,9 +27,7 @@
 #include <libKitsunemimiHanamiDatabase/hanami_sql_admin_table.h>
 
 namespace Kitsunemimi {
-namespace Json {
 class JsonItem;
-}
 }
 class UsersTable
         : public Kitsunemimi::Hanami::HanamiSqlAdminTable
@@ -40,9 +38,9 @@ public:
 
     bool initNewAdminUser(Kitsunemimi::ErrorContainer &error);
 
-    bool addUser(Kitsunemimi::Json::JsonItem &userData,
+    bool addUser(Kitsunemimi::JsonItem &userData,
                  Kitsunemimi::ErrorContainer &error);
-    bool getUser(Kitsunemimi::Json::JsonItem &result,
+    bool getUser(Kitsunemimi::JsonItem &result,
                  const std::string &userId,
                  Kitsunemimi::ErrorContainer &error,
                  const bool showHiddenValues);

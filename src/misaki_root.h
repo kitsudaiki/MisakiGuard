@@ -35,7 +35,7 @@ public:
 
     bool init(Kitsunemimi::ErrorContainer &error);
 
-    static Kitsunemimi::Jwt::Jwt* jwt;
+    static Kitsunemimi::Jwt* jwt;
     static UsersTable* usersTable;
     static ProjectsTable* projectsTable;
     static Kitsunemimi::Sakura::SqlDatabase* database;

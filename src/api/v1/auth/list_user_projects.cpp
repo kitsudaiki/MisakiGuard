@@ -92,7 +92,7 @@ ListUserProjects::runTask(BlossomIO &blossomIO,
     }
 
     // get data from table
-    Kitsunemimi::Json::JsonItem userData;
+    Kitsunemimi::JsonItem userData;
     if(MisakiRoot::usersTable->getUser(userData, userId, error, false) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;

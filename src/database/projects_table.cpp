@@ -52,7 +52,7 @@ ProjectsTable::~ProjectsTable() {}
  * @return true, if successful, else false
  */
 bool
-ProjectsTable::addProject(Kitsunemimi::Json::JsonItem &userData,
+ProjectsTable::addProject(Kitsunemimi::JsonItem &userData,
                           Kitsunemimi::ErrorContainer &error)
 {
     if(insertToDb(userData, error) == false)
@@ -75,7 +75,7 @@ ProjectsTable::addProject(Kitsunemimi::Json::JsonItem &userData,
  * @return true, if successful, else false
  */
 bool
-ProjectsTable::getProject(Kitsunemimi::Json::JsonItem &result,
+ProjectsTable::getProject(Kitsunemimi::JsonItem &result,
                           const std::string &projectId,
                           Kitsunemimi::ErrorContainer &error,
                           const bool showHiddenValues)

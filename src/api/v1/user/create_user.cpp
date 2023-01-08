@@ -115,7 +115,7 @@ CreateUser::runTask(BlossomIO &blossomIO,
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
-    Kitsunemimi::Json::JsonItem getResult;
+    Kitsunemimi::JsonItem getResult;
     if(MisakiRoot::usersTable->getUser(getResult, newUserId, error, false))
     {
         status.errorMessage = "User with id '" + newUserId + "' already exist.";
@@ -127,10 +127,10 @@ CreateUser::runTask(BlossomIO &blossomIO,
     std::string pwHash;
     const std::string salt = Kitsunemimi::Hanami::generateUuid().toString();
     const std::string saltedPw = blossomIO.input.get("password").getString() + salt;
-    Kitsunemimi::Crypto::generate_SHA_256(pwHash, saltedPw);
+    Kitsunemimi::generate_SHA_256(pwHash, saltedPw);
 
     // convert values
-    Kitsunemimi::Json::JsonItem userData;
+    Kitsunemimi::JsonItem userData;
     userData.insert("id", newUserId);
     userData.insert("name", blossomIO.input.get("name").getString());
     userData.insert("projects", new Kitsunemimi::DataArray());

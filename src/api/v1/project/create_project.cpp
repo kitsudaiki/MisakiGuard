@@ -103,7 +103,7 @@ CreateProject::runTask(BlossomIO &blossomIO,
     const std::string creatorId = context.getStringByKey("id");
 
     // check if user already exist within the table
-    Kitsunemimi::Json::JsonItem getResult;
+    Kitsunemimi::JsonItem getResult;
     if(MisakiRoot::projectsTable->getProject(getResult, projectId, error))
     {
         status.errorMessage = "Project with id '" + projectId + "' already exist.";
@@ -112,7 +112,7 @@ CreateProject::runTask(BlossomIO &blossomIO,
     }
 
     // convert values
-    Kitsunemimi::Json::JsonItem userData;
+    Kitsunemimi::JsonItem userData;
     userData.insert("id", projectId);
     userData.insert("name", projectName);
     userData.insert("creator_id", creatorId);

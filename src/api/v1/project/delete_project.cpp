@@ -74,7 +74,7 @@ DeleteProject::runTask(BlossomIO &blossomIO,
     const std::string projectId = blossomIO.input.get("id").getString();
 
     // check if user exist within the table
-    Kitsunemimi::Json::JsonItem result;
+    Kitsunemimi::JsonItem result;
     if(MisakiRoot::projectsTable->getProject(result, projectId, error) == false)
     {
         status.errorMessage = "Project with id '" + projectId + "' not found.";
