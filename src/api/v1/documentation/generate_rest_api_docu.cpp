@@ -78,7 +78,7 @@ appendDocu(std::string &completeDocumentation,
            Kitsunemimi::ErrorContainer &error)
 {
     std::string rstDocu;
-    if(Kitsunemimi::Crypto::decodeBase64(rstDocu, componentDocu) == false)
+    if(Kitsunemimi::decodeBase64(rstDocu, componentDocu) == false)
     {
         error.addMeesage("Unable to convert documentation-payload from base64 back to rst");
         return false;
@@ -128,7 +128,7 @@ requestComponent(std::string &completeDocumentation,
     }
 
     // parse result
-    Kitsunemimi::Json::JsonItem jsonItem;
+    Kitsunemimi::JsonItem jsonItem;
     if(jsonItem.parse(response.responseContent, error) == false)
     {
         return false;
@@ -253,9 +253,9 @@ GenerateRestApiDocu::runTask(BlossomIO &blossomIO,
     }
     else
     {
-        Kitsunemimi::Crypto::encodeBase64(output,
-                                          completeDocumentation.c_str(),
-                                          completeDocumentation.size());
+        Kitsunemimi::encodeBase64(output,
+                                  completeDocumentation.c_str(),
+                                  completeDocumentation.size());
     }
 
     blossomIO.output.insert("documentation", output);
@@ -333,7 +333,7 @@ GenerateRestApiDocu::convertRstToPdf(std::string &pdfOutput,
         pdfFile.closeFile(error);
 
         // create output for the client
-        Kitsunemimi::Crypto::encodeBase64(pdfOutput, pdfContent.data, pdfContent.usedBufferSize);
+        Kitsunemimi::encodeBase64(pdfOutput, pdfContent.data, pdfContent.usedBufferSize);
 
         result = true;
         break;

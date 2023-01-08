@@ -37,8 +37,8 @@ protected:
                  Kitsunemimi::Hanami::BlossomStatus &status,
                  Kitsunemimi::ErrorContainer &error);
 private:
-    bool chooseProject(Kitsunemimi::Json::JsonItem &userData,
-                       Kitsunemimi::Json::JsonItem &parsedProjects,
+    bool chooseProject(Kitsunemimi::JsonItem &userData,
+                       Kitsunemimi::JsonItem &parsedProjects,
                        const std::string selectedProjectId);
 };
 

@@ -86,14 +86,14 @@ RenewToken::runTask(BlossomIO &blossomIO,
     const std::string projectId = blossomIO.input.get("project_id").getString();
 
     // get data from table
-    Kitsunemimi::Json::JsonItem userData;
+    Kitsunemimi::JsonItem userData;
     if(MisakiRoot::usersTable->getUser(userData, userContext.userId, error, false) == false)
     {
         status.statusCode = Kitsunemimi::Hanami::INTERNAL_SERVER_ERROR_RTYPE;
         return false;
     }
 
-    Kitsunemimi::Json::JsonItem parsedProjects = userData.get("projects");
+    Kitsunemimi::JsonItem parsedProjects = userData.get("projects");
 
     // if user is global admin, add the admin-project to the list of choosable projects
     const bool isAdmin = userData.get("is_admin").getBool();
@@ -147,8 +147,8 @@ RenewToken::runTask(BlossomIO &blossomIO,
  * @return true, if selectedProjectId is available for the user, else false
  */
 bool
-RenewToken::chooseProject(Kitsunemimi::Json::JsonItem &userData,
-                          Kitsunemimi::Json::JsonItem &parsedProjects,
+RenewToken::chooseProject(Kitsunemimi::JsonItem &userData,
+                          Kitsunemimi::JsonItem &parsedProjects,
                           const std::string selectedProjectId)
 {
     for(uint64_t i = 0; i < parsedProjects.size(); i++)

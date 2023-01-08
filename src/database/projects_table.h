@@ -38,12 +38,12 @@ public:
     ProjectsTable(Kitsunemimi::Sakura::SqlDatabase* db);
     ~ProjectsTable();
 
-    bool addProject(Kitsunemimi::Json::JsonItem &userData,
+    bool addProject(Kitsunemimi::JsonItem &userData,
                     Kitsunemimi::ErrorContainer &error);
-    bool getProject(Kitsunemimi::Json::JsonItem &result,
-                          const std::string &projectName,
-                          Kitsunemimi::ErrorContainer &error,
-                          const bool showHiddenValues = false);
+    bool getProject(Kitsunemimi::JsonItem &result,
+                    const std::string &projectName,
+                    Kitsunemimi::ErrorContainer &error,
+                    const bool showHiddenValues = false);
     bool getAllProjects(Kitsunemimi::TableItem &result,
                        Kitsunemimi::ErrorContainer &error);
     bool deleteProject(const std::string &projectName,

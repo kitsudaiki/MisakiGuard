@@ -28,7 +28,7 @@
 
 #include <api/blossom_initializing.h>
 
-Kitsunemimi::Jwt::Jwt* MisakiRoot::jwt = nullptr;
+Kitsunemimi::Jwt* MisakiRoot::jwt = nullptr;
 UsersTable* MisakiRoot::usersTable = nullptr;
 ProjectsTable* MisakiRoot::projectsTable = nullptr;
 Kitsunemimi::Sakura::SqlDatabase* MisakiRoot::database = nullptr;
@@ -192,7 +192,7 @@ MisakiRoot::initJwt(Kitsunemimi::ErrorContainer &error)
 
     // init jwt for token create and sign
     CryptoPP::SecByteBlock tokenKey((unsigned char*)tokenKeyString.c_str(), tokenKeyString.size());
-    jwt = new Kitsunemimi::Jwt::Jwt(tokenKey);
+    jwt = new Kitsunemimi::Jwt(tokenKey);
 
     return true;
 }

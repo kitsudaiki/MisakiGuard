@@ -90,7 +90,7 @@ CreateToken::runTask(BlossomIO &blossomIO,
     const std::string userId = blossomIO.input.get("id").getString();
 
     // get data from table
-    Kitsunemimi::Json::JsonItem userData;
+    Kitsunemimi::JsonItem userData;
     if(MisakiRoot::usersTable->getUser(userData, userId, error, true) == false)
     {
         status.errorMessage = "ACCESS DENIED!\n"
@@ -104,7 +104,7 @@ CreateToken::runTask(BlossomIO &blossomIO,
     std::string compareHash = "";
     const std::string saltedPw = blossomIO.input.get("password").getString()
                                  + userData.get("salt").getString();
-    Kitsunemimi::Crypto::generate_SHA_256(compareHash, saltedPw);
+    Kitsunemimi::generate_SHA_256(compareHash, saltedPw);
 
     // check password
     const std::string pwHash = userData.get("pw_hash").getString();
@@ -123,7 +123,7 @@ CreateToken::runTask(BlossomIO &blossomIO,
     userData.remove("pw_hash");
     userData.remove("salt");
 
-    Kitsunemimi::Json::JsonItem parsedProjects = userData.get("projects");
+    Kitsunemimi::JsonItem parsedProjects = userData.get("projects");
 
     // get project
     const bool isAdmin = userData.get("is_admin").getBool();
